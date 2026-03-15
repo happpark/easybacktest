@@ -6,6 +6,7 @@ import { ResultScreen } from '@/components/screens/ResultScreen';
 import { CommunityScreen } from '@/components/screens/CommunityScreen';
 import { MyPortfoliosScreen } from '@/components/screens/MyPortfoliosScreen';
 import { LayoutDashboard, Users, PlusCircle, Bookmark } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type Screen = 'input' | 'result' | 'community' | 'mine';
 
@@ -51,44 +52,75 @@ export default function AlphaFlowApp() {
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen max-w-md mx-auto relative overflow-hidden bg-background font-body">
-      <main className={`flex-1 overflow-y-auto ${activeScreen === 'input' ? 'pb-44' : 'pb-24'}`}>
-        {renderScreen()}
-      </main>
+  const navItems = [
+    { screen: 'input' as Screen, Icon: PlusCircle, label: '구성', disabled: false },
+    { screen: 'result' as Screen, Icon: LayoutDashboard, label: '분석', disabled: !portfolioData },
+    { screen: 'mine' as Screen, Icon: Bookmark, label: '내 기록', disabled: false },
+    { screen: 'community' as Screen, Icon: Users, label: '커뮤니티', disabled: false },
+  ];
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-morphism h-20 px-6 flex items-center justify-between border-t border-white/10 z-50">
-        <button
-          onClick={() => setActiveScreen('input')}
-          className={`flex flex-col items-center gap-1 transition-colors ${activeScreen === 'input' ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <PlusCircle size={22} />
-          <span className="text-[10px] font-medium">구성</span>
-        </button>
-        <button
-          onClick={() => setActiveScreen('result')}
-          disabled={!portfolioData}
-          className={`flex flex-col items-center gap-1 transition-colors ${activeScreen === 'result' ? 'text-primary' : 'text-muted-foreground'} ${!portfolioData ? 'opacity-30' : ''}`}
-        >
-          <LayoutDashboard size={22} />
-          <span className="text-[10px] font-medium">분석</span>
-        </button>
-        <button
-          onClick={() => setActiveScreen('mine')}
-          className={`flex flex-col items-center gap-1 transition-colors ${activeScreen === 'mine' ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <Bookmark size={22} />
-          <span className="text-[10px] font-medium">내 기록</span>
-        </button>
-        <button
-          onClick={() => setActiveScreen('community')}
-          className={`flex flex-col items-center gap-1 transition-colors ${activeScreen === 'community' ? 'text-primary' : 'text-muted-foreground'}`}
-        >
-          <Users size={22} />
-          <span className="text-[10px] font-medium">커뮤니티</span>
-        </button>
-      </nav>
+  return (
+    <div className="flex h-screen bg-background font-body overflow-hidden">
+
+      {/* ── Desktop Sidebar (hidden on mobile) ── */}
+      <aside className="hidden md:flex flex-col w-52 shrink-0 border-r border-white/10 glass-morphism">
+        <div className="px-6 py-8">
+          <h1 className="text-xl font-black text-primary text-glow">Easybacktest</h1>
+          <p className="text-[10px] text-muted-foreground mt-1">포트폴리오 백테스트</p>
+        </div>
+        <nav className="flex flex-col gap-1 px-3 pb-6">
+          {navItems.map(({ screen, Icon, label, disabled }) => (
+            <button
+              key={screen}
+              onClick={() => !disabled && setActiveScreen(screen)}
+              disabled={disabled}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left",
+                activeScreen === screen
+                  ? 'bg-primary/15 text-primary'
+                  : disabled
+                  ? 'text-muted-foreground/30 cursor-not-allowed'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+              )}
+            >
+              <Icon size={18} />
+              {label}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* ── Content area ── */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+
+        {/* Scrollable main — sticky elements inside screens anchor to this */}
+        <main className="flex-1 overflow-y-auto">
+          {/* Mobile: constrain + center. Desktop: full width */}
+          <div className="max-w-md mx-auto md:max-w-none">
+            {renderScreen()}
+          </div>
+        </main>
+
+        {/* ── Mobile bottom nav — flex child (NOT fixed), so content never hides behind it ── */}
+        <nav className="md:hidden shrink-0 glass-morphism h-16 px-6 flex items-center justify-between border-t border-white/10 z-50">
+          {navItems.map(({ screen, Icon, label, disabled }) => (
+            <button
+              key={screen}
+              onClick={() => !disabled && setActiveScreen(screen)}
+              disabled={disabled}
+              className={cn(
+                "flex flex-col items-center gap-1 transition-colors",
+                activeScreen === screen ? 'text-primary' : 'text-muted-foreground',
+                disabled && 'opacity-30'
+              )}
+            >
+              <Icon size={22} />
+              <span className="text-[10px] font-medium">{label}</span>
+            </button>
+          ))}
+        </nav>
+
+      </div>
     </div>
   );
 }
