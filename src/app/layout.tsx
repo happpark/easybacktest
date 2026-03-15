@@ -2,8 +2,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AlphaFlow - Smart Portfolio Backtesting',
-  description: 'Sleek, modern investment portfolio backtesting mobile app.',
+  title: 'Easybacktest - 포트폴리오 백테스트',
+  description: '간편하고 스마트한 ETF 포트폴리오 백테스팅 앱.',
 };
 
 export default function RootLayout({

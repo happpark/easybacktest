@@ -1,7 +1,7 @@
 'use server';
 /**
  * @fileOverview AI-powered portfolio backtesting flow.
- * 
+ *
  * - backtestPortfolio - Simulates historical performance for a given set of assets and weights.
  * - BacktestInput - Tickers and weights.
  * - BacktestOutput - Performance metrics, radar data, and historical trend.
@@ -9,8 +9,21 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+import { existsSync } from 'fs';
 import path from 'path';
+
+function getPythonPath(cwd: string): string {
+  const venvPath = path.resolve(cwd, '.venv/bin/python3');
+  if (existsSync(venvPath)) return venvPath;
+  for (const candidate of ['python3', 'python']) {
+    try {
+      execFileSync(candidate, ['--version'], { stdio: 'ignore' });
+      return candidate;
+    } catch {}
+  }
+  throw new Error('Python 3이 설치되어 있지 않습니다. Python을 설치하거나 가상환경(.venv)을 설정해주세요.');
+}
 
 const BacktestInputSchema = z.object({
   assets: z.array(z.object({
@@ -89,41 +102,42 @@ const backtestFlow = ai.defineFlow(
     outputSchema: BacktestOutputSchema,
   },
   async (input) => {
-    // 1. Prepare input for Python script
+    // 1. Validate input
+    const totalWeight = input.assets.reduce((sum, a) => sum + a.weight, 0);
+    if (Math.abs(totalWeight - 100) > 0.01) {
+      throw new Error(`비중의 합이 100%여야 합니다. 현재: ${totalWeight.toFixed(2)}%`);
+    }
+
+    // 2. Prepare input for Python script
     const tickersWeights: Record<string, number> = {};
     input.assets.forEach(a => {
       tickersWeights[a.ticker] = a.weight / 100;
     });
 
-    // 2. Execute Python backtest script
+    // 3. Execute Python backtest script
     const scriptPath = path.resolve(process.cwd(), 'backtest.py');
-    const pythonPath = path.resolve(process.cwd(), '.venv/bin/python3');
     const inputJson = JSON.stringify(tickersWeights);
-    console.log('Running backtest with input:', inputJson);
+    console.log('Running backtest with assets:', Object.keys(tickersWeights).join(', '));
     
     let result;
     try {
-      // Set LD_LIBRARY_PATH for Nix environment dependencies (libstdc++, libz)
-      const env = {
-        ...process.env,
-        LD_LIBRARY_PATH: '/nix/store/cf1a53iqg6ncnygl698c4v0l8qam5a2q-gcc-14.3.0-lib/lib/:/nix/store/0zv8lswa9k122sixl00zjb1g1r49bs0i-zlib-1.3/lib/'
-      };
-      
-      const output = execSync(`"${pythonPath}" "${scriptPath}" '${inputJson}'`, { 
+      const pythonPath = getPythonPath(process.cwd());
+      const output = execFileSync(pythonPath, [scriptPath, inputJson], {
         encoding: 'utf-8',
-        env: env
+        timeout: 60000,
       });
       console.log('Backtest output received');
-      // Find the last JSON object in the output to avoid issues with warnings or logs
-      const jsonMatch = output.match(/\{.*\}/s);
-      if (!jsonMatch) {
+      // Find the last JSON object in the output (avoids picking up partial warnings)
+      const jsonMatches = output.match(/\{[\s\S]*\}/g);
+      if (!jsonMatches) {
         console.error('No JSON match in output:', output);
-        throw new Error('No valid JSON output from backtest script');
+        throw new Error('백테스트 스크립트에서 유효한 JSON 출력이 없습니다.');
       }
-      result = JSON.parse(jsonMatch[0]);
-    } catch (error: any) {
+      result = JSON.parse(jsonMatches[jsonMatches.length - 1]);
+    } catch (error: unknown) {
       console.error('Backtest failed:', error);
-      const errorMessage = error.stdout || error.message || 'Failed to perform quantitative backtest.';
+      const err = error as { stdout?: string; stderr?: string; message?: string };
+      const errorMessage = err.stderr || err.stdout || err.message || '백테스트 실행에 실패했습니다.';
       throw new Error(`Backtest error: ${errorMessage}`);
     }
 
@@ -131,7 +145,7 @@ const backtestFlow = ai.defineFlow(
       throw new Error(result.error);
     }
 
-    // 3. Get AI Insight based on real data
+    // 4. Get AI Insight based on real data
     let aiInsight = "Analysis completed based on historical data.";
     try {
       const { output: insightOutput } = await insightPrompt({ 

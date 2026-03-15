@@ -5,174 +5,248 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime
 
-def run_backtest(tickers_weights):
+RISK_FREE_RATE = 0.02   # 2% annual risk-free rate (approximation)
+TRADING_DAYS   = 252
+
+
+CASH_TICKER = "CASH"  # synthetic flat-return asset
+
+def run_backtest(tickers_weights: dict) -> dict:
     tickers = list(tickers_weights.keys())
     weights = np.array([tickers_weights[t] for t in tickers], dtype=float)
-    weights = weights / np.sum(weights)
+    weights = weights / np.sum(weights)          # normalise (safety)
+    weights_series = pd.Series(weights, index=tickers)
 
-    # Date range
+    end_date   = datetime.now().strftime('%Y-%m-%d')
     start_date = "1970-01-01"
-    end_date = datetime.now().strftime('%Y-%m-%d')
 
+    # ── 1. Download price + dividend data ────────────────────────────────────
+    # Exclude CASH from network fetch — we synthesise it later
+    real_tickers  = [t for t in tickers if t != CASH_TICKER]
+    fetch_tickers = list(set(real_tickers + ["SPY"]))
     try:
-        # Fetch tickers + SPY for benchmark
-        fetch_tickers = list(set(tickers + ["SPY"]))
-        data = yf.download(fetch_tickers, start=start_date, end=end_date, progress=False, group_by='column', actions=True)
-        
-        if data.empty:
-            return {"error": "No data found for tickers"}
-        
-        # Extract Adj Close and Dividends
-        if len(fetch_tickers) > 1:
-            adj_close = data['Adj Close'] if 'Adj Close' in data.columns.levels[0] else data['Close']
-            dividends = data['Dividends'] if 'Dividends' in data.columns.levels[0] else pd.DataFrame(0, index=adj_close.index, columns=adj_close.columns)
-        else:
-            # Only happens if user input only SPY
-            adj_close = (data['Adj Close'] if 'Adj Close' in data.columns else data['Close']).to_frame()
-            adj_close.columns = fetch_tickers
-            dividends = (data['Dividends'] if 'Dividends' in data.columns else pd.DataFrame(0, index=adj_close.index, columns=fetch_tickers)).to_frame()
-            dividends.columns = fetch_tickers
-            
+        # auto_adjust=True (default in yfinance 1.x):
+        #   • 'Adj Close' is removed; adjusted prices live in 'Close'
+        #   • 'Dividends' contains raw cash dividends per share
+        data = yf.download(
+            fetch_tickers,
+            start=start_date,
+            end=end_date,
+            auto_adjust=True,       # explicit – adjusted prices in 'Close'
+            actions=True,           # include dividends
+            group_by='column',      # MultiIndex: (price_type, ticker)
+            progress=False,
+            threads=True,
+        )
     except Exception as e:
         return {"error": f"Data fetch failed: {str(e)}"}
 
-    # Align Portfolio: Drop rows where any portfolio ticker is NaN
-    # But keep SPY separate for a moment to ensure we have overlapping data
+    if data.empty:
+        return {"error": "No data found for the provided tickers."}
+
+    # ── 2. Extract Close and Dividends safely ─────────────────────────────────
+    col_level0 = (
+        data.columns.get_level_values(0).unique().tolist()
+        if isinstance(data.columns, pd.MultiIndex)
+        else data.columns.tolist()
+    )
+
+    is_multi = isinstance(data.columns, pd.MultiIndex)
+
+    def get_price_df(d: pd.DataFrame) -> pd.DataFrame:
+        """Return a (dates × tickers) DataFrame of adjusted closing prices."""
+        if is_multi:
+            if 'Close' in col_level0:
+                return d['Close']
+            if 'Adj Close' in col_level0:        # older yfinance fallback
+                return d['Adj Close']
+        else:
+            col = 'Close' if 'Close' in d.columns else 'Adj Close'
+            df = d[[col]].copy()
+            df.columns = fetch_tickers
+            return df
+        raise KeyError("Cannot find 'Close' or 'Adj Close' in downloaded data.")
+
+    def get_div_df(d: pd.DataFrame, price_df: pd.DataFrame) -> pd.DataFrame:
+        """Return a (dates × tickers) DataFrame of dividends (0 if unavailable)."""
+        try:
+            if is_multi and 'Dividends' in col_level0:
+                return d['Dividends'].reindex(price_df.index).fillna(0)
+        except Exception:
+            pass
+        return pd.DataFrame(0.0, index=price_df.index, columns=price_df.columns)
+
+    try:
+        adj_close = get_price_df(data)
+        dividends = get_div_df(data, adj_close)
+    except Exception as e:
+        return {"error": f"Column extraction failed: {str(e)}"}
+
+    # ── 2b. Inject synthetic CASH column (price always 1.0, no dividends) ────
+    if CASH_TICKER in tickers:
+        adj_close[CASH_TICKER] = 1.0
+        dividends[CASH_TICKER] = 0.0
+
+    # ── 3. Align to portfolio inception ──────────────────────────────────────
+    # Drop any day where a portfolio ticker is missing
     port_adj_close = adj_close[tickers].dropna()
     if port_adj_close.empty:
-        return {"error": "No overlapping data for portfolio tickers."}
+        return {"error": "No overlapping price history for the portfolio tickers."}
 
-    # Now align everything (Portfolio + SPY) to the portfolio's inception
-    common_index = port_adj_close.index
-    adj_close_clean = adj_close.loc[common_index].ffill().dropna() # ffill SPY if needed, though usually it exists
-    dividends_clean = dividends.loc[adj_close_clean.index].fillna(0)
+    common_index   = port_adj_close.index
+    adj_clean      = adj_close.loc[common_index].ffill().dropna()
+    div_clean      = dividends.reindex(adj_clean.index).fillna(0)
 
-    actual_start = adj_close_clean.index.min()
-    actual_end = adj_close_clean.index.max()
-    
-    days = (actual_end - actual_start).days
-    years = days / 365.25
-    if years < 0.01:
-        return {"error": "Insufficient historical data."}
+    actual_start = adj_clean.index.min()
+    actual_end   = adj_clean.index.max()
+    years        = (actual_end - actual_start).days / 365.25
 
-    # 1. Portfolio Performance
-    port_daily_returns = adj_close_clean[tickers].pct_change().dropna()
-    weights_series = pd.Series(weights, index=tickers)
-    weights_aligned = weights_series.reindex(port_daily_returns.columns).values
-    port_returns = port_daily_returns.dot(weights_aligned)
-    port_cum_returns = (1 + port_returns).cumprod()
+    if years < 0.5:
+        return {"error": "Insufficient historical data (< 6 months)."}
 
-    # 2. Benchmark (SPY) Performance
-    bench_daily_returns = adj_close_clean['SPY'].pct_change().dropna()
-    bench_cum_returns = (1 + bench_daily_returns).cumprod()
+    # ── 4. Daily returns & cumulative returns ─────────────────────────────────
+    port_daily   = adj_clean[tickers].pct_change().dropna()
+    w_aligned    = weights_series.reindex(port_daily.columns).values
+    port_returns = port_daily.dot(w_aligned)
+    port_cum     = (1 + port_returns).cumprod()
 
-    # Metrics Helper
-    def get_metrics(cum_returns, daily_returns, div_series, price_series, weights_val=None):
+    spy_daily    = adj_clean['SPY'].pct_change().dropna()
+    spy_cum      = (1 + spy_daily).cumprod()
+
+    # ── 5. Metric calculation helper ─────────────────────────────────────────
+    def get_metrics(
+        cum_returns: pd.Series,
+        daily_returns: pd.Series,
+        div_df,             # DataFrame or Series
+        price_df,           # DataFrame or Series
+        asset_weights=None, # pd.Series if portfolio, None if single asset
+    ) -> dict:
         final_val = cum_returns.iloc[-1]
-        cagr = (final_val ** (1 / years)) - 1
-        vol = daily_returns.std() * np.sqrt(252)
-        sharpe = (cagr - 0.02) / vol if vol > 0 else 0
-        mdd_series = (cum_returns - cum_returns.cummax()) / cum_returns.cummax()
-        mdd = mdd_series.min()
-        mdd_date = mdd_series.idxmin().strftime('%Y')
+        cagr      = (final_val ** (1.0 / years)) - 1
 
-        # Best Year
-        annual_returns = (1 + daily_returns).resample('YE').prod() - 1
-        best_year_val = annual_returns.max()
-        best_year_date = annual_returns.idxmax().strftime('%Y')
-        
-        # Dividend Yield (last 1Y)
+        # ── Volatility (annualised sample std) ────────────────────────────────
+        vol = daily_returns.std(ddof=1) * np.sqrt(TRADING_DAYS)
+
+        # ── Sharpe: use annualised ARITHMETIC mean, not CAGR ─────────────────
+        # CAGR < arithmetic mean for volatile assets (Jensen's inequality).
+        # The Sharpe ratio standard uses arithmetic mean return.
+        ann_mean_return = daily_returns.mean() * TRADING_DAYS
+        sharpe = (ann_mean_return - RISK_FREE_RATE) / vol if vol > 0 else 0.0
+
+        # ── MDD ───────────────────────────────────────────────────────────────
+        running_max  = cum_returns.cummax()
+        drawdown     = (cum_returns - running_max) / running_max
+        mdd          = drawdown.min()
+        mdd_year     = drawdown.idxmin().strftime('%Y')
+
+        # ── Best calendar year ────────────────────────────────────────────────
+        annual       = (1 + daily_returns).resample('YE').prod() - 1
+        best_year_v  = float(annual.max())
+        best_year_d  = annual.idxmax().strftime('%Y')
+
+        # ── Dividend yield (trailing 12-month) ────────────────────────────────
         one_year_ago = actual_end - pd.Timedelta(days=365)
-        recent_divs = div_series[div_series.index >= one_year_ago]
-        
-        if weights_val is not None:
-            # Portfolio Div Yield
-            dy_port = 0
-            for t in tickers:
-                w = weights_val[t]
-                p = price_series[t].iloc[-1]
-                d = recent_divs[t].sum() if t in recent_divs.columns else 0
-                dy_port += (d / p * w) if p > 0 else 0
-            dy = dy_port
-        else:
-            # Single asset (SPY) Div Yield
-            p = price_series.iloc[-1]
-            d = recent_divs.sum()
-            dy = (d / p) if p > 0 else 0
+        dy = 0.0
+        try:
+            if asset_weights is not None:
+                # Portfolio: weighted sum of each asset's yield
+                for t in tickers:
+                    recent = div_df[t][div_df.index >= one_year_ago].sum()
+                    price  = price_df[t].iloc[-1]
+                    w      = asset_weights[t]
+                    if price > 0:
+                        dy += (recent / price) * w
+            else:
+                # Single asset (SPY benchmark)
+                recent = div_df[div_df.index >= one_year_ago].sum()
+                price  = price_df.iloc[-1]
+                if price > 0:
+                    dy = recent / price
+        except Exception:
+            dy = 0.0
 
         return {
-            "cagr": round(float(cagr * 100), 2),
-            "mdd": round(float(mdd * 100), 2),
-            "mdd_year": mdd_date,
-            "sharpe": round(float(sharpe), 2),
-            "volatility": round(float(vol * 100), 2),
-            "dividend": round(float(dy * 100), 2),
-            "best_year": {"year": best_year_date, "value": round(float(best_year_val * 100), 2)}
+            "cagr":       round(float(cagr  * 100), 2),
+            "mdd":        round(float(mdd   * 100), 2),
+            "mdd_year":   mdd_year,
+            "sharpe":     round(float(sharpe),       2),
+            "volatility": round(float(vol    * 100), 2),
+            "dividend":   round(float(dy     * 100), 2),
+            "best_year":  {"year": best_year_d, "value": round(best_year_v * 100, 2)},
         }
 
-    port_m = get_metrics(port_cum_returns, port_returns, dividends_clean[tickers], adj_close_clean[tickers], weights_series)
-    bench_m = get_metrics(bench_cum_returns, bench_daily_returns, dividends_clean['SPY'], adj_close_clean['SPY'])
+    port_m  = get_metrics(port_cum, port_returns,
+                          div_clean[tickers], adj_clean[tickers],
+                          asset_weights=weights_series)
+    bench_m = get_metrics(spy_cum,  spy_daily,
+                          div_clean['SPY'],    adj_clean['SPY'])
 
-    # Radar data (Portfolio vs Benchmark)
-    subjects = ["Attack", "Defense", "Volatility", "Sharpe", "Dividend"]
-    radar = []
-    
-    # New Normalization factors based on user request
-    def normalize(val, subject):
-        if subject == "Attack": 
-            # Max 30%, steps of 7.5% (7.5=25, 15=50, 22.5=75, 30=100)
-            return min(100, max(0, (val / 30) * 100))
-        if subject == "Dividend": 
-            # Max 10%, steps of 2.5% (2.5=25, 5=50, 7.5=75, 10=100)
-            return min(100, max(0, (val / 10) * 100))
-        if subject == "Defense": 
-            # Metric: 1500 / |MDD|. MDD 30% = 50 pts, MDD 15% = 100 pts.
+    # ── 6. Radar chart normalisation ─────────────────────────────────────────
+    # Each axis: 0-100 score.  Thresholds are calibrated for realistic ETF ranges.
+    def normalize(val: float, subject: str) -> int:
+        if subject == "Attack":
+            # CAGR: 15% → 100 pts  (5%=33, 7.5%=50, 10%=67, 12.5%=83, 15%=100)
+            return min(100, max(0, int((val / 15) * 100)))
+        if subject == "Defense":
+            # MDD: 1500 / |MDD|  → MDD 15%=100, MDD 30%=50, MDD 50%=30
             mdd_abs = abs(val)
-            if mdd_abs == 0: return 100
-            return min(100, max(0, 1500 / mdd_abs))
-        if subject == "Sharpe": 
-            # Max 1.5, steps for 0.5, 0.75, 1.0, 1.25, 1.5
-            # We'll map 1.5 to 100.
-            return min(100, max(0, (val / 1.5) * 100))
-        if subject == "Volatility": 
-            # Proposal: 100 - (Vol * 2.5). 0% Vol = 100, 20% Vol = 50, 40% Vol = 0.
-            return min(100, max(0, 100 - (val * 2.5)))
+            return 100 if mdd_abs == 0 else min(100, max(0, int(1500 / mdd_abs)))
+        if subject == "Volatility":
+            # Lower vol = higher score: 100 - (vol * 2.5)  → 0%=100, 20%=50, 40%=0
+            return min(100, max(0, int(100 - val * 2.5)))
+        if subject == "Sharpe":
+            # Sharpe 1.0 → 100 pts  (0.3=30, 0.5=50, 0.8=80, 1.0=100)
+            # Realistic ETF portfolio range: 0.3 ~ 1.0
+            return min(100, max(0, int((val / 1.0) * 100)))
+        if subject == "Dividend":
+            # Yield 5% → 100 pts  (1%=20, 2%=40, 3%=60, 4%=80, 5%=100)
+            # Realistic range: 0% (growth) ~ 5% (high-yield)
+            return min(100, max(0, int((val / 5) * 100)))
         return 0
 
-    for s in subjects:
-        p_val = port_m['cagr'] if s == "Attack" else port_m['mdd'] if s == "Defense" else port_m['volatility'] if s == "Volatility" else port_m['sharpe'] if s == "Sharpe" else port_m['dividend']
-        b_val = bench_m['cagr'] if s == "Attack" else bench_m['mdd'] if s == "Defense" else bench_m['volatility'] if s == "Volatility" else bench_m['sharpe'] if s == "Sharpe" else bench_m['dividend']
-        
+    radar = []
+    for s in ["Attack", "Defense", "Volatility", "Sharpe", "Dividend"]:
+        key_map = {
+            "Attack":     "cagr",
+            "Defense":    "mdd",
+            "Volatility": "volatility",
+            "Sharpe":     "sharpe",
+            "Dividend":   "dividend",
+        }
+        k = key_map[s]
         radar.append({
-            "subject": s,
-            "A": int(normalize(p_val, s)), # Portfolio
-            "B": int(normalize(b_val, s)), # Benchmark
-            "fullMark": 100
+            "subject":  s,
+            "A":        normalize(port_m[k],  s),   # portfolio
+            "B":        normalize(bench_m[k], s),   # benchmark
+            "fullMark": 100,
         })
 
-    # History chart (Portfolio only for simplicity, or we can add benchmark)
-    history_values = (port_cum_returns * 1000)
-    if len(history_values) > 20:
-        indices = np.linspace(0, len(history_values) - 1, 20).astype(int)
-        sampled_history = history_values.iloc[indices]
-    else:
-        sampled_history = history_values
+    # ── 7. History chart (up to 100 sampled points) ──────────────────────────
+    history_values = port_cum * 1000.0
+    n_samples = min(len(history_values), 100)
+    indices   = np.linspace(0, len(history_values) - 1, n_samples).astype(int)
+    sampled   = history_values.iloc[indices]
 
+    # Prepend true start point ($1000 on inception date)
     history_data = [{"date": actual_start.strftime('%Y-%m-%d'), "value": 1000.0}]
-    for date, val in sampled_history.items():
-        history_data.append({"date": date.strftime('%Y-%m-%d'), "value": round(float(val), 2)})
+    for date, val in sampled.items():
+        history_data.append({
+            "date":  date.strftime('%Y-%m-%d'),
+            "value": round(float(val), 2),
+        })
 
     return {
-        "metrics": port_m,
+        "metrics":           port_m,
         "benchmark_metrics": bench_m,
-        "period": f"{actual_start.strftime('%Y.%m')} ~ {actual_end.strftime('%Y.%m')}",
-        "radar": radar,
-        "history": history_data
+        "period":            f"{actual_start.strftime('%Y.%m')} ~ {actual_end.strftime('%Y.%m')}",
+        "radar":             radar,
+        "history":           history_data,
     }
+
 
 if __name__ == "__main__":
     try:
-        input_json = sys.argv[1] if len(sys.argv) > 1 else '{"SPY": 0.6, "TLT": 0.4}'
-        print(json.dumps(run_backtest(json.loads(input_json))))
+        raw = sys.argv[1] if len(sys.argv) > 1 else '{"SPY": 0.6, "TLT": 0.4}'
+        print(json.dumps(run_backtest(json.loads(raw))))
     except Exception as e:
         print(json.dumps({"error": str(e)}))

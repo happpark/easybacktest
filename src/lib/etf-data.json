@@ -1,43 +1,118 @@
 [
   {
-    "ticker": "SPY",
-    "name": "State Street SPDR S&P 500 ETF Trust",
-    "launch_year": "1993"
+    "ticker": "A",
+    "name": "A",
+    "launch_year": "Unknown"
   },
   {
-    "ticker": "QQQ",
-    "name": "Invesco QQQ Trust",
-    "launch_year": "1999"
+    "ticker": "AAAU",
+    "name": "Goldman Sachs Physical Gold ETF",
+    "launch_year": "2018"
   },
   {
-    "ticker": "DIA",
-    "name": "State Street SPDR Dow Jones Industrial Average ETF Trust",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "IWM",
-    "name": "iShares Russell 2000 ETF",
-    "launch_year": "2000"
-  },
-  {
-    "ticker": "VOO",
-    "name": "Vanguard S&P 500 ETF",
+    "ticker": "AADR",
+    "name": "AdvisorShares Dorsey Wright ADR ETF",
     "launch_year": "2010"
   },
   {
-    "ticker": "VTI",
-    "name": "Vanguard Total Stock Market Index Fund ETF Shares",
+    "ticker": "AAL",
+    "name": "American Airlines Group Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "AAPL",
+    "name": "Apple Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ABBV",
+    "name": "AbbVie Inc.",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "ABNB",
+    "name": "Airbnb, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "ABT",
+    "name": "Abbott Laboratories",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ACES",
+    "name": "ALPS Clean Energy ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "ACGL",
+    "name": "Arch Capital Group Ltd.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "ACN",
+    "name": "Accenture plc",
     "launch_year": "2001"
   },
   {
-    "ticker": "VEA",
-    "name": "Vanguard FTSE Developed Markets Index Fund ETF Shares",
-    "launch_year": "2007"
+    "ticker": "ACWI",
+    "name": "iShares MSCI ACWI ETF",
+    "launch_year": "2008"
   },
   {
-    "ticker": "VWO",
-    "name": "Vanguard Emerging Markets Stock Index Fund",
-    "launch_year": "2006"
+    "ticker": "ACWX",
+    "name": "iShares MSCI ACWI ex U.S. ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "ADBE",
+    "name": "Adobe Inc.",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "ADI",
+    "name": "Analog Devices, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ADM",
+    "name": "Archer-Daniels-Midland Company",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ADP",
+    "name": "Automatic Data Processing, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ADSK",
+    "name": "Autodesk, Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "AEE",
+    "name": "Ameren Corporation",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "AEP",
+    "name": "American Electric Power Company, Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "AES",
+    "name": "The AES Corporation",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "AFL",
+    "name": "Aflac Incorporated",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "AFRM",
+    "name": "Affirm Holdings, Inc.",
+    "launch_year": "2021"
   },
   {
     "ticker": "AGG",
@@ -45,119 +120,444 @@
     "launch_year": "2003"
   },
   {
+    "ticker": "AIG",
+    "name": "American International Group, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "AIQ",
+    "name": "Global X Artificial Intelligence & Technology ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "AIZ",
+    "name": "Assurant, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "AJG",
+    "name": "Arthur J. Gallagher & Co.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "AKAM",
+    "name": "Akamai Technologies, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "ALB",
+    "name": "Albemarle Corporation",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "ALGN",
+    "name": "Align Technology, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "ALL",
+    "name": "The Allstate Corporation",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "ALLE",
+    "name": "Allegion plc",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "AMAT",
+    "name": "Applied Materials, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "AMC",
+    "name": "AMC Entertainment Holdings, Inc.",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "AMCR",
+    "name": "Amcor plc",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "AMD",
+    "name": "Advanced Micro Devices, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "AME",
+    "name": "AMETEK, Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "AMGN",
+    "name": "Amgen Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "AMLP",
+    "name": "Alerian MLP ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "AMP",
+    "name": "Ameriprise Financial, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "AMT",
+    "name": "American Tower Corporation",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "AMZN",
+    "name": "Amazon.com, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "ANET",
+    "name": "Arista Networks, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ANGL",
+    "name": "VanEck Fallen Angel High Yield Bond ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "AON",
+    "name": "Aon plc",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "AOS",
+    "name": "A. O. Smith Corporation",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "APA",
+    "name": "APA Corporation",
+    "launch_year": "1979"
+  },
+  {
+    "ticker": "APD",
+    "name": "Air Products and Chemicals, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "APH",
+    "name": "Amphenol Corporation",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "APO",
+    "name": "Apollo Global Management, Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "APP",
+    "name": "AppLovin Corporation",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "APTV",
+    "name": "Aptiv PLC",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "ARE",
+    "name": "Alexandria Real Estate Equities, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "ARES",
+    "name": "Ares Management Corporation",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ARKF",
+    "name": "ARK Blockchain & Fintech Innovation ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "ARKG",
+    "name": "ARK Genomic Revolution ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ARKK",
+    "name": "ARK Innovation ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ARKW",
+    "name": "ARK Next Generation Internet ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ASHR",
+    "name": "Xtrackers Harvest CSI 300 China A-Shares ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "ATO",
+    "name": "Atmos Energy Corporation",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "AVB",
+    "name": "AvalonBay Communities, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "AVGO",
+    "name": "Broadcom Inc.",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "AVY",
+    "name": "Avery Dennison Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "AWAY",
+    "name": "Amplify Travel Tech ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "AWK",
+    "name": "American Water Works Company, Inc.",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "AXON",
+    "name": "Axon Enterprise, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "AXP",
+    "name": "American Express Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "AZO",
+    "name": "AutoZone, Inc.",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "BA",
+    "name": "The Boeing Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "BABA",
+    "name": "Alibaba Group Holding Limited",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "BAC",
+    "name": "Bank of America Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "BALL",
+    "name": "Ball Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "BAR",
+    "name": "GraniteShares Gold Trust",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "BATT",
+    "name": "Amplify Lithium & Battery Technology ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "BAX",
+    "name": "Baxter International Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "BB",
+    "name": "BlackBerry Limited",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "BBBY",
+    "name": "Bed Bath & Beyond, Inc.",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "BBRE",
+    "name": "JPMorgan BetaBuilders MSCI U.S. REIT ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "BBY",
+    "name": "Best Buy Co., Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "BDX",
+    "name": "Becton, Dickinson and Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "BEN",
+    "name": "Franklin Resources, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "BF-B",
+    "name": "Brown-Forman Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "BFIT",
+    "name": "Global X Health & Wellness ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "BG",
+    "name": "Bunge Global SA",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "BIBL",
+    "name": "Inspire 100 ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "BIIB",
+    "name": "Biogen Inc.",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "BITQ",
+    "name": "Bitwise Crypto Industry Innovators ETF",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "BK",
+    "name": "The Bank of New York Mellon Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "BKF",
+    "name": "iShares MSCI BIC ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "BKLN",
+    "name": "Invesco Senior Loan ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "BKNG",
+    "name": "Booking Holdings Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "BKR",
+    "name": "Baker Hughes Company",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "BLDR",
+    "name": "Builders FirstSource, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "BLES",
+    "name": "Inspire Global Hope ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "BLK",
+    "name": "BlackRock, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "BLOK",
+    "name": "Amplify Blockchain Technology ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "BMY",
+    "name": "Bristol-Myers Squibb Company",
+    "launch_year": "1972"
+  },
+  {
     "ticker": "BND",
     "name": "Vanguard Total Bond Market Index Fund",
     "launch_year": "2007"
   },
   {
-    "ticker": "LQD",
-    "name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
-    "launch_year": "2002"
-  },
-  {
-    "ticker": "HYG",
-    "name": "iShares iBoxx $ High Yield Corporate Bond ETF",
-    "launch_year": "2007"
-  },
-  {
-    "ticker": "GLD",
-    "name": "SPDR Gold Shares",
-    "launch_year": "2004"
-  },
-  {
-    "ticker": "IAU",
-    "name": "iShares Gold Trust",
-    "launch_year": "2005"
-  },
-  {
-    "ticker": "SLV",
-    "name": "iShares Silver Trust",
-    "launch_year": "2006"
-  },
-  {
-    "ticker": "VNQ",
-    "name": "Vanguard Real Estate Index Fund ETF Shares",
-    "launch_year": "2004"
-  },
-  {
-    "ticker": "IYR",
-    "name": "iShares U.S. Real Estate ETF",
-    "launch_year": "2000"
-  },
-  {
-    "ticker": "XLF",
-    "name": "State Street Financial Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLK",
-    "name": "State Street Technology Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLV",
-    "name": "State Street Health Care Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLE",
-    "name": "State Street Energy Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLI",
-    "name": "State Street Industrial Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLY",
-    "name": "State Street Consumer Discretionary Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLP",
-    "name": "State Street Consumer Staples Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLB",
-    "name": "State Street Materials Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLU",
-    "name": "State Street Utilities Select Sector SPDR ETF",
-    "launch_year": "1998"
-  },
-  {
-    "ticker": "XLC",
-    "name": "State Street Communication Services Select Sector SPDR ETF",
+    "ticker": "BNDW",
+    "name": "Vanguard Total World Bond ETF",
     "launch_year": "2018"
   },
   {
-    "ticker": "IEF",
-    "name": "iShares 7-10 Year Treasury Bond ETF",
-    "launch_year": "2002"
+    "ticker": "BNDX",
+    "name": "Vanguard Total International Bond Index Fund",
+    "launch_year": "2013"
   },
   {
-    "ticker": "TLT",
-    "name": "iShares 20+ Year Treasury Bond ETF",
-    "launch_year": "2002"
+    "ticker": "BNO",
+    "name": "United States Brent Oil Fund, LP",
+    "launch_year": "2010"
   },
   {
-    "ticker": "SHY",
-    "name": "iShares 1-3 Year Treasury Bond ETF",
-    "launch_year": "2002"
+    "ticker": "BNTX",
+    "name": "BioNTech SE",
+    "launch_year": "2019"
   },
   {
-    "ticker": "MUB",
-    "name": "iShares National Muni Bond ETF",
+    "ticker": "BOIL",
+    "name": "ProShares Ultra Bloomberg Natural Gas",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "BOTZ",
+    "name": "Global X Robotics & Artificial Intelligence ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "BR",
+    "name": "Broadridge Financial Solutions, Inc.",
     "launch_year": "2007"
   },
   {
-    "ticker": "EMB",
-    "name": "iShares J.P. Morgan USD Emerging Markets Bond ETF",
-    "launch_year": "2007"
+    "ticker": "BRK-A",
+    "name": "Berkshire Hathaway Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "BRK-B",
+    "name": "Berkshire Hathaway Inc.",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "BRO",
+    "name": "Brown & Brown, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "BSX",
+    "name": "Boston Scientific Corporation",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "BUG",
+    "name": "Global X Cybersecurity ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "BUZZ",
+    "name": "VanEck Social Sentiment ETF",
+    "launch_year": "2021"
   },
   {
     "ticker": "BWX",
@@ -165,9 +565,659 @@
     "launch_year": "2007"
   },
   {
-    "ticker": "EFA",
-    "name": "iShares MSCI EAFE ETF",
+    "ticker": "BX",
+    "name": "Blackstone Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "BXP",
+    "name": "BXP, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "BYND",
+    "name": "Beyond Meat, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "C",
+    "name": "Citigroup Inc.",
+    "launch_year": "1977"
+  },
+  {
+    "ticker": "CAG",
+    "name": "Conagra Brands, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "CAH",
+    "name": "Cardinal Health, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "CANE",
+    "name": "Teucrium Sugar Fund",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "CARR",
+    "name": "Carrier Global Corporation",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "CASH",
+    "name": "현금 (수익 0%, 변동성 0%)",
+    "launch_year": "1900"
+  },
+  {
+    "ticker": "CAT",
+    "name": "Caterpillar Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "CATH",
+    "name": "Global X S&P 500 Catholic Values ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "CB",
+    "name": "Chubb Limited",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "CBOE",
+    "name": "Cboe Global Markets, Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "CBRE",
+    "name": "CBRE Group, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "CCI",
+    "name": "Crown Castle Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "CCL",
+    "name": "Carnival Corporation & plc",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "CDNS",
+    "name": "Cadence Design Systems, Inc.",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "CDW",
+    "name": "CDW Corporation",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "CEG",
+    "name": "Constellation Energy Corporation",
+    "launch_year": "2022"
+  },
+  {
+    "ticker": "CF",
+    "name": "CF Industries Holdings, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "CFG",
+    "name": "Citizens Financial Group, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "CHD",
+    "name": "Church & Dwight Co., Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "CHRW",
+    "name": "C.H. Robinson Worldwide, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "CHTR",
+    "name": "Charter Communications, Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "CI",
+    "name": "The Cigna Group",
+    "launch_year": "1982"
+  },
+  {
+    "ticker": "CIBR",
+    "name": "First Trust NASDAQ Cybersecurity ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "CIEN",
+    "name": "Ciena Corporation",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "CINF",
+    "name": "Cincinnati Financial Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "CL",
+    "name": "Colgate-Palmolive Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CLOU",
+    "name": "Global X Cloud Computing ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "CLX",
+    "name": "The Clorox Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CMCSA",
+    "name": "Comcast Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "CME",
+    "name": "CME Group Inc.",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "CMG",
+    "name": "Chipotle Mexican Grill, Inc.",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "CMI",
+    "name": "Cummins Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CMS",
+    "name": "CMS Energy Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CNC",
+    "name": "Centene Corporation",
     "launch_year": "2001"
+  },
+  {
+    "ticker": "CNP",
+    "name": "CenterPoint Energy, Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "CNRG",
+    "name": "State Street SPDR S&P Kensho Clean Power ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "CNYA",
+    "name": "iShares MSCI China A ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "COF",
+    "name": "Capital One Financial Corporation",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "COIN",
+    "name": "Coinbase Global, Inc.",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "COM",
+    "name": "Direxion Auspice Broad Commodity Strategy ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "COO",
+    "name": "The Cooper Companies, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "COP",
+    "name": "ConocoPhillips",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "COPX",
+    "name": "Global X Copper Miners ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "COR",
+    "name": "Cencora, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "CORN",
+    "name": "Teucrium Corn Fund",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "COST",
+    "name": "Costco Wholesale Corporation",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "CPAY",
+    "name": "Corpay, Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "CPB",
+    "name": "The Campbell's Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CPER",
+    "name": "United States Copper Index Fund, LP",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "CPRT",
+    "name": "Copart, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "CPT",
+    "name": "Camden Property Trust",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "CRH",
+    "name": "CRH plc",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "CRL",
+    "name": "Charles River Laboratories International, Inc.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "CRM",
+    "name": "Salesforce, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "CRWD",
+    "name": "CrowdStrike Holdings, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "CSCO",
+    "name": "Cisco Systems, Inc.",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "CSGP",
+    "name": "CoStar Group, Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "CSX",
+    "name": "CSX Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "CTAS",
+    "name": "Cintas Corporation",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "CTRA",
+    "name": "Coterra Energy Inc.",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "CTSH",
+    "name": "Cognizant Technology Solutions Corporation",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "CTVA",
+    "name": "Corteva, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "CURE",
+    "name": "Direxion Daily Healthcare Bull 3X Shares",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "CVNA",
+    "name": "Carvana Co.",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "CVS",
+    "name": "CVS Health Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "CVX",
+    "name": "Chevron Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "CZR",
+    "name": "Caesars Entertainment, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "D",
+    "name": "Dominion Energy, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "DAL",
+    "name": "Delta Air Lines, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "DASH",
+    "name": "DoorDash, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "DBC",
+    "name": "Invesco DB Commodity Index Tracking Fund",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DBO",
+    "name": "Invesco DB Oil Fund",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "DD",
+    "name": "DuPont de Nemours, Inc.",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "DDM",
+    "name": "ProShares Ultra Dow30",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DDOG",
+    "name": "Datadog, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "DE",
+    "name": "Deere & Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "DECK",
+    "name": "Deckers Outdoor Corporation",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "DELL",
+    "name": "Dell Technologies Inc.",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "DFEN",
+    "name": "Direxion Daily Aerospace & Defense Bull 3X Shares",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "DFS",
+    "name": "DFS",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "DG",
+    "name": "Dollar General Corporation",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "DGRO",
+    "name": "iShares Core Dividend Growth ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "DGRW",
+    "name": "WisdomTree U.S. Quality Dividend Growth Fund",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "DGX",
+    "name": "Quest Diagnostics Incorporated",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "DHI",
+    "name": "D.R. Horton, Inc.",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "DHR",
+    "name": "Danaher Corporation",
+    "launch_year": "1978"
+  },
+  {
+    "ticker": "DIA",
+    "name": "State Street SPDR Dow Jones Industrial Average ETF Trust",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "DIS",
+    "name": "The Walt Disney Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "DIVO",
+    "name": "Amplify CWP Enhanced Dividend Income ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "DJP",
+    "name": "iPath Bloomberg Commodity Index Total Return(SM) ETN",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DKNG",
+    "name": "DraftKings Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "DLN",
+    "name": "WisdomTree U.S. LargeCap Dividend Fund",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DLR",
+    "name": "Digital Realty Trust, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "DLTR",
+    "name": "Dollar Tree, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "DMXF",
+    "name": "iShares ESG Advanced MSCI EAFE Index ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "DOC",
+    "name": "Healthpeak Properties, Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "DOCU",
+    "name": "DocuSign, Inc.",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "DOV",
+    "name": "Dover Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "DOW",
+    "name": "Dow Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "DPST",
+    "name": "Direxion Daily Regional Banks Bull 3X Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "DPZ",
+    "name": "Domino's Pizza, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "DRI",
+    "name": "Darden Restaurants, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "DRIV",
+    "name": "Global X Autonomous & Electric Vehicles ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "DRN",
+    "name": "Direxion Daily Real Estate Bull 3X Shares",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "DRV",
+    "name": "Direxion Daily Real Estate Bear 3X Shares",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "DSI",
+    "name": "iShares ESG MSCI KLD 400 ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DTCR",
+    "name": "Global X Data Center & Digital Infrastructure ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "DTD",
+    "name": "WisdomTree U.S. Total Dividend Fund",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DTE",
+    "name": "DTE Energy Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "DUK",
+    "name": "Duke Energy Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "DUST",
+    "name": "Direxion Daily Gold Miners Index Bear 2X Shares",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "DVA",
+    "name": "DaVita Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "DVAL",
+    "name": "BrandywineGLOBAL Dynamic U.S. Large Cap Value ETF",
+    "launch_year": "2022"
+  },
+  {
+    "ticker": "DVN",
+    "name": "Devon Energy Corporation",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "DVY",
+    "name": "iShares Select Dividend ETF",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "DXCM",
+    "name": "DexCom, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "DXD",
+    "name": "ProShares UltraShort Dow30",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DXJ",
+    "name": "WisdomTree Japan Hedged Equity Fund",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "DXJH",
+    "name": "WisdomTree Japan Hedged Health Care ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "EA",
+    "name": "Electronic Arts Inc.",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "EAOA",
+    "name": "iShares ESG Aware 80/20 Aggressive Allocation ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "EBAY",
+    "name": "eBay Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "EBND",
+    "name": "SPDR Bloomberg Emerging Markets Local Bond ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "ECL",
+    "name": "Ecolab Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "ED",
+    "name": "Consolidated Edison, Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "EDEN",
+    "name": "iShares MSCI Denmark ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "EDUT",
+    "name": "Global X Education ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "EDV",
+    "name": "Vanguard Extended Duration Treasury Index Fund ETF Shares",
+    "launch_year": "2008"
   },
   {
     "ticker": "EEM",
@@ -175,9 +1225,884 @@
     "launch_year": "2003"
   },
   {
-    "ticker": "IVV",
-    "name": "iShares Core S&P 500 ETF",
+    "ticker": "EFA",
+    "name": "iShares MSCI EAFE ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "EFX",
+    "name": "Equifax Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "EG",
+    "name": "Everest Group, Ltd.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "EIX",
+    "name": "Edison International",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "EL",
+    "name": "The Estée Lauder Companies Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "ELV",
+    "name": "Elevance Health, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "EMB",
+    "name": "iShares J.P. Morgan USD Emerging Markets Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "EME",
+    "name": "EMCOR Group, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "EMLC",
+    "name": "VanEck J.P. Morgan EM Local Currency Bond ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "EMR",
+    "name": "Emerson Electric Co.",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "ENB",
+    "name": "Enbridge Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "ENOR",
+    "name": "iShares MSCI Norway ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "EOG",
+    "name": "EOG Resources, Inc.",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "EPAM",
+    "name": "EPAM Systems, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "EPD",
+    "name": "Enterprise Products Partners L.P.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "EPHE",
+    "name": "iShares MSCI Philippines ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "EPI",
+    "name": "WisdomTree India Earnings Fund",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "EQIX",
+    "name": "Equinix, Inc.",
     "launch_year": "2000"
+  },
+  {
+    "ticker": "EQR",
+    "name": "Equity Residential",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "EQT",
+    "name": "EQT Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ERIE",
+    "name": "Erie Indemnity Company",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "ERUS",
+    "name": "iShares MSCI Russia ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "ERX",
+    "name": "Direxion Daily Energy Bull 2X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "ERY",
+    "name": "Direxion Daily Energy Bear 2X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "ES",
+    "name": "Eversource Energy",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "ESGU",
+    "name": "iShares ESG Aware MSCI USA ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "ESPO",
+    "name": "VanEck Video Gaming and eSports ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "ESS",
+    "name": "Essex Property Trust, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "ET",
+    "name": "Energy Transfer LP",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "ETN",
+    "name": "Eaton Corporation plc",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "ETR",
+    "name": "Entergy Corporation",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "EVRG",
+    "name": "Evergy, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "EW",
+    "name": "Edwards Lifesciences Corporation",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "EWA",
+    "name": "iShares MSCI Australia ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWC",
+    "name": "iShares MSCI Canada ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWD",
+    "name": "iShares MSCI Sweden ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWG",
+    "name": "iShares MSCI Germany ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWH",
+    "name": "iShares MSCI Hong Kong ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWI",
+    "name": "iShares MSCI Italy ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWJ",
+    "name": "iShares MSCI Japan ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWL",
+    "name": "iShares MSCI Switzerland ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWN",
+    "name": "iShares MSCI Netherlands ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWP",
+    "name": "iShares MSCI Spain ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWQ",
+    "name": "iShares MSCI France ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWS",
+    "name": "iShares MSCI Singapore ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWT",
+    "name": "iShares MSCI Taiwan ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "EWU",
+    "name": "iShares MSCI United Kingdom ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWW",
+    "name": "iShares MSCI Mexico ETF",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "EWY",
+    "name": "iShares MSCI South Korea ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "EWZ",
+    "name": "iShares MSCI Brazil ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "EXC",
+    "name": "Exelon Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "EXE",
+    "name": "Expand Energy Corporation",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "EXPD",
+    "name": "Expeditors International of Washington, Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "EXPE",
+    "name": "Expedia Group, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "EXR",
+    "name": "Extra Space Storage Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "EZU",
+    "name": "iShares MSCI Eurozone ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "F",
+    "name": "Ford Motor Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "FALN",
+    "name": "iShares Fallen Angels USD Bond ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "FAN",
+    "name": "First Trust Global Wind Energy ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "FANG",
+    "name": "Diamondback Energy, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "FAS",
+    "name": "Direxion Daily Financial Bull 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "FAST",
+    "name": "Fastenal Company",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "FAZ",
+    "name": "Direxion Daily Financial Bear 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "FBND",
+    "name": "Fidelity Total Bond ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "FCX",
+    "name": "Freeport-McMoRan Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "FDS",
+    "name": "FactSet Research Systems Inc.",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "FDVV",
+    "name": "Fidelity High Dividend ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "FDX",
+    "name": "FedEx Corporation",
+    "launch_year": "1978"
+  },
+  {
+    "ticker": "FE",
+    "name": "FirstEnergy Corp.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "FFIV",
+    "name": "F5, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "FICO",
+    "name": "Fair Isaac Corporation",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "FINX",
+    "name": "Global X FinTech ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "FIS",
+    "name": "Fidelity National Information Services, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "FISV",
+    "name": "Fiserv, Inc.",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "FITB",
+    "name": "Fifth Third Bancorp",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "FIX",
+    "name": "Comfort Systems USA, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "FLCH",
+    "name": "Franklin FTSE China ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "FLOT",
+    "name": "iShares Floating Rate Bond ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "FLRN",
+    "name": "State Street SPDR Bloomberg Investment Grade Floating Rate ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "FLTB",
+    "name": "Fidelity Limited Term Bond ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "FNGD",
+    "name": "MicroSectors FANG+ Index -3X Inverse Leveraged ETN",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "FNGU",
+    "name": "MicroSectors FANG+ 3X Leveraged",
+    "launch_year": "2025"
+  },
+  {
+    "ticker": "FOX",
+    "name": "Fox Corporation",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "FOXA",
+    "name": "Fox Corporation",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "FRT",
+    "name": "Federal Realty Investment Trust",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "FSLR",
+    "name": "First Solar, Inc.",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "FSLY",
+    "name": "Fastly, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "FTNT",
+    "name": "Fortinet, Inc.",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "FTV",
+    "name": "Fortive Corporation",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "FVD",
+    "name": "First Trust Value Line Dividend Index Fund",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "FXA",
+    "name": "Invesco CurrencyShares Australian Dollar Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "FXB",
+    "name": "Invesco CurrencyShares British Pound Sterling Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "FXC",
+    "name": "Invesco CurrencyShares Canadian Dollar Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "FXE",
+    "name": "Invesco CurrencyShares Euro Currency Trust",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "FXF",
+    "name": "Invesco CurrencyShares Swiss Franc Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "FXI",
+    "name": "iShares China Large-Cap ETF",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "FXY",
+    "name": "Invesco CurrencyShares Japanese Yen Trust",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "GD",
+    "name": "General Dynamics Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "GDDY",
+    "name": "GoDaddy Inc.",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "GDX",
+    "name": "VanEck Gold Miners ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "GDXJ",
+    "name": "VanEck Junior Gold Miners ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "GE",
+    "name": "GE Aerospace",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "GEHC",
+    "name": "GE HealthCare Technologies Inc.",
+    "launch_year": "2022"
+  },
+  {
+    "ticker": "GEN",
+    "name": "Gen Digital Inc.",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "GEV",
+    "name": "GE Vernova Inc.",
+    "launch_year": "2024"
+  },
+  {
+    "ticker": "GILD",
+    "name": "Gilead Sciences, Inc.",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "GIS",
+    "name": "General Mills, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "GL",
+    "name": "Globe Life Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "GLD",
+    "name": "SPDR Gold Shares",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "GLW",
+    "name": "Corning Incorporated",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "GM",
+    "name": "General Motors Company",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "GME",
+    "name": "GameStop Corp.",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "GNOM",
+    "name": "Global X Genomics & Biotechnology ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "GNRC",
+    "name": "Generac Holdings Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "GOOG",
+    "name": "Alphabet Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "GOOGL",
+    "name": "Alphabet Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "GOVT",
+    "name": "iShares U.S. Treasury Bond ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "GPC",
+    "name": "Genuine Parts Company",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "GPN",
+    "name": "Global Payments Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "GRMN",
+    "name": "Garmin Ltd.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "GS",
+    "name": "The Goldman Sachs Group, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "GSG",
+    "name": "iShares S&P GSCI Commodity-Indexed Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "GWW",
+    "name": "W.W. Grainger, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "GXC",
+    "name": "State Street SPDR S&P China ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "HACK",
+    "name": "Amplify Cybersecurity ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "HAL",
+    "name": "Halliburton Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "HAS",
+    "name": "Hasbro, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "HBAN",
+    "name": "Huntington Bancshares Incorporated",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "HCA",
+    "name": "HCA Healthcare, Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "HD",
+    "name": "The Home Depot, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "HDV",
+    "name": "iShares Core High Dividend ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "HEDJ",
+    "name": "WisdomTree Europe Hedged Equity Fund",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "HERO",
+    "name": "Global X Video Games & Esports ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "HEWG",
+    "name": "iShares Currency Hedged MSCI Germany ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "HEWJ",
+    "name": "iShares Currency Hedged MSCI Japan ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "HIBL",
+    "name": "Direxion Daily S&P 500 High Beta Bull 3X Shares",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "HIBS",
+    "name": "Direxion Daily S&P 500 High Beta Bear 3X Shares",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "HIG",
+    "name": "The Hartford Insurance Group, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "HII",
+    "name": "Huntington Ingalls Industries, Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "HLT",
+    "name": "Hilton Worldwide Holdings Inc.",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "HOLX",
+    "name": "Hologic, Inc.",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "HON",
+    "name": "Honeywell International Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "HOOD",
+    "name": "Robinhood Markets, Inc.",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "HPE",
+    "name": "Hewlett Packard Enterprise Company",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "HPQ",
+    "name": "HP Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "HRL",
+    "name": "Hormel Foods Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "HSIC",
+    "name": "Henry Schein, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "HST",
+    "name": "Host Hotels & Resorts, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "HSY",
+    "name": "The Hershey Company",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "HTEC",
+    "name": "Robo Global Healthcare Technology and Innovation ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "HUBB",
+    "name": "Hubbell Incorporated",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "HUM",
+    "name": "Humana Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "HWM",
+    "name": "Howmet Aerospace Inc.",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "HYD",
+    "name": "VanEck High Yield Muni ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "HYEM",
+    "name": "VanEck Emerging Markets High Yield Bond ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "HYG",
+    "name": "iShares iBoxx $ High Yield Corporate Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "HYXU",
+    "name": "iShares Euro High Yield Corporate Bond USD Hedged ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "IAGG",
+    "name": "iShares Core International Aggregate Bond ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "IAU",
+    "name": "iShares Gold Trust",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "IBB",
+    "name": "iShares Biotechnology ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "IBKR",
+    "name": "Interactive Brokers Group, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "IBM",
+    "name": "International Business Machines Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "ICE",
+    "name": "Intercontinental Exchange, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "ICF",
+    "name": "iShares Select U.S. REIT ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "ICLN",
+    "name": "iShares Global Clean Energy ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "IDNA",
+    "name": "iShares Genomics Immunology and Healthcare ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "IDX",
+    "name": "VanEck Indonesia Index ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "IDXX",
+    "name": "IDEXX Laboratories, Inc.",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "IEF",
+    "name": "iShares 7-10 Year Treasury Bond ETF",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "IEFA",
+    "name": "iShares Core MSCI EAFE ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "IEMG",
+    "name": "iShares Core MSCI Emerging Markets ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "IEX",
+    "name": "IDEX Corporation",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "IEZ",
+    "name": "iShares U.S. Oil Equipment & Services ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "IFF",
+    "name": "International Flavors & Fragrances Inc.",
+    "launch_year": "1974"
+  },
+  {
+    "ticker": "IGOV",
+    "name": "iShares International Treasury Bond ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "IGV",
+    "name": "iShares Expanded Tech-Software Sector ETF",
+    "launch_year": "2001"
   },
   {
     "ticker": "IJH",
@@ -190,44 +2115,189 @@
     "launch_year": "2000"
   },
   {
-    "ticker": "VUG",
-    "name": "Vanguard Growth Index Fund ETF Shares",
-    "launch_year": "2004"
+    "ticker": "ILMN",
+    "name": "Illumina, Inc.",
+    "launch_year": "2000"
   },
   {
-    "ticker": "VTV",
-    "name": "Vanguard Value Index Fund ETF Shares",
-    "launch_year": "2004"
+    "ticker": "INCY",
+    "name": "Incyte Corporation",
+    "launch_year": "1993"
   },
   {
-    "ticker": "VIG",
-    "name": "Vanguard Dividend Appreciation Index Fund ETF Shares",
-    "launch_year": "2006"
+    "ticker": "INDA",
+    "name": "iShares MSCI India ETF",
+    "launch_year": "2012"
   },
   {
-    "ticker": "VYM",
-    "name": "Vanguard High Dividend Yield Index Fund ETF Shares",
-    "launch_year": "2019"
+    "ticker": "INDY",
+    "name": "iShares India 50 ETF",
+    "launch_year": "2009"
   },
   {
-    "ticker": "NOBL",
-    "name": "ProShares S&P 500 Dividend Aristocrats ETF",
+    "ticker": "INTC",
+    "name": "Intel Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "INTU",
+    "name": "Intuit Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "INVH",
+    "name": "Invitation Homes Inc.",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "IOO",
+    "name": "iShares Global 100 ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IP",
+    "name": "International Paper Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "IPAY",
+    "name": "Amplify Digital Payments ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "IQV",
+    "name": "IQVIA Holdings Inc.",
     "launch_year": "2013"
   },
   {
-    "ticker": "SDY",
-    "name": "State Street SPDR S&P Dividend ETF",
-    "launch_year": "2005"
+    "ticker": "IR",
+    "name": "Ingersoll Rand Inc.",
+    "launch_year": "2017"
   },
   {
-    "ticker": "DVY",
-    "name": "iShares Select Dividend ETF",
-    "launch_year": "2003"
+    "ticker": "IRM",
+    "name": "Iron Mountain Incorporated",
+    "launch_year": "1996"
   },
   {
-    "ticker": "SCHD",
-    "name": "Schwab U.S. Dividend Equity ETF",
-    "launch_year": "2011"
+    "ticker": "ISRG",
+    "name": "Intuitive Surgical, Inc.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IT",
+    "name": "Gartner, Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "ITB",
+    "name": "iShares U.S. Home Construction ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "ITOT",
+    "name": "iShares Core S&P Total U.S. Stock Market ETF",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "ITW",
+    "name": "Illinois Tool Works Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "IVV",
+    "name": "iShares Core S&P 500 ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IVZ",
+    "name": "Invesco Ltd.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "IWB",
+    "name": "iShares Russell 1000 ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWD",
+    "name": "iShares Russell 1000 Value ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWF",
+    "name": "iShares Russell 1000 Growth ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWM",
+    "name": "iShares Russell 2000 ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWN",
+    "name": "iShares Russell 2000 Value ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWO",
+    "name": "iShares Russell 2000 Growth ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IWP",
+    "name": "iShares Russell Mid-Cap Growth ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "IWR",
+    "name": "iShares Russell Mid-Cap ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "IWS",
+    "name": "iShares Russell Mid-Cap Value ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "IYR",
+    "name": "iShares U.S. Real Estate ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "IZRL",
+    "name": "ARK Israel Innovative Technology ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "J",
+    "name": "Jacobs Solutions Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "JBHT",
+    "name": "J.B. Hunt Transport Services, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "JBL",
+    "name": "Jabil Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "JCI",
+    "name": "Johnson Controls International plc",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "JD",
+    "name": "JD.com, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "JDST",
+    "name": "Direxion Daily Junior Gold Miners Index Bear 2X Shares",
+    "launch_year": "2013"
   },
   {
     "ticker": "JEPI",
@@ -235,19 +2305,1459 @@
     "launch_year": "2020"
   },
   {
+    "ticker": "JEPQ",
+    "name": "JPMorgan Nasdaq Equity Premium Income ETF",
+    "launch_year": "2022"
+  },
+  {
+    "ticker": "JJC",
+    "name": "iPath Series B Bloomberg Copper Subindex Total Return ETN",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "JKHY",
+    "name": "Jack Henry & Associates, Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "JNJ",
+    "name": "Johnson & Johnson",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "JNK",
+    "name": "State Street SPDR Bloomberg High Yield Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "JNUG",
+    "name": "Direxion Daily Junior Gold Miners Index Bull 2X Shares",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "JO",
+    "name": "iPath Series B Bloomberg Coffee Subindex Total Return ETN",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "JOET",
+    "name": "Virtus Terranova U.S. Quality Momentum ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "JPM",
+    "name": "JPMorgan Chase & Co.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "KARS",
+    "name": "KraneShares Electric Vehicles and Future Mobility Index ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "KBA",
+    "name": "KraneShares Bosera MSCI China A 50 Connect Index ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "KBE",
+    "name": "State Street SPDR S&P Bank ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "KBWY",
+    "name": "Invesco KBW Premium Yield Equity REIT ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "KDP",
+    "name": "Keurig Dr Pepper Inc.",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "KEY",
+    "name": "KeyCorp",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "KEYS",
+    "name": "Keysight Technologies, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "KHC",
+    "name": "The Kraft Heinz Company",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "KIE",
+    "name": "State Street SPDR S&P Insurance ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "KIM",
+    "name": "Kimco Realty Corporation",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "KKR",
+    "name": "KKR & Co. Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "KLAC",
+    "name": "KLA Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "KMB",
+    "name": "Kimberly-Clark Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "KMI",
+    "name": "Kinder Morgan, Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "KNG",
+    "name": "FT Cboe Vest S&P 500 Dividend Aristocrats Target Income ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "KO",
+    "name": "The Coca-Cola Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "KOLD",
+    "name": "ProShares UltraShort Bloomberg Natural Gas",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "KR",
+    "name": "The Kroger Co.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "KRE",
+    "name": "State Street SPDR S&P Regional Banking ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "KVUE",
+    "name": "Kenvue Inc.",
+    "launch_year": "2023"
+  },
+  {
+    "ticker": "KWEB",
+    "name": "KraneShares CSI China Internet ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "L",
+    "name": "Loews Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "L3H",
+    "name": "L3H",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "LABD",
+    "name": "Direxion Daily S&P Biotech Bear 3X Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "LABU",
+    "name": "Direxion Daily S&P Biotech Bull 3X Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "LCID",
+    "name": "Lucid Group, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "LDOS",
+    "name": "Leidos Holdings, Inc.",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "LEN",
+    "name": "Lennar Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "LH",
+    "name": "Labcorp Holdings Inc.",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "LHX",
+    "name": "L3Harris Technologies, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "LI",
+    "name": "Li Auto Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "LII",
+    "name": "Lennox International Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "LIN",
+    "name": "Linde plc",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "LIT",
+    "name": "Global X Lithium & Battery Tech ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "LLY",
+    "name": "Eli Lilly and Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "LMT",
+    "name": "Lockheed Martin Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "LNT",
+    "name": "Alliant Energy Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "LOW",
+    "name": "Lowe's Companies, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "LQD",
+    "name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "LRCX",
+    "name": "Lam Research Corporation",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "LTPZ",
+    "name": "PIMCO 15+ Year U.S. TIPS Index Exchange-Traded Fund",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "LULU",
+    "name": "lululemon athletica inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "LUV",
+    "name": "Southwest Airlines Co.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "LVS",
+    "name": "Las Vegas Sands Corp.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "LW",
+    "name": "Lamb Weston Holdings, Inc.",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "LYB",
+    "name": "LyondellBasell Industries N.V.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "LYV",
+    "name": "Live Nation Entertainment, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "MA",
+    "name": "Mastercard Incorporated",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "MAA",
+    "name": "Mid-America Apartment Communities, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "MAIN",
+    "name": "Main Street Capital Corporation",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "MAR",
+    "name": "Marriott International, Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "MAS",
+    "name": "Masco Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "MCD",
+    "name": "McDonald's Corporation",
+    "launch_year": "1966"
+  },
+  {
+    "ticker": "MCHI",
+    "name": "iShares MSCI China ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "MCHP",
+    "name": "Microchip Technology Incorporated",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "MCK",
+    "name": "McKesson Corporation",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "MCO",
+    "name": "Moody's Corporation",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "MDLZ",
+    "name": "Mondelez International, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "MDT",
+    "name": "Medtronic plc",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "MELI",
+    "name": "MercadoLibre, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "MET",
+    "name": "MetLife, Inc.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "META",
+    "name": "Meta Platforms, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "MGM",
+    "name": "MGM Resorts International",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "MJ",
+    "name": "Amplify Alternative Harvest ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "MKC",
+    "name": "McCormick & Company, Incorporated",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "MLM",
+    "name": "Martin Marietta Materials, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "MLPA",
+    "name": "Global X MLP ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "MLPX",
+    "name": "Global X MLP & Energy Infrastructure ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "MMM",
+    "name": "3M Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "MMP",
+    "name": "MMP",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "MNST",
+    "name": "Monster Beverage Corporation",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "MO",
+    "name": "Altria Group, Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "MOH",
+    "name": "Molina Healthcare, Inc.",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "MORT",
+    "name": "VanEck Mortgage REIT Income ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "MOS",
+    "name": "The Mosaic Company",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "MPC",
+    "name": "Marathon Petroleum Corporation",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "MPWR",
+    "name": "Monolithic Power Systems, Inc.",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "MRK",
+    "name": "Merck & Co., Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "MRNA",
+    "name": "Moderna, Inc.",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "MRSH",
+    "name": "Marsh & McLennan Companies, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "MRVL",
+    "name": "Marvell Technology, Inc.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "MS",
+    "name": "Morgan Stanley",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "MSCI",
+    "name": "MSCI Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "MSFT",
+    "name": "Microsoft Corporation",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "MSI",
+    "name": "Motorola Solutions, Inc.",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "MSOS",
+    "name": "AdvisorShares Pure US Cannabis ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "MTB",
+    "name": "M&T Bank Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "MTCH",
+    "name": "Match Group, Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "MTD",
+    "name": "Mettler-Toledo International Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "MTUM",
+    "name": "iShares MSCI USA Momentum Factor ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "MU",
+    "name": "Micron Technology, Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "MUB",
+    "name": "iShares National Muni Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "NAIL",
+    "name": "Direxion Daily Homebuilders & Supplies Bull 3X Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "NCLH",
+    "name": "Norwegian Cruise Line Holdings Ltd.",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "NDAQ",
+    "name": "Nasdaq, Inc.",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "NDSN",
+    "name": "Nordson Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "NEE",
+    "name": "NextEra Energy, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "NEM",
+    "name": "Newmont Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "NERD",
+    "name": "Roundhill Video Games ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "NET",
+    "name": "Cloudflare, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "NFLX",
+    "name": "Netflix, Inc.",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "NI",
+    "name": "NiSource Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "NIB",
+    "name": "iPath Bloomberg Cocoa Subindex Total Return(SM) ETN",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "NIO",
+    "name": "NIO Inc.",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "NKE",
+    "name": "NIKE, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "NNN",
+    "name": "NNN REIT, Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "NOBL",
+    "name": "ProShares S&P 500 Dividend Aristocrats ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "NOC",
+    "name": "Northrop Grumman Corporation",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "NOK",
+    "name": "Nokia Oyj",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "NOW",
+    "name": "ServiceNow, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "NRG",
+    "name": "NRG Energy, Inc.",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "NRGU",
+    "name": "Microsectors U.S. Big Oil 3x Leveraged ETNs",
+    "launch_year": "2025"
+  },
+  {
+    "ticker": "NSC",
+    "name": "Norfolk Southern Corporation",
+    "launch_year": "1982"
+  },
+  {
+    "ticker": "NTAP",
+    "name": "NetApp, Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "NTRS",
+    "name": "Northern Trust Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "NUE",
+    "name": "Nucor Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "NUGT",
+    "name": "Direxion Daily Gold Miners Index Bull 2X Shares",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "NUSI",
+    "name": "NEOS Nasdaq-100 Hedged Equity Income ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "NVDA",
+    "name": "NVIDIA Corporation",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "NVR",
+    "name": "NVR, Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "NWS",
+    "name": "News Corporation",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "NWSA",
+    "name": "News Corporation",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "NXPI",
+    "name": "NXP Semiconductors N.V.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "O",
+    "name": "Realty Income Corporation",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "OATLY",
+    "name": "OATLY",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "ODFL",
+    "name": "Old Dominion Freight Line, Inc.",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "OIH",
+    "name": "VanEck Oil Services ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "OKE",
+    "name": "ONEOK, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "OMC",
+    "name": "Omnicom Group Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ON",
+    "name": "ON Semiconductor Corporation",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "ONEQ",
+    "name": "Fidelity Nasdaq Composite Index ETF",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "OPEN",
+    "name": "Opendoor Technologies Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "ORCL",
+    "name": "Oracle Corporation",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "ORLY",
+    "name": "O'Reilly Automotive, Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "OTIS",
+    "name": "Otis Worldwide Corporation",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "OUSA",
+    "name": "ALPS O'Shares U.S. Quality Dividend ETF Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "OXY",
+    "name": "Occidental Petroleum Corporation",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "PANW",
+    "name": "Palo Alto Networks, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "PAYC",
+    "name": "Paycom Software, Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "PAYX",
+    "name": "Paychex, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "PCAR",
+    "name": "PACCAR Inc",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PCG",
+    "name": "PG&E Corporation",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "PCY",
+    "name": "Invesco Emerging Markets Sovereign Debt ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "PDBC",
+    "name": "Invesco Optimum Yield Diversified Commodity Strategy No K-1 ETF",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "PEG",
+    "name": "Public Service Enterprise Group Incorporated",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PENN",
+    "name": "PENN Entertainment, Inc.",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "PEP",
+    "name": "PepsiCo, Inc.",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "PEY",
+    "name": "Invesco High Yield Equity Dividend Achievers ETF",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "PFE",
+    "name": "Pfizer Inc.",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "PFG",
+    "name": "Principal Financial Group, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "PG",
+    "name": "The Procter & Gamble Company",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "PGR",
+    "name": "The Progressive Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PH",
+    "name": "Parker-Hannifin Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PHM",
+    "name": "PulteGroup, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PICK",
+    "name": "iShares MSCI Global Metals & Mining Producers ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "PILL",
+    "name": "Direxion Daily Pharmaceutical & Medical Bull 3X Shares ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "PIN",
+    "name": "Invesco India ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "PKG",
+    "name": "Packaging Corporation of America",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "PLD",
+    "name": "Prologis, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "PLTR",
+    "name": "Palantir Technologies Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "PM",
+    "name": "Philip Morris International Inc.",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "PNC",
+    "name": "The PNC Financial Services Group, Inc.",
+    "launch_year": "1975"
+  },
+  {
+    "ticker": "PNR",
+    "name": "Pentair plc",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "PNW",
+    "name": "Pinnacle West Capital Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "PODD",
+    "name": "Insulet Corporation",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "POOL",
+    "name": "Pool Corporation",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "PPG",
+    "name": "PPG Industries, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PPL",
+    "name": "PPL Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PRNT",
+    "name": "The 3D Printing ETF",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "PRU",
+    "name": "Prudential Financial, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "PSA",
+    "name": "Public Storage",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "PSKY",
+    "name": "Paramount Skydance Corporation",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "PSLV",
+    "name": "Sprott Physical Silver Trust",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "PST",
+    "name": "ProShares UltraShort 7-10 Year Treasury",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "PSX",
+    "name": "Phillips 66",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "PTC",
+    "name": "PTC Inc.",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "PTON",
+    "name": "Peloton Interactive, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "PUBM",
+    "name": "PubMatic, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "PWR",
+    "name": "Quanta Services, Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "PYPL",
+    "name": "PayPal Holdings, Inc.",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "PZA",
+    "name": "Invesco National AMT-Free Municipal Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "Q",
+    "name": "Qnity Electronics, Inc.",
+    "launch_year": "2025"
+  },
+  {
+    "ticker": "QCLN",
+    "name": "First Trust NASDAQ Clean Edge Green Energy Index Fund",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "QCOM",
+    "name": "QUALCOMM Incorporated",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "QID",
+    "name": "ProShares UltraShort QQQ",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "QLD",
+    "name": "ProShares Ultra QQQ",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "QQEW",
+    "name": "First Trust Nasdaq-100 Select Equal Weight ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "QQMG",
+    "name": "Invesco ESG NASDAQ 100 ETF",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "QQQ",
+    "name": "Invesco QQQ Trust",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "QQQM",
+    "name": "Invesco NASDAQ 100 ETF",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "QRVO",
+    "name": "Qorvo, Inc.",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "QSR",
+    "name": "Restaurant Brands International Inc.",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "QUAL",
+    "name": "iShares MSCI USA Quality Factor ETF",
+    "launch_year": "2013"
+  },
+  {
     "ticker": "QYLD",
     "name": "Global X NASDAQ 100 Covered Call ETF",
     "launch_year": "2013"
   },
   {
-    "ticker": "ARKK",
-    "name": "ARK Innovation ETF",
-    "launch_year": "2014"
+    "ticker": "RBLX",
+    "name": "Roblox Corporation",
+    "launch_year": "2021"
   },
   {
-    "ticker": "TQQQ",
-    "name": "ProShares UltraPro QQQ",
+    "ticker": "RCL",
+    "name": "Royal Caribbean Cruises Ltd.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "RDIV",
+    "name": "Invesco S&P Ultra Dividend Revenue ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "REG",
+    "name": "Regency Centers Corporation",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "REGN",
+    "name": "Regeneron Pharmaceuticals, Inc.",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "REM",
+    "name": "iShares Mortgage Real Estate Capped ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "REMX",
+    "name": "VanEck Rare Earth and Strategic Metals ETF",
     "launch_year": "2010"
+  },
+  {
+    "ticker": "RETL",
+    "name": "Direxion Daily Retail Bull 3X Shares",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "REZ",
+    "name": "iShares Residential and Multisector Real Estate ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "RF",
+    "name": "Regions Financial Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "RING",
+    "name": "iShares MSCI Global Gold Miners ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "RIVN",
+    "name": "Rivian Automotive, Inc.",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "RJF",
+    "name": "Raymond James Financial, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "RKT",
+    "name": "Rocket Companies, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "RL",
+    "name": "Ralph Lauren Corporation",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "RMD",
+    "name": "ResMed Inc.",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "ROBO",
+    "name": "Robo Global Robotics and Automation Index ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "ROK",
+    "name": "Rockwell Automation, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "ROKU",
+    "name": "Roku, Inc.",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "ROL",
+    "name": "Rollins, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "ROP",
+    "name": "Roper Technologies, Inc.",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "ROST",
+    "name": "Ross Stores, Inc.",
+    "launch_year": "1985"
+  },
+  {
+    "ticker": "RSG",
+    "name": "Republic Services, Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "RSP",
+    "name": "Invesco S&P 500 Equal Weight ETF",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "RSX",
+    "name": "VanEck Russia ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "RTX",
+    "name": "RTX Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "RVTY",
+    "name": "Revvity, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "RWR",
+    "name": "State Street SPDR Dow Jones REIT ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "RYLD",
+    "name": "Global X Russell 2000 Covered Call ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "SBAC",
+    "name": "SBA Communications Corporation",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "SBUX",
+    "name": "Starbucks Corporation",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "SCHA",
+    "name": "Schwab U.S. Small-Cap ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SCHB",
+    "name": "Schwab U.S. Broad Market ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SCHD",
+    "name": "Schwab U.S. Dividend Equity ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SCHH",
+    "name": "Schwab U.S. REIT ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SCHM",
+    "name": "Schwab U.S. Mid-Cap ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SCHO",
+    "name": "Schwab Short-Term U.S. Treasury ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SCHP",
+    "name": "Schwab U.S. TIPS ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SCHQ",
+    "name": "Schwab Long-Term U.S. Treasury ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "SCHR",
+    "name": "Schwab Intermediate-Term U.S. Treasury ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SCHW",
+    "name": "The Charles Schwab Corporation",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "SCHX",
+    "name": "Schwab U.S. Large-Cap ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SCO",
+    "name": "ProShares UltraShort Bloomberg Crude Oil",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "SDOW",
+    "name": "ProShares UltraPro Short Dow30",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SDS",
+    "name": "ProShares UltraShort S&P500",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "SDY",
+    "name": "State Street SPDR S&P Dividend ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "SE",
+    "name": "Sea Limited",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "SGOL",
+    "name": "abrdn Physical Gold Shares ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SHOP",
+    "name": "Shopify Inc.",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "SHW",
+    "name": "The Sherwin-Williams Company",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "SHY",
+    "name": "iShares 1-3 Year Treasury Bond ETF",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "SILJ",
+    "name": "Amplify Junior Silver Miners ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "SIVR",
+    "name": "abrdn Physical Silver Shares ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SIZE",
+    "name": "iShares MSCI USA Size Factor ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "SJM",
+    "name": "The J. M. Smucker Company",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "SJNK",
+    "name": "State Street SPDR Bloomberg Short Term High Yield Bond ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "SKYY",
+    "name": "First Trust Cloud Computing ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SLB",
+    "name": "SLB N.V.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "SLV",
+    "name": "iShares Silver Trust",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "SMCI",
+    "name": "Super Micro Computer, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "SMH",
+    "name": "VanEck Semiconductor ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "SMOG",
+    "name": "VanEck Low Carbon Energy ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "SNA",
+    "name": "Snap-on Incorporated",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "SNDK",
+    "name": "Sandisk Corporation",
+    "launch_year": "2025"
+  },
+  {
+    "ticker": "SNOW",
+    "name": "Snowflake Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "SNPS",
+    "name": "Synopsys, Inc.",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "SO",
+    "name": "The Southern Company",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "SOFI",
+    "name": "SoFi Technologies, Inc.",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "SOLV",
+    "name": "Solventum Corporation",
+    "launch_year": "2024"
+  },
+  {
+    "ticker": "SOXL",
+    "name": "Direxion Daily Semiconductor Bull 3X Shares",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SOXS",
+    "name": "Direxion Daily Semiconductor Bear 3X Shares",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SOXX",
+    "name": "iShares Semiconductor ETF",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "SOYB",
+    "name": "Teucrium Soybean Fund",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SPCE",
+    "name": "Virgin Galactic Holdings, Inc.",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "SPG",
+    "name": "Simon Property Group, Inc.",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "SPGI",
+    "name": "S&P Global Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "SPHD",
+    "name": "Invesco S&P 500 High Dividend Low Volatility ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "SPRX",
+    "name": "Spear Alpha ETF",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "SPSB",
+    "name": "State Street SPDR Portfolio Short Term Corporate Bond ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SPTI",
+    "name": "State Street SPDR Portfolio Intermediate Term Treasury ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "SPTL",
+    "name": "State Street SPDR Portfolio Long Term Treasury ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "SPTS",
+    "name": "State Street SPDR Portfolio Short Term Treasury ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SPXL",
+    "name": "Direxion Daily S&P500 Bull 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "SPXS",
+    "name": "Direxion Daily S&P 500 Bear 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "SPXU",
+    "name": "ProShares UltraPro Short S&P500",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SPY",
+    "name": "State Street SPDR S&P 500 ETF Trust",
+    "launch_year": "1993"
+  },
+  {
+    "ticker": "SPYD",
+    "name": "State Street SPDR Portfolio S&P 500 High Dividend ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "SQ",
+    "name": "SQ",
+    "launch_year": "Unknown"
   },
   {
     "ticker": "SQQQ",
@@ -255,29 +3765,499 @@
     "launch_year": "2010"
   },
   {
-    "ticker": "VT",
-    "name": "Vanguard Total World Stock Index Fund ETF Shares",
-    "launch_year": "2008"
+    "ticker": "SRE",
+    "name": "Sempra",
+    "launch_year": "1998"
   },
   {
-    "ticker": "VXUS",
-    "name": "Vanguard Total International Stock Index Fund ETF Shares",
-    "launch_year": "1996"
-  },
-  {
-    "ticker": "BNDX",
-    "name": "Vanguard Total International Bond Index Fund",
+    "ticker": "SRLN",
+    "name": "State Street Blackstone Senior Loan ETF",
     "launch_year": "2013"
   },
   {
-    "ticker": "BSV",
-    "name": "Vanguard Short-Term Bond Index Fund ETF Shares",
+    "ticker": "SSO",
+    "name": "ProShares Ultra S&P500",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "STAG",
+    "name": "STAG Industrial, Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "STE",
+    "name": "STERIS plc",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "STIP",
+    "name": "iShares 0-5 Year TIPS Bond ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "STLA",
+    "name": "Stellantis N.V.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "STLD",
+    "name": "Steel Dynamics, Inc.",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "STT",
+    "name": "State Street Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "STX",
+    "name": "Seagate Technology Holdings plc",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "STZ",
+    "name": "Constellation Brands, Inc.",
+    "launch_year": "1992"
+  },
+  {
+    "ticker": "SUB",
+    "name": "iShares Short-Term National Muni Bond ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "SUSA",
+    "name": "iShares ESG Optimized MSCI USA ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "SVXY",
+    "name": "ProShares Short VIX Short-Term Futures ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "SW",
+    "name": "Smurfit Westrock Plc",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "SWK",
+    "name": "Stanley Black & Decker, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "SWKS",
+    "name": "Skyworks Solutions, Inc.",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "SYF",
+    "name": "Synchrony Financial",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "SYK",
+    "name": "Stryker Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "SYY",
+    "name": "Sysco Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "T",
+    "name": "AT&T Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "TAN",
+    "name": "Invesco Solar ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TAP",
+    "name": "Molson Coors Beverage Company",
+    "launch_year": "1975"
+  },
+  {
+    "ticker": "TBF",
+    "name": "ProShares Short 20+ Year Treasury",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "TBT",
+    "name": "ProShares UltraShort 20+ Year Treasury",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TDG",
+    "name": "TransDigm Group Incorporated",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "TDY",
+    "name": "Teledyne Technologies Incorporated",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "TECH",
+    "name": "Bio-Techne Corporation",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "TECL",
+    "name": "Direxion Daily Technology Bull 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TECS",
+    "name": "Direxion Daily Technology Bear 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TEL",
+    "name": "TE Connectivity plc",
     "launch_year": "2007"
   },
   {
-    "ticker": "VCSH",
-    "name": "Vanguard Short-Term Corporate Bond Index Fund ETF Shares",
+    "ticker": "TER",
+    "name": "Teradyne, Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "TFC",
+    "name": "Truist Financial Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TFI",
+    "name": "State Street SPDR Nuveen ICE Municipal Bond ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "TGT",
+    "name": "Target Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "THCX",
+    "name": "AXS Cannabis ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "THD",
+    "name": "iShares MSCI Thailand ETF",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TIP",
+    "name": "iShares TIPS Bond ETF",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "TJX",
+    "name": "The TJX Companies, Inc.",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "TKO",
+    "name": "TKO Group Holdings, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "TLT",
+    "name": "iShares 20+ Year Treasury Bond ETF",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "TMF",
+    "name": "Direxion Daily 20+ Year Treasury Bull 3X Shares",
     "launch_year": "2009"
+  },
+  {
+    "ticker": "TMO",
+    "name": "Thermo Fisher Scientific Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TMUS",
+    "name": "T-Mobile US, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "TMV",
+    "name": "Direxion Daily 20+ Year Treasury Bear 3X Shares",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "TNA",
+    "name": "Direxion Daily Small Cap Bull 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "TPL",
+    "name": "Texas Pacific Land Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TPR",
+    "name": "Tapestry, Inc.",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "TQQQ",
+    "name": "ProShares UltraPro QQQ",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "TRADE",
+    "name": "TRADE",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "TRGP",
+    "name": "Targa Resources Corp.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "TRMB",
+    "name": "Trimble Inc.",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "TROW",
+    "name": "T. Rowe Price Group, Inc.",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "TRV",
+    "name": "The Travelers Companies, Inc.",
+    "launch_year": "1975"
+  },
+  {
+    "ticker": "TSCO",
+    "name": "Tractor Supply Company",
+    "launch_year": "1994"
+  },
+  {
+    "ticker": "TSLA",
+    "name": "Tesla, Inc.",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "TSN",
+    "name": "Tyson Foods, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TT",
+    "name": "Trane Technologies plc",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TTCF",
+    "name": "TTCF",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "TTD",
+    "name": "The Trade Desk, Inc.",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "TTT",
+    "name": "ProShares UltraPro Short 20+ Year Treasury",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "TTWO",
+    "name": "Take-Two Interactive Software, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "TWLO",
+    "name": "Twilio Inc.",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "TXN",
+    "name": "Texas Instruments Incorporated",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "TXT",
+    "name": "Textron Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "TYL",
+    "name": "Tyler Technologies, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "TZA",
+    "name": "Direxion Daily Small Cap Bear 3X Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "U",
+    "name": "Unity Software Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "UAL",
+    "name": "United Airlines Holdings, Inc.",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "UBER",
+    "name": "Uber Technologies, Inc.",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "UCO",
+    "name": "ProShares Ultra Bloomberg Crude Oil",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "UDN",
+    "name": "Invesco DB US Dollar Index Bearish Fund",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "UDOW",
+    "name": "ProShares UltraPro Dow30",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "UDR",
+    "name": "UDR, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "UHS",
+    "name": "Universal Health Services, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "ULTA",
+    "name": "Ulta Beauty, Inc.",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "UNG",
+    "name": "United States Natural Gas Fund, LP",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "UNH",
+    "name": "UnitedHealth Group Incorporated",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "UNP",
+    "name": "Union Pacific Corporation",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "UPRO",
+    "name": "ProShares UltraPro S&P500",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "UPS",
+    "name": "United Parcel Service, Inc.",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "UPST",
+    "name": "Upstart Holdings, Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "URA",
+    "name": "Global X Uranium ETF",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "URI",
+    "name": "United Rentals, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "URNM",
+    "name": "Sprott Uranium Miners ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "URTH",
+    "name": "iShares MSCI World ETF",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "USB",
+    "name": "U.S. Bancorp",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "USCI",
+    "name": "United States Commodity Index Fund, LP",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "USHY",
+    "name": "iShares Broad USD High Yield Corporate Bond ETF",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "USMV",
+    "name": "iShares MSCI USA Min Vol Factor ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "USO",
+    "name": "United States Oil Fund, LP",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "USRT",
+    "name": "iShares Core U.S. REIT ETF",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "UUP",
+    "name": "Invesco DB US Dollar Index Bullish Fund",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "UVXY",
+    "name": "ProShares Ultra VIX Short-Term Futures ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "UWMC",
+    "name": "UWM Holdings Corporation",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "V",
+    "name": "Visa Inc.",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "VBK",
+    "name": "Vanguard Small-Cap Growth Index Fund ETF Shares",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "VBR",
+    "name": "Vanguard Small-Cap Value Index Fund ETF Shares",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "VBTLX",
+    "name": "Vanguard Total Bond Market Index Fund",
+    "launch_year": "2001"
   },
   {
     "ticker": "VCIT",
@@ -285,14 +4265,19 @@
     "launch_year": "2009"
   },
   {
-    "ticker": "VGK",
-    "name": "Vanguard FTSE Europe ETF",
-    "launch_year": "2001"
+    "ticker": "VCLT",
+    "name": "Vanguard Long-Term Corporate Bond Index Fund ETF Shares",
+    "launch_year": "2009"
   },
   {
-    "ticker": "VPL",
-    "name": "Vanguard FTSE Pacific Index Fund ETF Shares",
-    "launch_year": "2001"
+    "ticker": "VCSH",
+    "name": "Vanguard Short-Term Corporate Bond Index Fund ETF Shares",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "VEA",
+    "name": "Vanguard FTSE Developed Markets Index Fund ETF Shares",
+    "launch_year": "2007"
   },
   {
     "ticker": "VGIT",
@@ -302,22 +4287,7 @@
   {
     "ticker": "VGLT",
     "name": "Vanguard Long-Term Treasury Index Fund ETF Shares",
-    "launch_year": "2009"
-  },
-  {
-    "ticker": "VTIP",
-    "name": "Vanguard Short-Term Inflation-Protected Securities Index Fund ETF Shares",
-    "launch_year": "2012"
-  },
-  {
-    "ticker": "TIP",
-    "name": "iShares TIPS Bond ETF",
-    "launch_year": "2003"
-  },
-  {
-    "ticker": "BIL",
-    "name": "State Street SPDR Bloomberg 1-3 Month T-Bill ETF",
-    "launch_year": "2007"
+    "launch_year": "2010"
   },
   {
     "ticker": "VGSH",
@@ -325,83 +4295,413 @@
     "launch_year": "2009"
   },
   {
-    "ticker": "VMBS",
-    "name": "Vanguard Mortgage-Backed Securities Index Fund ETF Shares",
+    "ticker": "VICI",
+    "name": "VICI Properties Inc.",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "VIG",
+    "name": "Vanguard Dividend Appreciation Index Fund ETF Shares",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "VIXM",
+    "name": "ProShares VIX Mid-Term Futures ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "VIXY",
+    "name": "ProShares VIX Short-Term Futures ETF",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "VLO",
+    "name": "Valero Energy Corporation",
+    "launch_year": "1982"
+  },
+  {
+    "ticker": "VLTO",
+    "name": "Veralto Corporation",
+    "launch_year": "2023"
+  },
+  {
+    "ticker": "VLUE",
+    "name": "iShares MSCI USA Value Factor ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "VMC",
+    "name": "Vulcan Materials Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "VNM",
+    "name": "VanEck Vietnam ETF",
     "launch_year": "2009"
   },
   {
-    "ticker": "BIV",
-    "name": "Vanguard Intermediate-Term Bond Index Fund",
-    "launch_year": "2007"
+    "ticker": "VNQ",
+    "name": "Vanguard Real Estate Index Fund ETF Shares",
+    "launch_year": "2004"
   },
   {
-    "ticker": "BLV",
-    "name": "Vanguard Long-Term Bond Fund",
-    "launch_year": "2007"
-  },
-  {
-    "ticker": "MBB",
-    "name": "iShares MBS ETF",
-    "launch_year": "2007"
-  },
-  {
-    "ticker": "STIP",
-    "name": "iShares 0-5 Year TIPS Bond ETF",
+    "ticker": "VOO",
+    "name": "Vanguard S&P 500 ETF",
     "launch_year": "2010"
   },
   {
-    "ticker": "SCHP",
-    "name": "Schwab U.S. TIPS ETF",
-    "launch_year": "2010"
-  },
-  {
-    "ticker": "SPSB",
-    "name": "State Street SPDR Portfolio Short Term Corporate Bond ETF",
+    "ticker": "VRSK",
+    "name": "Verisk Analytics, Inc.",
     "launch_year": "2009"
   },
   {
-    "ticker": "SPIB",
-    "name": "State Street SPDR Portfolio Intermediate Term Corporate Bond ETF",
-    "launch_year": "2009"
+    "ticker": "VRSN",
+    "name": "VeriSign, Inc.",
+    "launch_year": "1998"
   },
   {
-    "ticker": "SPLB",
-    "name": "State Street SPDR Portfolio Long Term Corporate Bond ETF",
-    "launch_year": "2009"
+    "ticker": "VRTX",
+    "name": "Vertex Pharmaceuticals Incorporated",
+    "launch_year": "1991"
   },
   {
-    "ticker": "SPAB",
-    "name": "State Street SPDR Portfolio Aggregate Bond ETF",
-    "launch_year": "2007"
+    "ticker": "VST",
+    "name": "Vistra Corp.",
+    "launch_year": "2016"
   },
   {
-    "ticker": "GOVT",
-    "name": "iShares U.S. Treasury Bond ETF",
+    "ticker": "VT",
+    "name": "Vanguard Total World Stock Index Fund ETF Shares",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "VTEB",
+    "name": "Vanguard Tax-Exempt Bond Index Fund ETF Shares",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "VTI",
+    "name": "Vanguard Total Stock Market Index Fund ETF Shares",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "VTIP",
+    "name": "Vanguard Short-Term Inflation-Protected Securities Index Fund ETF Shares",
     "launch_year": "2012"
   },
   {
-    "ticker": "SHV",
-    "name": "iShares 0–1 Year Treasury Bond ETF",
-    "launch_year": "2007"
+    "ticker": "VTR",
+    "name": "Ventas, Inc.",
+    "launch_year": "1997"
   },
   {
-    "ticker": "IEI",
-    "name": "iShares 3-7 Year Treasury Bond ETF",
-    "launch_year": "2007"
+    "ticker": "VTRS",
+    "name": "Viatris Inc.",
+    "launch_year": "1980"
   },
   {
-    "ticker": "TLH",
-    "name": "iShares 10-20 Year Treasury Bond ETF",
-    "launch_year": "2007"
+    "ticker": "VTV",
+    "name": "Vanguard Value Index Fund ETF Shares",
+    "launch_year": "2004"
   },
   {
-    "ticker": "EDV",
-    "name": "Vanguard Extended Duration Treasury Index Fund ETF Shares",
-    "launch_year": "2007"
+    "ticker": "VUG",
+    "name": "Vanguard Growth Index Fund ETF Shares",
+    "launch_year": "2004"
+  },
+  {
+    "ticker": "VUSTX",
+    "name": "Vanguard Long-Term Treasury Inv",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "VWO",
+    "name": "Vanguard Emerging Markets Stock Index Fund",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "VWOB",
+    "name": "Vanguard Emerging Markets Government Bond Index Fund",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "VXUS",
+    "name": "Vanguard Total International Stock Index Fund ETF Shares",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "VXX",
+    "name": "iPath Series B S&P 500 VIX Short-Term Futures ETN",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "VYM",
+    "name": "Vanguard High Dividend Yield Index Fund ETF Shares",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "VZ",
+    "name": "Verizon Communications Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "WAB",
+    "name": "Westinghouse Air Brake Technologies Corporation",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "WANT",
+    "name": "Direxion Daily Cnsmr Discret Bull 3XShrs",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "WAT",
+    "name": "Waters Corporation",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "WBD",
+    "name": "Warner Bros. Discovery, Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "WCLD",
+    "name": "WisdomTree Cloud Computing Fund",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "WDAY",
+    "name": "Workday, Inc.",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "WDC",
+    "name": "Western Digital Corporation",
+    "launch_year": "1978"
+  },
+  {
+    "ticker": "WEAT",
+    "name": "Teucrium Wheat Fund",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "WEBL",
+    "name": "Direxion Daily Dow Jones Internet Bull 3X Shares",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "WEBS",
+    "name": "Direxion Daily Dow Jones Internet Bear 3X Shares",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "WEC",
+    "name": "WEC Energy Group, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "WELL",
+    "name": "Welltower Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "WFC",
+    "name": "Wells Fargo & Company",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "WM",
+    "name": "Waste Management, Inc.",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "WMB",
+    "name": "The Williams Companies, Inc.",
+    "launch_year": "1981"
+  },
+  {
+    "ticker": "WMT",
+    "name": "Walmart Inc.",
+    "launch_year": "1972"
+  },
+  {
+    "ticker": "WPC",
+    "name": "W. P. Carey Inc.",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "WRB",
+    "name": "W. R. Berkley Corporation",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "WRLD",
+    "name": "World Acceptance Corporation",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "WSM",
+    "name": "Williams-Sonoma, Inc.",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "WST",
+    "name": "West Pharmaceutical Services, Inc.",
+    "launch_year": "1980"
+  },
+  {
+    "ticker": "WTW",
+    "name": "Willis Towers Watson Public Limited Company",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "WY",
+    "name": "Weyerhaeuser Company",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "WYNN",
+    "name": "Wynn Resorts, Limited",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "XBI",
+    "name": "State Street SPDR S&P Biotech ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "XEL",
+    "name": "Xcel Energy Inc.",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "XHB",
+    "name": "State Street SPDR S&P Homebuilders ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "XLB",
+    "name": "State Street Materials Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLC",
+    "name": "State Street Communication Services Select Sector SPDR ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "XLE",
+    "name": "State Street Energy Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLF",
+    "name": "State Street Financial Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLI",
+    "name": "State Street Industrial Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLK",
+    "name": "State Street Technology Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLP",
+    "name": "State Street Consumer Staples Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLRE",
+    "name": "State Street Real Estate Select Sector SPDR ETF",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "XLU",
+    "name": "State Street Utilities Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLV",
+    "name": "State Street Health Care Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XLY",
+    "name": "State Street Consumer Discretionary Select Sector SPDR ETF",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "XOM",
+    "name": "Exxon Mobil Corporation",
+    "launch_year": "1962"
+  },
+  {
+    "ticker": "XOP",
+    "name": "State Street SPDR S&P Oil & Gas Exploration & Production ETF",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "XPEV",
+    "name": "XPeng Inc.",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "XYL",
+    "name": "Xylem Inc.",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "XYLD",
+    "name": "Global X S&P 500 Covered Call ETF",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "XYZ",
+    "name": "Block, Inc.",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "YOLO",
+    "name": "AdvisorShares Pure Cannabis ETF",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "YUM",
+    "name": "Yum! Brands, Inc.",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "ZBH",
+    "name": "Zimmer Biomet Holdings, Inc.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "ZBRA",
+    "name": "Zebra Technologies Corporation",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "ZIVZF",
+    "name": "ZIVZF",
+    "launch_year": "Unknown"
+  },
+  {
+    "ticker": "ZM",
+    "name": "Zoom Communications, Inc.",
+    "launch_year": "2019"
   },
   {
     "ticker": "ZROZ",
     "name": "PIMCO 25+ Year Zero Coupon U.S. Treasury Index Exchange-Traded Fund",
     "launch_year": "2009"
+  },
+  {
+    "ticker": "ZTS",
+    "name": "Zoetis Inc.",
+    "launch_year": "2013"
   }
 ]
