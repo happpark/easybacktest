@@ -153,20 +153,30 @@ function WeightStepper({
 // ── Total bar ─────────────────────────────────────────────────────────────────
 function TotalBar({ total }: { total: number }) {
   const ok = total === 100;
+  const pct = Math.min(total, 100);
   return (
     <div className={cn(
-      "p-4 rounded-2xl flex justify-between items-center border transition-all duration-300",
+      "rounded-2xl border transition-all duration-300 overflow-hidden",
       ok ? 'bg-[#7AE9AB]/10 border-[#7AE9AB]/30' : 'bg-destructive/10 border-destructive/20'
     )}>
-      <div className="flex flex-col">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">합계 비중</span>
-        <span className={cn("text-xs font-medium mt-0.5", ok ? 'text-[#7AE9AB]' : 'text-destructive/80')}>
-          {ok ? '분석 준비 완료' : total > 100 ? `${total - 100}% 초과` : `${100 - total}% 더 필요`}
+      {/* Progress bar */}
+      <div className="h-1 bg-black/20 w-full">
+        <div
+          className={cn("h-full transition-all duration-500", ok ? 'bg-[#7AE9AB]' : pct >= 80 ? 'bg-yellow-400' : 'bg-destructive')}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div className="px-4 py-3 flex justify-between items-center">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">합계 비중</span>
+          <span className={cn("text-xs font-medium mt-0.5", ok ? 'text-[#7AE9AB]' : 'text-destructive/80')}>
+            {ok ? '✓ 분석 준비 완료' : total > 100 ? `${total - 100}% 초과` : `${100 - total}% 더 필요`}
+          </span>
+        </div>
+        <span className={cn("text-2xl font-mono font-black", ok ? 'text-[#7AE9AB]' : 'text-destructive')}>
+          {total}%
         </span>
       </div>
-      <span className={cn("text-2xl font-mono font-black", ok ? 'text-[#7AE9AB]' : 'text-destructive')}>
-        {total}%
-      </span>
     </div>
   );
 }
@@ -300,6 +310,8 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     );
   };
 
+  const currentTotal = mode === 'beginner' ? beginnerTotal : totalWeight;
+
   return (
     <div className="p-6 flex flex-col gap-6 animate-fade-in">
       <header className="flex flex-col gap-1">
@@ -356,7 +368,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </div>
             ))}
           </div>
-          <TotalBar total={beginnerTotal} />
           <Button onClick={handleBeginnerBacktest} disabled={beginnerTotal !== 100}
             className={cn(
               "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
@@ -457,7 +468,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
             </div>
           </div>
 
-          <TotalBar total={totalWeight} />
           <Button onClick={() => onBacktest(selectedAssets)} disabled={totalWeight !== 100 || selectedAssets.length === 0}
             className={cn(
               "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
@@ -468,6 +478,13 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </Button>
         </>
       )}
+
+      {/* Fixed TotalBar — always visible above bottom nav */}
+      <div className="fixed bottom-20 left-0 right-0 max-w-md mx-auto px-4 z-40">
+        <div className="backdrop-blur-md bg-background/80 rounded-2xl shadow-2xl">
+          <TotalBar total={currentTotal} />
+        </div>
+      </div>
     </div>
   );
 }

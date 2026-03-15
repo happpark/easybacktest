@@ -53,7 +53,7 @@ export default function AlphaFlowApp() {
 
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto relative overflow-hidden bg-background font-body">
-      <main className="flex-1 overflow-y-auto pb-24">
+      <main className={`flex-1 overflow-y-auto ${activeScreen === 'input' ? 'pb-44' : 'pb-24'}`}>
         {renderScreen()}
       </main>
 
