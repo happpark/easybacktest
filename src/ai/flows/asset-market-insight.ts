@@ -64,10 +64,22 @@ const assetMarketInsightFlow = ai.defineFlow(
     outputSchema: AssetMarketInsightOutputSchema,
   },
   async (input) => {
-    const {output} = await assetMarketInsightPrompt(input);
-    if (!output) {
-      throw new Error('Failed to generate market insights.');
+    try {
+      const {output} = await assetMarketInsightPrompt(input);
+      if (!output) {
+        throw new Error('Failed to generate market insights.');
+      }
+      return output;
+    } catch (error) {
+      console.warn('Market Insights AI failed:', error);
+      // Fallback response
+      return {
+        insights: input.assets.map(asset => ({
+          asset,
+          sentiment: 'neutral' as const,
+          summary: 'Market data is currently being updated. Please check back later for detailed AI insights.'
+        }))
+      };
     }
-    return output;
   }
 );

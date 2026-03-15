@@ -43,3 +43,9 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+node_modules
+
+# venv and vscode
+.venv/
+.venv2/
+.vscode/
