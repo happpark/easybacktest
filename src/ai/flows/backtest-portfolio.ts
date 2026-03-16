@@ -4,9 +4,10 @@
  * Uses yahoo-finance2 for historical price data so it works on Vercel serverless.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import yahooFinance from 'yahoo-finance2';
+import { z } from 'zod';
+import YahooFinance from 'yahoo-finance2';
+
+const yahooFinance = new YahooFinance({ suppressNotices: ['ripHistorical', 'yahooSurvey'] });
 
 const RISK_FREE_RATE = 0.02; // 2% annual
 const TRADING_DAYS = 252;
@@ -161,7 +162,7 @@ function computeMetrics(
 
 // ── Core backtest ─────────────────────────────────────────────────────────────
 
-async function runBacktest(input: BacktestInput) {
+export async function runBacktest(input: BacktestInput) {
   const tickers = input.assets.map(a => a.ticker);
   const rawWeights = input.assets.map(a => a.weight);
   const totalW = rawWeights.reduce((a, b) => a + b, 0);
@@ -254,60 +255,15 @@ async function runBacktest(input: BacktestInput) {
   };
 }
 
-// ── AI insight prompt ─────────────────────────────────────────────────────────
-
-const insightPrompt = ai.definePrompt({
-  name: 'insightPrompt',
-  input: { schema: z.object({ metrics: z.any(), assets: z.any() }) },
-  output: { schema: z.object({ insight: z.string() }) },
-  prompt: `You are an expert quantitative financial analyst.
-Based on the following backtest results and portfolio composition, provide a concise 2-sentence interpretation.
-
-Portfolio:
-{{#each assets}}
-- {{{ticker}}}: {{{weight}}}%
-{{/each}}
-
-Metrics:
-CAGR: {{metrics.cagr}}%
-MDD: {{metrics.mdd}}%
-Sharpe Ratio: {{metrics.sharpe}}
-Period: {{metrics.period}}
-
-Return a brief AI insight.`,
-});
-
-// ── Genkit flow ───────────────────────────────────────────────────────────────
-
-const backtestFlow = ai.defineFlow(
-  {
-    name: 'backtestFlow',
-    inputSchema: BacktestInputSchema,
-    outputSchema: BacktestOutputSchema,
-  },
-  async (input) => {
-    const totalWeight = input.assets.reduce((sum, a) => sum + a.weight, 0);
-    if (Math.abs(totalWeight - 100) > 0.01) {
-      throw new Error(`비중의 합이 100%여야 합니다. 현재: ${totalWeight.toFixed(2)}%`);
-    }
-
-    const result = await runBacktest(input);
-
-    let aiInsight = 'Analysis completed based on historical data.';
-    try {
-      const { output: insightOutput } = await insightPrompt({
-        metrics: result.metrics,
-        assets: input.assets,
-      });
-      if (insightOutput?.insight) aiInsight = insightOutput.insight;
-    } catch {
-      // continue without AI insight
-    }
-
-    return { ...result, aiInsight };
-  },
-);
+// ── Server Action ─────────────────────────────────────────────────────────────
 
 export async function backtestPortfolio(input: BacktestInput): Promise<BacktestOutput> {
-  return backtestFlow(input);
+  const totalWeight = input.assets.reduce((sum, a) => sum + a.weight, 0);
+  if (Math.abs(totalWeight - 100) > 0.01) {
+    throw new Error(`비중의 합이 100%여야 합니다. 현재: ${totalWeight.toFixed(2)}%`);
+  }
+
+  const result = await runBacktest(input);
+
+  return { ...result, aiInsight: 'Analysis completed based on historical data.' };
 }

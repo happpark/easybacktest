@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Share2, ArrowLeft, Zap, TrendingUp, ShieldAlert, Info, AlertTriangle, CheckCircle2, ChevronUp, Bookmark, BookmarkCheck } from 'lucide-react';
 import { RadarChart } from '@/components/RadarChart';
-import { backtestPortfolio, BacktestOutput } from '@/ai/flows/backtest-portfolio';
+import type { BacktestOutput } from '@/ai/flows/backtest-portfolio';
 import { useMyPortfolios } from '@/lib/useMyPortfolios';
 import { buildRadar } from '@/lib/radar';
 import {
@@ -81,8 +81,17 @@ export function ResultScreen({ data, onReset }: ResultScreenProps) {
       }, 4000);
 
       try {
-        const backtest = await backtestPortfolio({ assets: data });
-        setBacktestResult(backtest);
+        const res = await fetch('/api/backtest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ assets: data }),
+        });
+        const json = await res.json();
+        if (!res.ok || json.error) {
+          setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+        } else {
+          setBacktestResult(json as BacktestOutput);
+        }
       } catch (e: unknown) {
         const err = e as { message?: string };
         setErrorMessage(err.message ?? '결과를 불러오는 데 실패했습니다.');
@@ -109,8 +118,19 @@ export function ResultScreen({ data, onReset }: ResultScreenProps) {
       setLoadingStep(prev => Math.min(prev + 1, LOADING_MESSAGES.length - 1));
     }, 4000);
 
-    backtestPortfolio({ assets: data })
-      .then(backtest => setBacktestResult(backtest))
+    fetch('/api/backtest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assets: data }),
+    })
+      .then(async res => {
+        const json = await res.json();
+        if (!res.ok || json.error) {
+          setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+        } else {
+          setBacktestResult(json as BacktestOutput);
+        }
+      })
       .catch((e: unknown) => {
         const err = e as { message?: string };
         setErrorMessage(err.message ?? '결과를 불러오는 데 실패했습니다.');
