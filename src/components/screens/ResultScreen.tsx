@@ -718,7 +718,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Body: mobile = stack, PC = side by side */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1">
           {/* Radar */}
-          <div className="w-full md:w-3/5 h-64 md:h-full md:min-h-[300px]">
+          <div className="w-full md:w-3/5 h-64 md:h-[320px]">
             <RadarChart data={radar} />
           </div>
 
