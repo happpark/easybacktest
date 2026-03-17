@@ -578,32 +578,35 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         </button>
       </header>
 
-      {/* Main Metrics Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <TrendingUp size={14} className="text-[#7AE9AB]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">CAGR (수익률)</span>
-          </div>
-          <span className="text-2xl font-bold text-[#7AE9AB]">{m.cagr}%</span>
-          <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
-            <span className="font-semibold">최고 실적 연도: {m.best_year.year}</span>
-            <span>수익률: {m.best_year.value}%</span>
-          </div>
-        </div>
+      {/* Main Metrics + Growth Chart — mobile: stacked, desktop: side-by-side */}
+      <div className="md:grid md:grid-cols-[220px_1fr] md:gap-3 flex flex-col gap-3">
 
-        <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ShieldAlert size={14} className="text-[#F25B5B]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
+        {/* CAGR + MDD stacked */}
+        <div className="grid grid-cols-2 gap-3 md:flex md:flex-col">
+          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <TrendingUp size={14} className="text-[#7AE9AB]" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">CAGR (수익률)</span>
+            </div>
+            <span className="text-2xl font-bold text-[#7AE9AB]">{m.cagr}%</span>
+            <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
+              <span className="font-semibold">최고 실적 연도: {m.best_year.year}</span>
+              <span>수익률: {m.best_year.value}%</span>
+            </div>
           </div>
-          <span className="text-2xl font-bold text-[#F25B5B]">{m.mdd}%</span>
-          <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
-            <span className="font-semibold">최대 하락 연도: {m.mdd_year}</span>
-            <span className="opacity-0">—</span>
+
+          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <ShieldAlert size={14} className="text-[#F25B5B]" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
+            </div>
+            <span className="text-2xl font-bold text-[#F25B5B]">{m.mdd}%</span>
+            <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
+              <span className="font-semibold">최대 하락 연도: {m.mdd_year}</span>
+              <span className="opacity-0">—</span>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Portfolio Growth Chart */}
       <div className="glass-morphism p-5 rounded-3xl flex flex-col gap-3">
@@ -689,6 +692,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           </span>
         </div>
       </div>
+
+      </div>{/* end md:grid wrapper */}
 
       {/* Radar Chart Section */}
       <div className="glass-morphism p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden min-h-[400px]">

@@ -497,6 +497,23 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           <p className="text-muted-foreground text-xs">포트폴리오를 구성하고 과거 수익률을 분석하세요.</p>
         </header>
 
+        {/* Mode toggle */}
+        <div className="flex bg-black/30 rounded-xl p-1 border border-white/5">
+          {(['beginner', 'expert'] as const).map(m => (
+            <button key={m} onClick={() => onModeChange(m)}
+              className={cn(
+                "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200",
+                mode === m ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {m === 'beginner' ? '초심자' : '전문가'}
+            </button>
+          ))}
+        </div>
+
+        {/* Compact progress bar — always visible while scrolling ETF list */}
+        <CompactProgressBar total={currentTotal} />
+
         {/* Image import button */}
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
         <button
@@ -516,23 +533,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
         {parseNote && (
           <p className="text-[11px] text-muted-foreground text-center -mt-2">💡 {parseNote}</p>
         )}
-
-        {/* Mode toggle */}
-        <div className="flex bg-black/30 rounded-xl p-1 border border-white/5">
-          {(['beginner', 'expert'] as const).map(m => (
-            <button key={m} onClick={() => onModeChange(m)}
-              className={cn(
-                "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200",
-                mode === m ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {m === 'beginner' ? '초심자' : '전문가'}
-            </button>
-          ))}
-        </div>
-
-        {/* Compact progress bar — always visible while scrolling ETF list */}
-        <CompactProgressBar total={currentTotal} />
       </div>
 
       {/* ── Scrollable content ── */}
@@ -541,8 +541,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
         {/* ── BEGINNER ── */}
         {mode === 'beginner' && (
           <>
-            <p className="text-xs text-muted-foreground">
-              원하는 자산에 비중을 설정하세요. 합계 100%를 채우면 분석할 수 있어요.
+            <p className="text-sm font-semibold text-foreground/70 text-center">
+              원하는 자산에 비중을 설정하세요.<br />
+              <span className="text-xs font-normal text-muted-foreground">합계 100%를 채우면 분석할 수 있어요.</span>
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 gap-4">
               {BEGINNER_CATEGORIES.map(cat => (
@@ -735,7 +736,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </div>
 
               {/* Table */}
-              <div className="glass-morphism rounded-2xl border border-white/5 overflow-hidden">
+              <div className="glass-morphism rounded-2xl border border-white/5 overflow-visible">
                 {/* Header row: asset col + 3 portfolio name cols */}
                 <div className="grid grid-cols-4 border-b border-white/10">
                   <div className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">자산</div>
