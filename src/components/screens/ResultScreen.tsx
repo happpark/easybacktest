@@ -546,9 +546,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
     Dividend: "배당 수익: 최근 1년 배당 수익률을 기반으로 현금 흐름 창출 능력을 나타냅니다.",
   };
 
-  const historyData = backtestResult.history.map(h => ({
+  const historyData = backtestResult.history.map((h, i) => ({
     ...h,
     year: h.date.slice(0, 4),
+    benchmark: backtestResult.benchmark_history?.[i]?.value,
   }));
 
   return (
@@ -624,7 +625,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         </div>
         <div className="h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <AreaChart data={historyData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(212, 73%, 55%)" stopOpacity={0.4} />
@@ -641,7 +642,6 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 tickLine={false}
                 axisLine={false}
                 interval="preserveStartEnd"
-                allowDuplicatedCategory={false}
               />
               <YAxis
                 tick={{ fill: '#64748b', fontSize: 9 }}
@@ -654,22 +654,18 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 labelStyle={{ color: '#94a3b8' }}
                 formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name]}
               />
-              {backtestResult.benchmark_history && (
-                <Area
-                  data={backtestResult.benchmark_history.map(h => ({ year: h.date.slice(0, 4), value: h.value }))}
-                  type="monotone"
-                  dataKey="value"
-                  name="S&P 500"
-                  stroke="#94a3b8"
-                  strokeWidth={1.5}
-                  strokeDasharray="4 2"
-                  fill="url(#benchmarkGradient)"
-                  dot={false}
-                  activeDot={{ r: 3, fill: '#94a3b8' }}
-                />
-              )}
               <Area
-                data={historyData}
+                type="monotone"
+                dataKey="benchmark"
+                name="S&P 500"
+                stroke="#94a3b8"
+                strokeWidth={1.5}
+                strokeDasharray="4 2"
+                fill="url(#benchmarkGradient)"
+                dot={false}
+                activeDot={{ r: 3, fill: '#94a3b8' }}
+              />
+              <Area
                 type="monotone"
                 dataKey="value"
                 name="Portfolio"
