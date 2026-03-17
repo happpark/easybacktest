@@ -651,6 +651,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   // ── Landing view ──────────────────────────────────────────────────────────
   if (view === 'landing') {
     return (
+      <>
       <div className="flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32">
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
@@ -717,6 +718,63 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </div>
         </div>
       </div>
+
+      {/* ── Parse-portfolio confirmation dialog (landing) ─────────────────── */}
+      <Dialog open={!!parseConfirm} onOpenChange={open => { if (!open) setParseConfirm(null); }}>
+        <DialogContent className="max-w-sm rounded-2xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ImagePlus size={18} className="text-primary" />
+              이미지 분석 결과 확인
+            </DialogTitle>
+            <DialogDescription asChild>
+              <div className="text-sm text-muted-foreground">아래 매핑이 맞는지 확인 후 적용해주세요.</div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="overflow-y-auto flex-1 space-y-1 pr-1">
+            {parseConfirm?.assets.map((a, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'flex items-center justify-between rounded-lg px-3 py-2 text-sm',
+                  a.knownTicker ? 'bg-muted' : 'bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700'
+                )}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  {a.knownTicker
+                    ? <CheckCircle2 size={14} className="text-green-500 shrink-0" />
+                    : <XCircle size={14} className="text-amber-500 shrink-0" />
+                  }
+                  <div className="min-w-0">
+                    <span className="font-mono font-bold">{a.ticker}</span>
+                    {!a.knownTicker && <span className="ml-1 text-xs text-amber-600 dark:text-amber-400">미지원</span>}
+                    <p className="text-xs text-muted-foreground truncate">{a.original}</p>
+                  </div>
+                </div>
+                <span className="font-semibold tabular-nums ml-2 shrink-0">{a.weight.toFixed(1)}%</span>
+              </div>
+            ))}
+          </div>
+          {parseConfirm?.note && (
+            <p className="text-xs text-muted-foreground bg-muted rounded-lg px-3 py-2 mt-1">💡 {parseConfirm.note}</p>
+          )}
+          {parseConfirm?.assets.some(a => !a.knownTicker) && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <AlertTriangle size={12} />미지원 티커는 적용 후 직접 수정해주세요.
+            </p>
+          )}
+          <div className="flex gap-2 mt-2">
+            <Button variant="outline" className="flex-1" onClick={() => setParseConfirm(null)}>취소</Button>
+            <Button
+              className="flex-1"
+              onClick={() => { if (parseConfirm) { applyParsedAssets(parseConfirm.assets); setParseConfirm(null); } }}
+            >
+              이 비중으로 적용
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
     );
   }
 

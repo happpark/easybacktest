@@ -6,23 +6,29 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 // ── Pass 1: OCR — extract raw assets & values from image ─────────────────────
 const EXTRACT_PROMPT = `You are a financial document parser. Extract all investment assets visible in this portfolio image.
 
+The image may show portfolio data in ONE of two formats — detect which:
+A) VALUE format: shows monetary amounts (e.g. ₩3,500,000 / $150,829)
+B) PERCENTAGE format: shows allocation percentages directly (e.g. "AAPL 34%")
+
 For EACH asset line item output:
-- name: asset name/description exactly as shown
-- value: numeric monetary value (if shares × price shown, multiply them; use the dominant currency)
-- raw_text: the verbatim text from the image for this entry
+- name: asset name/ticker exactly as shown
+- value: if format A → numeric monetary amount; if format B → the percentage number as-is (e.g. 34 for "34%")
+- value_type: "amount" or "percent"
+- raw_text: verbatim text from the image
 
 Rules:
-- Include EVERYTHING: stocks, funds, bonds, ETFs, cash, crypto, deposits, CMA, etc.
-- NEVER skip a line item, even if the value looks small
-- If a value is truly unreadable, set value to 0 and describe in ocr_note
-- Do NOT map to tickers yet — just extract names and values
+- Include EVERYTHING: stocks, funds, bonds, ETFs, cash, crypto, deposits, etc.
+- NEVER skip a line item
+- If unreadable, set value to 0 and describe in ocr_note
+- Do NOT map to ETF tickers yet — just faithfully extract names and values
 
 Return ONLY raw JSON, no markdown:
 {
-  "currency": "KRW",
+  "value_type": "percent",
+  "currency": "USD",
   "items": [
-    { "name": "삼성전자", "value": 3500000, "raw_text": "삼성전자 350주 × 10,000원" },
-    { "name": "예금", "value": 1000000, "raw_text": "예금 1,000,000" }
+    { "name": "GOOGL", "value": 34, "raw_text": "GOOGL 34%" },
+    { "name": "AMZN", "value": 17.6, "raw_text": "AMZN 17.6%" }
   ],
   "ocr_note": "note any unclear values or ambiguities"
 }`;
@@ -30,38 +36,50 @@ Return ONLY raw JSON, no markdown:
 // ── Pass 2: Map extracted assets to ETF tickers + compute float weights ───────
 const MAP_PROMPT = `You are a financial portfolio analyzer. Map portfolio assets to US-listed ETF tickers and compute weights.
 
-Mapping rules:
-- Korean individual stocks / KOSPI → "EEM"
-- US total market / broad market → "VTI"
-- Nasdaq / tech-heavy / growth → "QQQ"
-- S&P 500 index → "SPY"
-- US dividend stocks → "SCHD"
+Mapping rules — ETF/fund/index names:
+- S&P 500 index / fund → "SPY"
+- Nasdaq / tech-heavy / growth index → "QQQ"
+- US total/broad market → "VTI"
+- US dividend-focused → "SCHD"
 - US long-term bonds (10y+) → "TLT"
 - US mid-term bonds (3–10y) → "IEF"
 - US short-term bonds (<3y) → "SHY"
-- TIPS / inflation-linked bonds → "TIP"
+- TIPS / inflation-linked → "TIP"
 - Gold → "GLD"
 - Real estate / REITs → "VNQ"
-- Cash / MMF / 예금 / CMA / 청약 / 보증금 / 파킹통장 / 저축 → "CASH"
+- Developed market ex-US stocks → "EFA"
+- Emerging markets → "EEM"
+- Korean individual stocks / KOSPI → "EEM"
+- Cash / MMF / 예금 / CMA / 청약 / 보증금 / 파킹 / 저축 → "CASH"
 - Bitcoin → "IBIT"
 - Other crypto → "CASH"
-- Developed market ex-US stocks → "EFA"
-- Emerging markets ex-KR → "EEM"
-- If the asset name IS already a recognizable US ETF ticker → use it directly
+- If the asset IS already a US ETF ticker (e.g. QQQ, VTI, SCHD, TLT…) → use it directly
+
+Mapping rules — individual US stocks (map to nearest sector ETF):
+- Big tech / software / internet (AAPL, MSFT, GOOGL, AMZN, META, FB, NVDA, NFLX, CRM, ADBE…) → "QQQ"
+- EV / growth (TSLA, RIVN, LCID…) → "QQQ"
+- Healthcare / pharma (JNJ, PFE, MRK, ABBV, UNH, GSK, AZN…) → "VHT"
+- Defense / aerospace (LMT, RTX, NOC, BA, GD…) → "ITA"
+- Telecom / utilities (T, VZ, TMUS, NEE, DUK…) → "SCHD"
+- Consumer staples / tobacco (KO, PEP, MO, PM, BTI, PG, WMT…) → "SCHD"
+- Consumer discretionary (DIS, NKE, MCD, SBUX…) → "VTI"
+- Finance / banks (JPM, BAC, GS, V, MA…) → "VTI"
+- Energy (XOM, CVX, COP…) → "VTI"
+- Other US stocks not listed above → "VTI"
 
 Steps (mandatory):
-1. Map each item to exactly one ticker
-2. Merge items sharing the same ticker by summing values
+1. Map each item to exactly one ticker using rules above
+2. Merge items with the same ticker by summing their values
 3. total = sum of ALL merged values
-4. weight_i = round(value_i / total * 100, 2)   ← keep TWO decimal places
-5. Find the largest weight; adjust it so all weights sum to EXACTLY 100.00
+4. weight_i = round(value_i / total * 100, 2)   ← TWO decimal places
+5. Adjust the largest weight so all weights sum to EXACTLY 100.00
 
 Return ONLY raw JSON, no markdown:
 {
   "assets": [
-    { "ticker": "SPY", "weight": 45.23, "original": "미국 S&P500 ETF" },
-    { "ticker": "CASH", "weight": 34.77, "original": "예금, CMA" },
-    { "ticker": "GLD", "weight": 20.00, "original": "금 ETF" }
+    { "ticker": "QQQ", "weight": 45.23, "original": "GOOGL, AMZN, MSFT, AAPL" },
+    { "ticker": "SCHD", "weight": 34.77, "original": "BTI, T" },
+    { "ticker": "VTI", "weight": 20.00, "original": "DIS" }
   ],
   "note": "한국어로 애매한 매핑 간략 설명"
 }`;
@@ -105,6 +123,7 @@ export async function POST(req: NextRequest) {
     }
 
     const extracted = JSON.parse(match1[0]) as {
+      value_type: 'amount' | 'percent';
       currency: string;
       items: { name: string; value: number; raw_text: string }[];
       ocr_note?: string;
@@ -122,11 +141,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'user',
-          content: `다음 자산 목록을 ETF 티커로 매핑하고 비중을 계산해줘:\n\n${JSON.stringify(
-            extracted.items,
-            null,
-            2
-          )}`,
+          content: `다음 자산 목록을 ETF 티커로 매핑하고 비중을 계산해줘.\n값 형식: ${extracted.value_type === 'percent' ? '퍼센트(%)로 이미 비중이 표시됨 — 합산 후 100으로 정규화 필요' : '금액(합산 후 비중 계산 필요)'}\n\n${JSON.stringify(extracted.items, null, 2)}`,
         },
       ],
     });
