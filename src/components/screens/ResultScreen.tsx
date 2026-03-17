@@ -696,8 +696,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       </div>{/* end md:grid wrapper */}
 
       {/* Radar Chart Section */}
-      <div className="glass-morphism p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden min-h-[400px]">
-        <div className="absolute top-4 left-6 right-6 flex justify-between items-start">
+      <div className="glass-morphism p-6 rounded-3xl relative overflow-hidden min-h-[400px] flex flex-col">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
           <div className="flex flex-col">
             <span className="text-sm font-bold text-primary">포트폴리오 오각형</span>
             <span className="text-[10px] text-muted-foreground">S&P 500(SPY) 벤치마크 비교</span>
@@ -714,58 +715,62 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           </div>
         </div>
 
-        <div className="w-full h-64 mt-8">
-          <RadarChart data={radar} />
-        </div>
+        {/* Body: mobile = stack, PC = side by side */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1">
+          {/* Radar */}
+          <div className="w-full md:w-3/5 h-64 md:h-full md:min-h-[300px]">
+            <RadarChart data={radar} />
+          </div>
 
-        {/* Actual Values Comparison Table */}
-        <div className="w-full mt-4">
-          <table className="w-full text-[11px]">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left pb-3 font-normal text-muted-foreground/60 w-24">지표</th>
-                <th className="text-right pb-3 font-semibold text-foreground/80">Portfolio</th>
-                <th className="text-right pb-3 font-normal text-muted-foreground/60">S&P 500</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { label: 'CAGR', pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
-                { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: false },
-                { label: '변동성', pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
-                { label: 'Sharpe', pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
-                { label: '배당', pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
-              ].map((row, i, arr) => {
-                const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;
-                const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
-                return (
-                  <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-white/5' : ''}>
-                    <td className="py-2.5 text-muted-foreground/70 font-medium">{row.label}</td>
-                    <td className="text-right py-2.5">
-                      {portfolioWins ? (
-                        <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
-                          <span className="text-[8px] opacity-70">▲</span>
-                          {row.pv}{row.unit}
-                        </span>
-                      ) : (
-                        <span className="font-semibold text-foreground/60">{row.pv}{row.unit}</span>
-                      )}
-                    </td>
-                    <td className="text-right py-2.5">
-                      {benchmarkWins ? (
-                        <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
-                          <span className="text-[8px] opacity-70">▲</span>
-                          {row.bv}{row.unit}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/40">{row.bv}{row.unit}</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {/* Table */}
+          <div className="w-full md:w-2/5 md:self-center">
+            <table className="w-full text-[11px]">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left pb-3 font-normal text-muted-foreground/60 w-16">지표</th>
+                  <th className="text-right pb-3 font-semibold text-foreground/80">Portfolio</th>
+                  <th className="text-right pb-3 font-normal text-muted-foreground/60">S&P 500</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { label: 'CAGR', pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
+                  { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: false },
+                  { label: '변동성', pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
+                  { label: 'Sharpe', pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
+                  { label: '배당', pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
+                ].map((row, i, arr) => {
+                  const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;
+                  const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
+                  return (
+                    <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-white/5' : ''}>
+                      <td className="py-2.5 text-muted-foreground/70 font-medium">{row.label}</td>
+                      <td className="text-right py-2.5">
+                        {portfolioWins ? (
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
+                            <span className="text-[8px] opacity-70">▲</span>
+                            {row.pv}{row.unit}
+                          </span>
+                        ) : (
+                          <span className="font-semibold text-foreground/60">{row.pv}{row.unit}</span>
+                        )}
+                      </td>
+                      <td className="text-right py-2.5">
+                        {benchmarkWins ? (
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
+                            <span className="text-[8px] opacity-70">▲</span>
+                            {row.bv}{row.unit}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground/40">{row.bv}{row.unit}</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

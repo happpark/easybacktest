@@ -652,7 +652,20 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   if (view === 'landing') {
     return (
       <>
-      <div className="flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32">
+      {/* ── Full-screen parsing overlay ─────────────────────────────────────── */}
+      {parsing && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-background/80 backdrop-blur-sm">
+          <div className="relative flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+            <ImagePlus size={28} className="absolute text-primary" />
+          </div>
+          <div className="flex flex-col items-center gap-1 text-center">
+            <p className="text-lg font-bold text-foreground">AI 분석 중...</p>
+            <p className="text-sm text-muted-foreground">포트폴리오를 읽고 있어요. 잠시만 기다려주세요.</p>
+          </div>
+        </div>
+      )}
+      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32", parsing && "pointer-events-none")}>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
         <div className="pt-6 md:pt-10 flex flex-col gap-2">
@@ -671,11 +684,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               <h3 className="text-base font-bold">스크린샷으로 바로 분석</h3>
               <p className="text-sm text-muted-foreground">증권사 앱·엑셀 화면을 캡처해서 올리면 AI가 자동으로 포트폴리오를 읽어요</p>
             </div>
-            {parsing ? (
-              <div className="mt-auto flex items-center justify-center gap-2 py-3 text-primary text-sm font-bold">
-                <Loader2 size={16} className="animate-spin" /> AI 분석 중...
-              </div>
-            ) : (
+            {!parsing && (
               <div className="mt-auto flex flex-col gap-2">
                 <button
                   onClick={() => imageInputRef.current?.click()}
