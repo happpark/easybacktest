@@ -675,12 +675,25 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                 <Loader2 size={16} className="animate-spin" /> AI 분석 중...
               </div>
             ) : (
-              <button
-                onClick={() => imageInputRef.current?.click()}
-                className="mt-auto bg-primary text-white font-bold py-3.5 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
-              >
-                <Upload size={16} /> 이미지 업로드
-              </button>
+              <div className="mt-auto flex flex-col gap-2">
+                <button
+                  onClick={() => imageInputRef.current?.click()}
+                  className="bg-primary text-white font-bold py-3.5 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+                >
+                  <Upload size={16} /> 이미지 파일 선택
+                </button>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs">또는</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+                <div className="flex items-center justify-center gap-2 py-2 rounded-2xl border border-dashed border-border bg-muted/30">
+                  <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono font-semibold">⌘V</kbd>
+                  <span className="text-xs text-muted-foreground">/</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono font-semibold">Ctrl V</kbd>
+                  <span className="text-xs text-muted-foreground">로 클립보드에서 붙여넣기</span>
+                </div>
+              </div>
             )}
             {parseError && <p className="text-[11px] text-destructive -mt-2">{parseError}</p>}
             {parseNote && <p className="text-[11px] text-muted-foreground -mt-2">💡 {parseNote}</p>}
