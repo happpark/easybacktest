@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2, DollarSign, Percent, Upload, PlusCircle, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2, DollarSign, Percent, Upload, PlusCircle, ArrowLeft, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import etfDataRaw from '@/lib/etf-data.json';
 import { cn } from '@/lib/utils';
 import type { Asset, PortfolioSlot } from '@/app/page';
@@ -342,6 +343,26 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const [parseNote, setParseNote] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
+  // Parsed result pending user confirmation
+  type ParsedAsset = { ticker: string; weight: number; original: string; knownTicker: boolean };
+  const [parseConfirm, setParseConfirm] = useState<{
+    assets: ParsedAsset[];
+    note: string | null;
+  } | null>(null);
+
+  const applyParsedAssets = (parsed: ParsedAsset[]) => {
+    const assets: Asset[] = parsed.map(a => {
+      const etf = ETF_DATA.find(e => e.ticker === a.ticker);
+      return { ticker: a.ticker, weight: a.weight, launch_year: etf?.launch_year };
+    });
+    setSelectedAssets(assets);
+    setInputType('weight');
+    setAssetAmounts(new Array(assets.length).fill(0));
+    setPortfolioSlots([{ name: '포트폴리오 A', weights: assets.map(a => a.weight) }]);
+    onModeChange('expert');
+    setView('input');
+  };
+
   const uploadImageFile = async (file: File) => {
     setParsing(true);
     setParseError(null);
@@ -352,17 +373,20 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       const res = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
       const json = await res.json();
       if (!res.ok || json.error) throw new Error(json.error ?? '분석 실패');
-      const assets: Asset[] = (json.assets as { ticker: string; weight: number; original?: string }[]).map(a => {
-        const etf = ETF_DATA.find(e => e.ticker === a.ticker);
-        return { ticker: a.ticker, weight: a.weight, launch_year: etf?.launch_year };
-      });
-      setSelectedAssets(assets);
-      setInputType('weight');
-      setAssetAmounts(new Array(assets.length).fill(0));
-      setPortfolioSlots([{ name: '포트폴리오 A', weights: assets.map(a => a.weight) }]);
-      onModeChange('expert');
-      setView('input');
-      if (json.note) setParseNote(json.note);
+
+      // Phase 4: validate each ticker against etf-data.json
+      const KNOWN_EXTRA = new Set(['CASH']); // non-ETF tickers we explicitly support
+      const parsed: ParsedAsset[] = (
+        json.assets as { ticker: string; weight: number; original?: string }[]
+      ).map(a => ({
+        ticker: a.ticker,
+        weight: a.weight,
+        original: a.original ?? a.ticker,
+        knownTicker: !!ETF_DATA.find(e => e.ticker === a.ticker) || KNOWN_EXTRA.has(a.ticker),
+      }));
+
+      // Phase 3: show confirmation dialog instead of applying immediately
+      setParseConfirm({ assets: parsed, note: json.note ?? null });
     } catch (err: unknown) {
       setParseError(err instanceof Error ? err.message : '이미지 분석 중 오류가 발생했습니다.');
     } finally {
@@ -489,26 +513,26 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const beginnerTotalAmount = Object.values(beginnerAmounts).reduce((a, b) => a + b, 0);
 
   const handleBeginnerBacktest = () => {
+    let assets: Asset[];
     if (inputType === 'weight') {
-      const assets: Asset[] = Object.entries(beginnerWeights)
+      assets = Object.entries(beginnerWeights)
         .filter(([, w]) => w > 0)
         .map(([ticker, weight]) => ({
           ticker, weight,
           launch_year: ETF_DATA.find(e => e.ticker === ticker)?.launch_year ?? 'Unknown',
         }));
-      onBacktest(assets, rbMonths);
     } else {
       const total = beginnerTotalAmount;
       if (total <= 0) return;
-      const assets: Asset[] = Object.entries(beginnerAmounts)
+      assets = Object.entries(beginnerAmounts)
         .filter(([, a]) => a > 0)
         .map(([ticker, amount]) => ({
           ticker,
           weight: (amount / total) * 100,
           launch_year: ETF_DATA.find(e => e.ticker === ticker)?.launch_year ?? 'Unknown',
         }));
-      onBacktest(assets, rbMonths);
     }
+    checkAndRun(assets, a => onBacktest(a, rbMonths));
   };
 
   // PC Multi-portfolio helpers
@@ -552,13 +576,15 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const handlePCBacktest = () => {
     if (portfolioSlots.length === 1) {
       const assets = selectedAssets.map((a, ai) => ({ ...a, weight: portfolioSlots[0].weights[ai] ?? 0 })).filter(a => a.weight > 0);
-      onBacktest(assets, rbMonths);
+      checkAndRun(assets, a => onBacktest(a, rbMonths));
     } else if (onMultiBacktest) {
       const slots: PortfolioSlot[] = portfolioSlots.map(s => ({
         name: s.name,
         assets: selectedAssets.map((a, ai) => ({ ...a, weight: s.weights[ai] ?? 0 })),
       }));
-      onMultiBacktest(slots, rbMonths);
+      // For multi-slot, check first slot assets for short history warning
+      const firstSlotAssets = slots[0].assets.filter(a => a.weight > 0);
+      checkAndRun(firstSlotAssets, () => onMultiBacktest(slots, rbMonths));
     }
   };
 
@@ -601,6 +627,26 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const expertAmountTotal = assetAmounts.reduce((a, b) => a + b, 0);
   const currentTotal = mode === 'beginner' ? beginnerTotal : totalWeight;
   const currentTotalAmount = mode === 'beginner' ? beginnerTotalAmount : expertAmountTotal;
+
+  // ── Short-history warning ─────────────────────────────────────────────────
+  const CURRENT_YEAR = new Date().getFullYear();
+  const [shortHistoryWarning, setShortHistoryWarning] = useState<{
+    shortAssets: Asset[];
+    allAssets: Asset[];
+    pendingAction: (assetsToRun: Asset[]) => void;
+  } | null>(null);
+
+  const checkAndRun = (assets: Asset[], action: (a: Asset[]) => void) => {
+    const short = assets.filter(a => {
+      const yr = parseInt(a.launch_year ?? '0');
+      return yr > 0 && yr !== parseInt('Unknown') && (CURRENT_YEAR - yr) < 10;
+    });
+    if (short.length > 0) {
+      setShortHistoryWarning({ shortAssets: short, allAssets: assets, pendingAction: action });
+    } else {
+      action(assets);
+    }
+  };
 
   // ── Landing view ──────────────────────────────────────────────────────────
   if (view === 'landing') {
@@ -662,6 +708,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   }
 
   return (
+    <>
     <div className="flex flex-col animate-fade-in">
 
       {/* ── Sticky header: always visible while scrolling ── */}
@@ -702,8 +749,10 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </button>
         </div>
 
-        {/* Compact progress bar */}
-        <CompactProgressBar total={currentTotal} inputType={inputType} totalAmount={currentTotalAmount} />
+        {/* Compact progress bar — hidden on PC when expert mode (each slot card shows its own) */}
+        <div className={cn(mode === 'expert' && 'md:hidden')}>
+          <CompactProgressBar total={currentTotal} inputType={inputType} totalAmount={currentTotalAmount} />
+        </div>
       </div>
 
       {/* ── Scrollable content ── */}
@@ -1054,5 +1103,123 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
 
       </div>
     </div>
+
+    {/* ── Parse-portfolio confirmation dialog ──────────────────────────────── */}
+    <Dialog open={!!parseConfirm} onOpenChange={open => { if (!open) setParseConfirm(null); }}>
+      <DialogContent className="max-w-sm rounded-2xl max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <ImagePlus size={18} className="text-primary" />
+            이미지 분석 결과 확인
+          </DialogTitle>
+          <DialogDescription asChild>
+            <div className="text-sm text-muted-foreground">
+              아래 매핑이 맞는지 확인 후 적용해주세요.
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="overflow-y-auto flex-1 space-y-1 pr-1">
+          {parseConfirm?.assets.map((a, i) => (
+            <div
+              key={i}
+              className={cn(
+                'flex items-center justify-between rounded-lg px-3 py-2 text-sm',
+                a.knownTicker ? 'bg-muted' : 'bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700'
+              )}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                {a.knownTicker
+                  ? <CheckCircle2 size={14} className="text-green-500 shrink-0" />
+                  : <XCircle size={14} className="text-amber-500 shrink-0" />
+                }
+                <div className="min-w-0">
+                  <span className="font-mono font-bold">{a.ticker}</span>
+                  {!a.knownTicker && (
+                    <span className="ml-1 text-xs text-amber-600 dark:text-amber-400">미지원</span>
+                  )}
+                  <p className="text-xs text-muted-foreground truncate">{a.original}</p>
+                </div>
+              </div>
+              <span className="font-semibold tabular-nums ml-2 shrink-0">
+                {a.weight.toFixed(1)}%
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {parseConfirm?.note && (
+          <p className="text-xs text-muted-foreground bg-muted rounded-lg px-3 py-2 mt-1">
+            💡 {parseConfirm.note}
+          </p>
+        )}
+
+        {parseConfirm?.assets.some(a => !a.knownTicker) && (
+          <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+            <AlertTriangle size={12} />
+            미지원 티커는 적용 후 직접 수정해주세요.
+          </p>
+        )}
+
+        <div className="flex gap-2 mt-2">
+          <Button variant="outline" className="flex-1" onClick={() => setParseConfirm(null)}>
+            취소
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={() => {
+              if (parseConfirm) {
+                applyParsedAssets(parseConfirm.assets);
+                setParseConfirm(null);
+              }
+            }}
+          >
+            이 비중으로 적용
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+
+    {/* ── Short-history warning dialog ─────────────────────────────────────── */}
+    <Dialog open={!!shortHistoryWarning} onOpenChange={open => { if (!open) setShortHistoryWarning(null); }}>
+      <DialogContent className="max-w-sm rounded-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-amber-500">
+            <AlertTriangle size={20} />
+            데이터 부족 경고
+          </DialogTitle>
+          <DialogDescription asChild>
+            <div className="text-sm text-muted-foreground mt-1">
+              <p>선택한 자산 중 상장 10년 미만인 항목이 있어 백테스트 결과가 제한될 수 있습니다.</p>
+              <ul className="mt-2 space-y-1">
+                {shortHistoryWarning?.shortAssets.map(a => (
+                  <li key={a.ticker} className="flex justify-between font-mono text-xs bg-muted rounded px-2 py-1">
+                    <span className="font-semibold">{a.ticker}</span>
+                    <span className="text-muted-foreground">상장 {a.launch_year}년</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex gap-2 mt-2">
+          <Button variant="outline" className="flex-1" onClick={() => setShortHistoryWarning(null)}>
+            취소
+          </Button>
+          <Button
+            className="flex-1 bg-amber-500 hover:bg-amber-600 text-white"
+            onClick={() => {
+              if (shortHistoryWarning) {
+                shortHistoryWarning.pendingAction(shortHistoryWarning.allAssets);
+                setShortHistoryWarning(null);
+              }
+            }}
+          >
+            그래도 분석하기
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

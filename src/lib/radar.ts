@@ -57,3 +57,15 @@ export function buildRadar(portfolio: Metrics, benchmark?: Metrics): RadarEntry[
     fullMark: 100,
   }));
 }
+
+export function buildMultiRadar(
+  portfolios: Metrics[],
+  benchmark?: Metrics
+): Record<string, string | number | undefined>[] {
+  return RADAR_SUBJECTS.map(subject => {
+    const entry: Record<string, string | number | undefined> = { subject, fullMark: 100 };
+    portfolios.forEach((p, i) => { entry[`P${i}`] = normalize(p[METRIC_KEY[subject]], subject); });
+    if (benchmark) entry['BM'] = normalize(benchmark[METRIC_KEY[subject]], subject);
+    return entry;
+  });
+}

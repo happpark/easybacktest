@@ -450,6 +450,11 @@
     "launch_year": "2007"
   },
   {
+    "ticker": "BITO",
+    "name": "ProShares Bitcoin Strategy ETF",
+    "launch_year": "2021"
+  },
+  {
     "ticker": "BKLN",
     "name": "Invesco Senior Loan ETF",
     "launch_year": "2011"
@@ -1540,6 +1545,11 @@
     "launch_year": "2008"
   },
   {
+    "ticker": "FBTC",
+    "name": "Fidelity Wise Origin Bitcoin Fund",
+    "launch_year": "2024"
+  },
+  {
     "ticker": "FBND",
     "name": "Fidelity Total Bond ETF",
     "launch_year": "2014"
@@ -1748,6 +1758,11 @@
     "ticker": "GEV",
     "name": "GE Vernova Inc.",
     "launch_year": "2024"
+  },
+  {
+    "ticker": "GBTC",
+    "name": "Grayscale Bitcoin Trust",
+    "launch_year": "2015"
   },
   {
     "ticker": "GILD",
@@ -2030,6 +2045,11 @@
     "launch_year": "2007"
   },
   {
+    "ticker": "IBIT",
+    "name": "iShares Bitcoin Trust ETF",
+    "launch_year": "2024"
+  },
+  {
     "ticker": "IBM",
     "name": "International Business Machines Corporation",
     "launch_year": "1962"
@@ -2078,6 +2098,11 @@
     "ticker": "IEMG",
     "name": "iShares Core MSCI Emerging Markets ETF",
     "launch_year": "2012"
+  },
+  {
+    "ticker": "IEI",
+    "name": "iShares 3-7 Year Treasury Bond ETF",
+    "launch_year": "2007"
   },
   {
     "ticker": "IEX",
@@ -3490,6 +3515,16 @@
     "launch_year": "2011"
   },
   {
+    "ticker": "SCHF",
+    "name": "Schwab International Equity ETF",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "SCHG",
+    "name": "Schwab U.S. Large-Cap Growth ETF",
+    "launch_year": "2009"
+  },
+  {
     "ticker": "SCHH",
     "name": "Schwab U.S. REIT ETF",
     "launch_year": "2011"
@@ -4703,5 +4738,15 @@
     "ticker": "ZTS",
     "name": "Zoetis Inc.",
     "launch_year": "2013"
+  },
+  {
+    "ticker": "BTC-USD",
+    "name": "Bitcoin / USD",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ETH-USD",
+    "name": "Ethereum / USD",
+    "launch_year": "2017"
   }
 ]
