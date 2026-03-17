@@ -342,11 +342,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const [parseNote, setParseNote] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    // reset input so same file can be re-selected
-    e.target.value = '';
+  const uploadImageFile = async (file: File) => {
     setParsing(true);
     setParseError(null);
     setParseNote(null);
@@ -363,6 +359,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       setSelectedAssets(assets);
       setInputType('weight');
       setAssetAmounts(new Array(assets.length).fill(0));
+      setPortfolioSlots([{ name: '포트폴리오 A', weights: assets.map(a => a.weight) }]);
       onModeChange('expert');
       setView('input');
       if (json.note) setParseNote(json.note);
@@ -373,13 +370,34 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     }
   };
 
-  // Multi-portfolio state
-  const [slotNames, setSlotNames] = useState(['포트폴리오 A', '포트폴리오 B', '포트폴리오 C']);
-  // slotWeights[slotIdx][assetIdx] = weight
-  const [slotWeights, setSlotWeights] = useState<number[][]>([
-    [40, 30, 30],
-    [60, 20, 20],
-    [33, 34, 33],
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    await uploadImageFile(file);
+  };
+
+  // Clipboard paste → image upload
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) { uploadImageFile(file); }
+          break;
+        }
+      }
+    };
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // PC Multi-portfolio slots
+  const [portfolioSlots, setPortfolioSlots] = useState<{ name: string; weights: number[] }[]>([
+    { name: '포트폴리오 A', weights: [40, 30, 30] },
   ]);
 
   // Rebalancing
@@ -399,13 +417,13 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preloadedAssets]);
 
-  // Sync slotWeights when selectedAssets length changes
+  // Sync portfolioSlots and assetAmounts when selectedAssets length changes
   useEffect(() => {
-    setSlotWeights(prev => prev.map(slot => {
-      const next = [...slot];
+    setPortfolioSlots(prev => prev.map(slot => {
+      const next = [...slot.weights];
       while (next.length < selectedAssets.length) next.push(0);
       while (next.length > selectedAssets.length) next.pop();
-      return next;
+      return { ...slot, weights: next };
     }));
     setAssetAmounts(prev => {
       const next = [...prev];
@@ -493,16 +511,32 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     }
   };
 
-  // Multi-portfolio helpers
-  const slotTotals = slotWeights.map(sw => sw.reduce((a, b) => a + b, 0));
+  // PC Multi-portfolio helpers
+  const slotTotals = portfolioSlots.map(s => s.weights.reduce((a, b) => a + b, 0));
   const allSlotsValid = slotTotals.every(t => t === 100);
 
   const updateSlotWeight = (slotIdx: number, assetIdx: number, val: number) => {
-    setSlotWeights(prev => {
-      const next = prev.map(s => [...s]);
-      next[slotIdx][assetIdx] = Math.min(100, Math.max(0, val));
+    setPortfolioSlots(prev => prev.map((s, si) =>
+      si === slotIdx ? { ...s, weights: s.weights.map((w, ai) => ai === assetIdx ? Math.min(100, Math.max(0, val)) : w) } : s
+    ));
+  };
+
+  const copySlot = (slotIdx: number) => {
+    setPortfolioSlots(prev => {
+      const src = prev[slotIdx];
+      const names = prev.map(s => s.name);
+      const base = src.name.replace(/ \(복사\d*\)$/, '');
+      let suffix = 1;
+      while (names.includes(suffix === 1 ? `${base} (복사)` : `${base} (복사${suffix})`)) suffix++;
+      const newName = suffix === 1 ? `${base} (복사)` : `${base} (복사${suffix})`;
+      const next = [...prev];
+      next.splice(slotIdx + 1, 0, { name: newName, weights: [...src.weights] });
       return next;
     });
+  };
+
+  const deleteSlot = (slotIdx: number) => {
+    setPortfolioSlots(prev => prev.filter((_, i) => i !== slotIdx));
   };
 
   const distributeSlotEvenly = (slotIdx: number) => {
@@ -510,20 +544,22 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     if (n === 0) return;
     const share = Math.floor(100 / n);
     const rem = 100 - share * n;
-    setSlotWeights(prev => {
-      const next = prev.map(s => [...s]);
-      next[slotIdx] = next[slotIdx].map((_, i) => share + (i === 0 ? rem : 0));
-      return next;
-    });
+    setPortfolioSlots(prev => prev.map((s, si) =>
+      si === slotIdx ? { ...s, weights: s.weights.map((_, i) => share + (i === 0 ? rem : 0)) } : s
+    ));
   };
 
-  const handleMultiBacktestSubmit = () => {
-    if (!onMultiBacktest) return;
-    const slots: PortfolioSlot[] = slotNames.map((name, si) => ({
-      name,
-      assets: selectedAssets.map((a, ai) => ({ ...a, weight: slotWeights[si][ai] })),
-    }));
-    onMultiBacktest(slots, rbMonths);
+  const handlePCBacktest = () => {
+    if (portfolioSlots.length === 1) {
+      const assets = selectedAssets.map((a, ai) => ({ ...a, weight: portfolioSlots[0].weights[ai] ?? 0 })).filter(a => a.weight > 0);
+      onBacktest(assets, rbMonths);
+    } else if (onMultiBacktest) {
+      const slots: PortfolioSlot[] = portfolioSlots.map(s => ({
+        name: s.name,
+        assets: selectedAssets.map((a, ai) => ({ ...a, weight: s.weights[ai] ?? 0 })),
+      }));
+      onMultiBacktest(slots, rbMonths);
+    }
   };
 
   const TickerDropdown = ({ forIndex }: { forIndex: number }) => {
@@ -875,110 +911,118 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </Button>
             </div>
 
-            {/* PC Multi-Portfolio Mode */}
+            {/* PC Portfolio Slots */}
             <div className="hidden md:flex flex-col gap-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">다중 포트폴리오 비교</h3>
-              </div>
 
-              {/* Table */}
-              <div className="glass-morphism rounded-2xl border border-white/5 overflow-visible">
-                {/* Header row: asset col + 3 portfolio name cols */}
-                <div className="grid grid-cols-4 border-b border-white/10">
-                  <div className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">자산</div>
-                  {slotNames.map((name, si) => (
-                    <div key={si} className="px-4 py-3 border-l border-white/5">
+              {portfolioSlots.map((slot, si) => {
+                const total = slotTotals[si] ?? 0;
+                return (
+                  <div key={si} className="glass-morphism rounded-2xl border border-white/5 p-5 flex flex-col gap-4">
+                    {/* Slot header */}
+                    <div className="flex items-center gap-3">
                       <input
-                        value={name}
-                        onChange={e => setSlotNames(prev => { const n = [...prev]; n[si] = e.target.value; return n; })}
-                        className="w-full bg-transparent text-xs font-bold text-primary outline-none border-b border-primary/20 focus:border-primary/60 pb-0.5"
+                        value={slot.name}
+                        onChange={e => setPortfolioSlots(prev => prev.map((s, i) => i === si ? { ...s, name: e.target.value } : s))}
+                        className="bg-transparent text-sm font-bold text-primary outline-none border-b border-primary/20 focus:border-primary/60 pb-0.5 w-36"
                       />
-                      <div className={cn("text-[10px] mt-1", slotTotals[si] === 100 ? 'text-[#7AE9AB]' : slotTotals[si] > 100 ? 'text-destructive' : 'text-muted-foreground')}>
-                        {slotTotals[si]}% {slotTotals[si] === 100 ? '✓' : `(${100 - slotTotals[si]}% 남음)`}
+                      <div className={cn("text-xs font-bold font-mono", total === 100 ? 'text-[#7AE9AB]' : total > 100 ? 'text-destructive' : 'text-muted-foreground')}>
+                        {total}% {total === 100 ? '✓' : `(${100 - total}% 남음)`}
                       </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Asset rows */}
-                {selectedAssets.map((asset, ai) => (
-                  <div key={`${asset.ticker}-${ai}`} className="grid grid-cols-4 border-b border-white/5 last:border-0 hover:bg-white/2">
-                    <div className="px-4 py-3 flex items-center gap-2">
-                      <div className="flex flex-col gap-0.5 flex-1 min-w-0 relative">
-                        {editingIndex === ai ? (
-                          <>
-                            <input autoFocus value={editingValue}
-                              onChange={e => setEditingValue(e.target.value.toUpperCase())}
-                              onBlur={() => { blurTimerRef.current = setTimeout(() => commitEdit(editingValue), 150); }}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter') { e.preventDefault(); commitEdit(editingValue); }
-                                if (e.key === 'Escape') { clearTimeout(blurTimerRef.current); setEditingIndex(null); setEditingValue(''); }
-                              }}
-                              className="font-bold text-sm bg-transparent border-b border-primary/60 outline-none w-24 text-foreground"
-                            />
-                            <TickerDropdown forIndex={ai} />
-                          </>
-                        ) : (
-                          <button onClick={() => { setEditingIndex(ai); setEditingValue(asset.ticker); }}
-                            className="font-bold text-sm text-left flex items-center gap-1 group w-fit"
-                          >
-                            {asset.ticker}
-                            <Pencil size={9} className="text-muted-foreground/40 group-hover:text-primary transition-colors" />
-                          </button>
-                        )}
-                        <span className="text-[10px] text-muted-foreground">
-                          {asset.launch_year && asset.launch_year !== 'Unknown' ? `Since ${asset.launch_year}` : 'Custom'}
-                        </span>
-                      </div>
-                      <button onClick={() => removeAsset(ai)} className="p-1 text-muted-foreground/20 hover:text-destructive transition-colors">
-                        <Trash2 size={13} />
+                      <button onClick={() => distributeSlotEvenly(si)}
+                        className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10 ml-1">
+                        <Shuffle size={9} />균등
                       </button>
+                      <div className="flex-1" />
+                      {portfolioSlots.length > 1 && (
+                        <button onClick={() => deleteSlot(si)} className="p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors rounded-lg hover:bg-destructive/10">
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </div>
-                    {slotWeights.map((sw, si) => (
-                      <div key={si} className="px-4 py-3 border-l border-white/5 flex items-center">
-                        {inputType === 'weight'
-                          ? <WeightStepper value={sw[ai] ?? 0} onChange={v => updateSlotWeight(si, ai, v)} highlight={(sw[ai] ?? 0) > 0} />
-                          : <AmountStepper value={assetAmounts[ai] ?? 0} onChange={v => setAssetAmounts(prev => { const n=[...prev]; n[ai]=v; return n; })} highlight={(assetAmounts[ai] ?? 0) > 0} />}
-                      </div>
-                    ))}
-                  </div>
-                ))}
 
-                {/* Add row */}
-                <div className="px-4 py-2 border-t border-white/5">
-                  {editingIndex === -1 ? (
-                    <div className="relative flex items-center gap-2">
-                      <input autoFocus value={editingValue}
-                        onChange={e => setEditingValue(e.target.value.toUpperCase())}
-                        onBlur={() => { blurTimerRef.current = setTimeout(() => commitEdit(editingValue), 150); }}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') { e.preventDefault(); commitEdit(editingValue); }
-                          if (e.key === 'Escape') { clearTimeout(blurTimerRef.current); setEditingIndex(null); setEditingValue(''); }
-                        }}
-                        placeholder="티커 입력 (예: SPY)"
-                        className="font-bold text-sm bg-transparent border-b border-primary/60 outline-none w-36 text-foreground placeholder:text-muted-foreground/40"
-                      />
-                      <TickerDropdown forIndex={-1} />
+                    {/* Horizontal ticker cards */}
+                    <div className="flex flex-wrap gap-2">
+                      {selectedAssets.map((asset, ai) => (
+                        <div key={`${asset.ticker}-${ai}`} className="flex flex-col items-center gap-2 bg-black/20 border border-white/5 rounded-xl px-3 py-3 min-w-[100px]">
+                          {/* Ticker label — editable only on first slot */}
+                          <div className="relative w-full flex justify-center">
+                            {si === 0 ? (
+                              editingIndex === ai ? (
+                                <>
+                                  <input autoFocus value={editingValue}
+                                    onChange={e => setEditingValue(e.target.value.toUpperCase())}
+                                    onBlur={() => { blurTimerRef.current = setTimeout(() => commitEdit(editingValue), 150); }}
+                                    onKeyDown={e => {
+                                      if (e.key === 'Enter') { e.preventDefault(); commitEdit(editingValue); }
+                                      if (e.key === 'Escape') { clearTimeout(blurTimerRef.current); setEditingIndex(null); setEditingValue(''); }
+                                    }}
+                                    className="font-bold text-xs bg-transparent border-b border-primary/60 outline-none w-16 text-center text-foreground"
+                                  />
+                                  <TickerDropdown forIndex={ai} />
+                                </>
+                              ) : (
+                                <button onClick={() => { setEditingIndex(ai); setEditingValue(asset.ticker); }}
+                                  className="font-bold text-xs flex items-center gap-0.5 group"
+                                >
+                                  {asset.ticker}
+                                  <Pencil size={8} className="text-muted-foreground/30 group-hover:text-primary transition-colors" />
+                                </button>
+                              )
+                            ) : (
+                              <span className="font-bold text-xs">{asset.ticker}</span>
+                            )}
+                          </div>
+                          <span className="text-[9px] text-muted-foreground">
+                            {asset.launch_year && asset.launch_year !== 'Unknown' ? `Since ${asset.launch_year}` : 'Custom'}
+                          </span>
+                          <WeightStepper value={slot.weights[ai] ?? 0} onChange={v => updateSlotWeight(si, ai, v)} highlight={(slot.weights[ai] ?? 0) > 0} />
+                          {/* Remove ticker (only on first slot) */}
+                          {si === 0 && (
+                            <button onClick={() => removeAsset(ai)} className="text-muted-foreground/20 hover:text-destructive transition-colors">
+                              <Trash2 size={11} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Add ticker — only on first slot */}
+                      {si === 0 && (
+                        <div className="relative">
+                          {editingIndex === -1 ? (
+                            <div className="flex flex-col gap-2 bg-primary/5 border border-primary/20 rounded-xl px-3 py-3 min-w-[100px] items-center">
+                              <input autoFocus value={editingValue}
+                                onChange={e => setEditingValue(e.target.value.toUpperCase())}
+                                onBlur={() => { blurTimerRef.current = setTimeout(() => commitEdit(editingValue), 150); }}
+                                onKeyDown={e => {
+                                  if (e.key === 'Enter') { e.preventDefault(); commitEdit(editingValue); }
+                                  if (e.key === 'Escape') { clearTimeout(blurTimerRef.current); setEditingIndex(null); setEditingValue(''); }
+                                }}
+                                placeholder="SPY"
+                                className="font-bold text-xs bg-transparent border-b border-primary/60 outline-none w-16 text-center text-foreground placeholder:text-muted-foreground/40"
+                              />
+                              <TickerDropdown forIndex={-1} />
+                            </div>
+                          ) : (
+                            <button onClick={() => { setEditingIndex(-1); setEditingValue(''); }}
+                              className="flex flex-col items-center justify-center gap-1 bg-black/20 border border-dashed border-white/10 rounded-xl px-3 py-3 min-w-[100px] min-h-[90px] hover:border-primary/40 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary"
+                            >
+                              <Plus size={16} />
+                              <span className="text-[10px] font-medium">자산 추가</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <button onClick={() => { setEditingIndex(-1); setEditingValue(''); }}
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-1"
+
+                    {/* Copy button */}
+                    <button onClick={() => copySlot(si)}
+                      className="self-start flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary border border-white/10 hover:border-primary/30 hover:bg-primary/5 transition-all px-3 py-1.5 rounded-lg font-semibold"
                     >
-                      <Plus size={14} />자산 추가
+                      <Plus size={11} />이 포트폴리오 복사
                     </button>
-                  )}
-                </div>
-
-                {/* Totals row */}
-                <div className="grid grid-cols-4 border-t border-white/10 bg-white/[0.03]">
-                  <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase">합계</div>
-                  {slotTotals.map((t, si) => (
-                    <div key={si} className={cn("px-4 py-2 border-l border-white/5 text-sm font-black font-mono", t === 100 ? 'text-[#7AE9AB]' : t > 100 ? 'text-destructive' : 'text-foreground')}>
-                      {t}%
-                    </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                );
+              })}
 
               <RebalancingPicker
                 options={[
@@ -994,14 +1038,15 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               />
 
               <Button
-                onClick={handleMultiBacktestSubmit}
-                disabled={!allSlotsValid || selectedAssets.length === 0 || !onMultiBacktest}
+                onClick={handlePCBacktest}
+                disabled={!allSlotsValid || selectedAssets.length === 0}
                 className={cn(
                   "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
                   allSlotsValid && selectedAssets.length > 0 ? "bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 scale-[1.02]" : "bg-muted cursor-not-allowed opacity-50"
                 )}
               >
-                <TrendingUp className="mr-3 w-6 h-6" />3개 포트폴리오 비교 분석
+                <TrendingUp className="mr-3 w-6 h-6" />
+                {portfolioSlots.length > 1 ? `${portfolioSlots.length}개 포트폴리오 비교 분석` : '분석 시작하기'}
               </Button>
             </div>
           </>
