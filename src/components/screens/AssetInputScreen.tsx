@@ -497,42 +497,36 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           <p className="text-muted-foreground text-xs">포트폴리오를 구성하고 과거 수익률을 분석하세요.</p>
         </header>
 
-        {/* Mode toggle */}
-        <div className="flex bg-black/30 rounded-xl p-1 border border-white/5">
-          {(['beginner', 'expert'] as const).map(m => (
-            <button key={m} onClick={() => onModeChange(m)}
-              className={cn(
-                "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200",
-                mode === m ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {m === 'beginner' ? '초심자' : '전문가'}
-            </button>
-          ))}
+        {/* Mode toggle + Image import — single row */}
+        <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+        <div className="flex items-center gap-2">
+          <div className="flex flex-1 bg-black/30 rounded-xl p-1 border border-white/5">
+            {(['beginner', 'expert'] as const).map(m => (
+              <button key={m} onClick={() => onModeChange(m)}
+                className={cn(
+                  "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200",
+                  mode === m ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {m === 'beginner' ? '초심자' : '전문가'}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => imageInputRef.current?.click()}
+            disabled={parsing}
+            title="이미지로 불러오기 (캡처 / 엑셀 스크린샷)"
+            className="shrink-0 flex items-center justify-center gap-1.5 h-10 px-3 rounded-xl border border-primary/25 bg-primary/5 hover:bg-primary/15 hover:border-primary/50 transition-all text-[11px] font-semibold text-primary disabled:opacity-40"
+          >
+            {parsing ? <Loader2 size={14} className="animate-spin" /> : <ImagePlus size={14} />}
+            <span className="hidden sm:inline">{parsing ? '분석 중…' : '이미지'}</span>
+          </button>
         </div>
+        {parseError && <p className="text-[11px] text-destructive text-center -mt-1">{parseError}</p>}
+        {parseNote && <p className="text-[11px] text-muted-foreground text-center -mt-1">💡 {parseNote}</p>}
 
         {/* Compact progress bar — always visible while scrolling ETF list */}
         <CompactProgressBar total={currentTotal} />
-
-        {/* Image import button */}
-        <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-        <button
-          onClick={() => imageInputRef.current?.click()}
-          disabled={parsing}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 transition-all text-xs font-semibold text-primary disabled:opacity-50"
-        >
-          {parsing ? (
-            <><Loader2 size={14} className="animate-spin" /> AI가 포트폴리오 분석 중...</>
-          ) : (
-            <><ImagePlus size={14} /> 이미지로 불러오기 (캡처 / 엑셀 스크린샷)</>
-          )}
-        </button>
-        {parseError && (
-          <p className="text-[11px] text-destructive text-center -mt-2">{parseError}</p>
-        )}
-        {parseNote && (
-          <p className="text-[11px] text-muted-foreground text-center -mt-2">💡 {parseNote}</p>
-        )}
       </div>
 
       {/* ── Scrollable content ── */}

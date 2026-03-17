@@ -582,8 +582,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <div className="md:grid md:grid-cols-[220px_1fr] md:gap-3 flex flex-col gap-3">
 
         {/* CAGR + MDD stacked */}
-        <div className="grid grid-cols-2 gap-3 md:flex md:flex-col">
-          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
+        <div className="grid grid-cols-2 gap-3 md:flex md:flex-col md:h-full">
+          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
               <TrendingUp size={14} className="text-[#7AE9AB]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">CAGR (수익률)</span>
@@ -595,7 +595,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             </div>
           </div>
 
-          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1">
+          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
               <ShieldAlert size={14} className="text-[#F25B5B]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
