@@ -20,6 +20,7 @@ const BacktestInputSchema = z.object({
     weight: z.number(),
     launch_year: z.string().optional(),
   })),
+  rebalancingMonths: z.number().optional(),
 });
 export type BacktestInput = z.infer<typeof BacktestInputSchema>;
 
@@ -49,6 +50,7 @@ const BacktestOutputSchema = z.object({
     fullMark: z.number().default(100),
   })),
   history: z.array(z.object({ date: z.string(), value: z.number() })),
+  benchmark_history: z.array(z.object({ date: z.string(), value: z.number() })).optional(),
   aiInsight: z.string(),
 });
 export type BacktestOutput = z.infer<typeof BacktestOutputSchema>;
@@ -70,12 +72,32 @@ function normalize(val: number, subject: string): number {
 async function fetchAdjClose(ticker: string): Promise<Map<string, number>> {
   const map = new Map<string, number>();
   if (ticker === 'CASH') return map;
-  const today = new Date();
-  const rows = await yahooFinance.historical(
-    ticker,
-    { period1: '1970-01-01', period2: today, interval: '1d' },
-    { validateResult: false },
-  );
+
+  // Use yesterday as period2 to avoid null close on partially-traded today.
+  // Crypto trades 24/7, so if yesterday's data is still partial we retry with 2 days ago.
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+  let rows;
+  try {
+    rows = await yahooFinance.historical(
+      ticker,
+      { period1: '1970-01-01', period2: yesterday, interval: '1d' },
+      { validateResult: false },
+    );
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (!msg.includes('null values')) throw e;
+    // Crypto 24/7: partial today still included — retry one day earlier
+    rows = await yahooFinance.historical(
+      ticker,
+      { period1: '1970-01-01', period2: twoDaysAgo, interval: '1d' },
+      { validateResult: false },
+    );
+  }
+
   for (const row of rows) {
     const price = (row as Record<string, unknown>).adjClose ?? row.close;
     if (typeof price === 'number' && price > 0) {
@@ -90,11 +112,21 @@ async function fetchDivYield(ticker: string): Promise<number> {
   try {
     const s = await yahooFinance.quoteSummary(
       ticker,
-      { modules: ['summaryDetail'] },
+      { modules: ['summaryDetail', 'defaultKeyStatistics'] },
       { validateResult: false },
     );
-    const dy = (s.summaryDetail as Record<string, unknown> | undefined)?.trailingAnnualDividendYield;
-    return typeof dy === 'number' ? dy * 100 : 0;
+    // trailingAnnualDividendYield is a decimal (e.g. 0.035 → 3.5%)
+    const sd = (s as Record<string, unknown>).summaryDetail as Record<string, unknown> | undefined;
+    const dy = sd?.trailingAnnualDividendYield;
+    if (typeof dy === 'number' && dy > 0) return dy * 100;
+
+    // Fallback: use rate / price for ETFs where yield isn't populated
+    const rate = sd?.trailingAnnualDividendRate;
+    const price = sd?.previousClose ?? sd?.regularMarketPreviousClose;
+    if (typeof rate === 'number' && typeof price === 'number' && price > 0 && rate > 0) {
+      return (rate / price) * 100;
+    }
+    return 0;
   } catch {
     return 0;
   }
@@ -189,19 +221,37 @@ export async function runBacktest(input: BacktestInput) {
   }
   const n = dates.length;
 
-  // Build daily returns
+  const rebalancingMonths = input.rebalancingMonths ?? 12;
+
+  // Build daily returns with periodic rebalancing.
+  // Track actual asset values so weights drift between rebalancing dates.
   const portDaily: number[] = [];
   const spyDaily: number[] = [];
+  let assetValues = weights.map(w => w); // proportional values, sum = 1
+
   for (let i = 1; i < n; i++) {
-    let portRet = 0;
+    const totalBefore = assetValues.reduce((a, b) => a + b, 0);
+
+    // Apply daily price changes to each position
     for (let j = 0; j < tickers.length; j++) {
       const t = tickers[j];
       const prev = t === 'CASH' ? 1 : pm[t].get(dates[i - 1])!;
       const curr = t === 'CASH' ? 1 : pm[t].get(dates[i])!;
-      portRet += weights[j] * (curr / prev - 1);
+      assetValues[j] *= curr / prev;
     }
-    portDaily.push(portRet);
+
+    const totalAfter = assetValues.reduce((a, b) => a + b, 0);
+    portDaily.push(totalAfter / totalBefore - 1);
     spyDaily.push(pm['SPY'].get(dates[i])! / pm['SPY'].get(dates[i - 1])! - 1);
+
+    // Rebalance at period boundary (first trading day of a new period)
+    const d0 = new Date(dates[i - 1]);
+    const d1 = new Date(dates[i]);
+    const p0 = Math.floor((d0.getUTCFullYear() * 12 + d0.getUTCMonth()) / rebalancingMonths);
+    const p1 = Math.floor((d1.getUTCFullYear() * 12 + d1.getUTCMonth()) / rebalancingMonths);
+    if (p1 > p0) {
+      assetValues = weights.map(w => w * totalAfter);
+    }
   }
 
   // Cumulative returns
@@ -236,9 +286,11 @@ export async function runBacktest(input: BacktestInput) {
   // History — up to 100 sampled points
   const nS = Math.min(portCum.length, 100);
   const history = [{ date: dates[0], value: 1000.0 }];
+  const benchmark_history = [{ date: dates[0], value: 1000.0 }];
   for (let i = 0; i < nS; i++) {
     const idx = Math.round(i * (portCum.length - 1) / Math.max(nS - 1, 1));
     history.push({ date: dates[idx + 1], value: Math.round(portCum[idx] * 1000 * 100) / 100 });
+    benchmark_history.push({ date: dates[idx + 1], value: Math.round(spyCum[idx] * 1000 * 100) / 100 });
   }
 
   const fmt = (d: string) => d.substring(0, 7).replace('-', '.');
@@ -252,6 +304,7 @@ export async function runBacktest(input: BacktestInput) {
     period: `${fmt(dates[0])} ~ ${fmt(dates[n - 1])}`,
     radar,
     history,
+    benchmark_history,
   };
 }
 
