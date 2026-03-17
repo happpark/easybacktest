@@ -16,13 +16,30 @@ export interface Asset {
   launch_year?: string;
 }
 
+export interface PortfolioSlot {
+  name: string;
+  assets: Asset[];
+}
+
 export default function AlphaFlowApp() {
   const [activeScreen, setActiveScreen] = useState<Screen>('input');
   const [portfolioData, setPortfolioData] = useState<Asset[] | null>(null);
   const [preloadedAssets, setPreloadedAssets] = useState<Asset[] | null>(null);
+  const [multiPortfolioData, setMultiPortfolioData] = useState<PortfolioSlot[] | null>(null);
+  const [rebalancingMonths, setRebalancingMonths] = useState<number>(12);
+  const [inputMode, setInputMode] = useState<'beginner' | 'expert'>('beginner');
 
-  const handleBacktest = (data: Asset[]) => {
+  const handleBacktest = (data: Asset[], rb: number) => {
     setPortfolioData(data);
+    setRebalancingMonths(rb);
+    setMultiPortfolioData(null);
+    setActiveScreen('result');
+  };
+
+  const handleMultiBacktest = (slots: PortfolioSlot[], rb: number) => {
+    setMultiPortfolioData(slots);
+    setRebalancingMonths(rb);
+    setPortfolioData(null);
     setActiveScreen('result');
   };
 
@@ -39,22 +56,25 @@ export default function AlphaFlowApp() {
             onBacktest={handleBacktest}
             preloadedAssets={preloadedAssets}
             onPreloadConsumed={() => setPreloadedAssets(null)}
+            onMultiBacktest={handleMultiBacktest}
+            mode={inputMode}
+            onModeChange={setInputMode}
           />
         );
       case 'result':
-        return <ResultScreen data={portfolioData!} onReset={() => setActiveScreen('input')} />;
+        return <ResultScreen data={portfolioData} multiData={multiPortfolioData} rebalancingMonths={rebalancingMonths} onReset={() => setActiveScreen('input')} />;
       case 'community':
         return <CommunityScreen onLoadPortfolio={handleLoadPortfolio} />;
       case 'mine':
         return <MyPortfoliosScreen onLoad={handleLoadPortfolio} />;
       default:
-        return <AssetInputScreen onBacktest={handleBacktest} />;
+        return <AssetInputScreen onBacktest={handleBacktest} onMultiBacktest={handleMultiBacktest} mode={inputMode} onModeChange={setInputMode} />;
     }
   };
 
   const navItems = [
     { screen: 'input' as Screen, Icon: PlusCircle, label: '구성', disabled: false },
-    { screen: 'result' as Screen, Icon: LayoutDashboard, label: '분석', disabled: !portfolioData },
+    { screen: 'result' as Screen, Icon: LayoutDashboard, label: '분석', disabled: !portfolioData && !multiPortfolioData },
     { screen: 'mine' as Screen, Icon: Bookmark, label: '내 기록', disabled: false },
     { screen: 'community' as Screen, Icon: Users, label: '커뮤니티', disabled: false },
   ];
