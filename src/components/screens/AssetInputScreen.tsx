@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2 } from 'lucide-react';
+import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2, DollarSign, Percent, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import etfDataRaw from '@/lib/etf-data.json';
 import { cn } from '@/lib/utils';
@@ -174,8 +174,60 @@ function WeightStepper({
   );
 }
 
+// ── Amount Stepper ─────────────────────────────────────────────────────────────
+function AmountStepper({ value, onChange, highlight }: { value: number; onChange: (v: number) => void; highlight?: boolean }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const STEP = 500;
+
+  const startEdit = () => { setDraft(value === 0 ? '' : String(value)); setEditing(true); setTimeout(() => inputRef.current?.select(), 0); };
+  const commit = () => { onChange(Math.max(0, parseInt(draft.replace(/,/g, '')) || 0)); setEditing(false); };
+
+  return (
+    <div className="flex items-center gap-1">
+      <button onClick={() => onChange(Math.max(0, value - STEP))}
+        className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 active:scale-95 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all text-lg font-bold select-none">−</button>
+      {editing ? (
+        <input ref={inputRef} type="number" value={draft} onChange={e => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } if (e.key === 'Escape') setEditing(false); }}
+          className="w-20 h-8 text-center font-mono font-bold text-sm bg-black/40 border border-primary/60 rounded-lg outline-none text-foreground" autoFocus />
+      ) : (
+        <button onClick={startEdit} className={cn(
+          "w-20 h-8 rounded-lg font-mono font-bold text-xs transition-all select-none",
+          highlight ? "bg-primary/20 text-primary border border-primary/30"
+            : value > 0 ? "bg-white/5 text-foreground border border-white/10 hover:border-primary/30"
+            : "bg-white/5 text-muted-foreground border border-white/10"
+        )}>
+          ${value > 0 ? value.toLocaleString() : '0'}
+        </button>
+      )}
+      <button onClick={() => onChange(value + STEP)}
+        className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 active:scale-95 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all text-lg font-bold select-none">+</button>
+    </div>
+  );
+}
+
 // ── Compact Progress Bar (for sticky header) ──────────────────────────────────
-function CompactProgressBar({ total }: { total: number }) {
+function CompactProgressBar({ total, inputType, totalAmount }: { total: number; inputType?: 'weight' | 'amount'; totalAmount?: number }) {
+  if (inputType === 'amount') {
+    const amt = totalAmount ?? 0;
+    const hasAmt = amt > 0;
+    return (
+      <div className={cn("rounded-xl border px-3 py-2 flex items-center gap-3 transition-all duration-300",
+        hasAmt ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/10')}>
+        <DollarSign size={14} className={hasAmt ? 'text-primary' : 'text-muted-foreground'} />
+        <span className={cn("text-sm font-black font-mono tabular-nums flex-1", hasAmt ? 'text-primary' : 'text-muted-foreground')}>
+          ${amt.toLocaleString()}
+        </span>
+        <span className={cn("text-xs font-medium", hasAmt ? 'text-primary/70' : 'text-muted-foreground')}>
+          {hasAmt ? '✓ 입력됨' : '금액 입력하세요'}
+        </span>
+      </div>
+    );
+  }
+
   const ok = total === 100;
   const over = total > 100;
   const pct = Math.min(total, 100);
@@ -187,21 +239,12 @@ function CompactProgressBar({ total }: { total: number }) {
       ok ? 'bg-[#7AE9AB]/10 border-[#7AE9AB]/30' : 'bg-white/5 border-white/10'
     )}>
       <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-        <div
-          className={cn("h-full rounded-full transition-all duration-500", barColor)}
-          style={{ width: `${pct}%` }}
-        />
+        <div className={cn("h-full rounded-full transition-all duration-500", barColor)} style={{ width: `${pct}%` }} />
       </div>
-      <span className={cn(
-        "text-sm font-black font-mono tabular-nums",
-        ok ? 'text-[#7AE9AB]' : over ? 'text-destructive' : 'text-foreground'
-      )}>
+      <span className={cn("text-sm font-black font-mono tabular-nums", ok ? 'text-[#7AE9AB]' : over ? 'text-destructive' : 'text-foreground')}>
         {total}%
       </span>
-      <span className={cn(
-        "text-xs font-medium w-14 text-right",
-        ok ? 'text-[#7AE9AB]/80' : 'text-muted-foreground'
-      )}>
+      <span className={cn("text-xs font-medium w-14 text-right", ok ? 'text-[#7AE9AB]/80' : 'text-muted-foreground')}>
         {ok ? '✓ 완료' : over ? `${total - 100}% 초과` : `${100 - total}% 남음`}
       </span>
     </div>
@@ -282,6 +325,13 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
 
   // Beginner
   const [beginnerWeights, setBeginnerWeights] = useState<Record<string, number>>({});
+  const [beginnerAmounts, setBeginnerAmounts] = useState<Record<string, number>>({});
+
+  // Input type: weight(%) or amount($)
+  const [inputType, setInputType] = useState<'weight' | 'amount'>('weight');
+
+  // Expert amount mode (parallel to selectedAssets)
+  const [assetAmounts, setAssetAmounts] = useState<number[]>([0, 0, 0]);
 
   // Image OCR state
   const [parsing, setParsing] = useState(false);
@@ -349,6 +399,12 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       while (next.length > selectedAssets.length) next.pop();
       return next;
     }));
+    setAssetAmounts(prev => {
+      const next = [...prev];
+      while (next.length < selectedAssets.length) next.push(0);
+      while (next.length > selectedAssets.length) next.pop();
+      return next;
+    });
   }, [selectedAssets.length]);
 
   // Expert helpers
@@ -400,17 +456,33 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   // Beginner helpers
   const updateBeginnerWeight = (ticker: string, val: number) =>
     setBeginnerWeights(prev => ({ ...prev, [ticker]: val }));
+  const updateBeginnerAmount = (ticker: string, val: number) =>
+    setBeginnerAmounts(prev => ({ ...prev, [ticker]: val }));
 
   const beginnerTotal = Object.values(beginnerWeights).reduce((a, b) => a + b, 0);
+  const beginnerTotalAmount = Object.values(beginnerAmounts).reduce((a, b) => a + b, 0);
 
   const handleBeginnerBacktest = () => {
-    const assets: Asset[] = Object.entries(beginnerWeights)
-      .filter(([, w]) => w > 0)
-      .map(([ticker, weight]) => ({
-        ticker, weight,
-        launch_year: ETF_DATA.find(e => e.ticker === ticker)?.launch_year ?? 'Unknown',
-      }));
-    onBacktest(assets, rbMonths);
+    if (inputType === 'weight') {
+      const assets: Asset[] = Object.entries(beginnerWeights)
+        .filter(([, w]) => w > 0)
+        .map(([ticker, weight]) => ({
+          ticker, weight,
+          launch_year: ETF_DATA.find(e => e.ticker === ticker)?.launch_year ?? 'Unknown',
+        }));
+      onBacktest(assets, rbMonths);
+    } else {
+      const total = beginnerTotalAmount;
+      if (total <= 0) return;
+      const assets: Asset[] = Object.entries(beginnerAmounts)
+        .filter(([, a]) => a > 0)
+        .map(([ticker, amount]) => ({
+          ticker,
+          weight: (amount / total) * 100,
+          launch_year: ETF_DATA.find(e => e.ticker === ticker)?.launch_year ?? 'Unknown',
+        }));
+      onBacktest(assets, rbMonths);
+    }
   };
 
   // Multi-portfolio helpers
@@ -482,7 +554,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     );
   };
 
+  const expertAmountTotal = assetAmounts.reduce((a, b) => a + b, 0);
   const currentTotal = mode === 'beginner' ? beginnerTotal : totalWeight;
+  const currentTotalAmount = mode === 'beginner' ? beginnerTotalAmount : expertAmountTotal;
 
   return (
     <div className="flex flex-col animate-fade-in">
@@ -497,7 +571,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           <p className="text-muted-foreground text-xs">포트폴리오를 구성하고 과거 수익률을 분석하세요.</p>
         </header>
 
-        {/* Mode toggle + Image import — single row */}
+        {/* Mode toggle + input type toggle — single row */}
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
         <div className="flex items-center gap-2">
           <div className="flex flex-1 bg-black/30 rounded-xl p-1 border border-white/5">
@@ -512,25 +586,51 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </button>
             ))}
           </div>
-          <button
-            onClick={() => imageInputRef.current?.click()}
-            disabled={parsing}
-            title="이미지로 불러오기 (캡처 / 엑셀 스크린샷)"
-            className="shrink-0 flex items-center justify-center gap-1.5 h-10 px-3 rounded-xl border border-primary/25 bg-primary/5 hover:bg-primary/15 hover:border-primary/50 transition-all text-[11px] font-semibold text-primary disabled:opacity-40"
-          >
-            {parsing ? <Loader2 size={14} className="animate-spin" /> : <ImagePlus size={14} />}
-            <span className="hidden sm:inline">{parsing ? '분석 중…' : '이미지'}</span>
-          </button>
+          {/* Input type toggle */}
+          <div className="flex bg-black/30 rounded-xl p-1 border border-white/5 shrink-0">
+            <button onClick={() => setInputType('weight')}
+              className={cn("flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all",
+                inputType === 'weight' ? 'bg-primary text-white shadow' : 'text-muted-foreground hover:text-foreground')}>
+              <Percent size={11} />비중
+            </button>
+            <button onClick={() => setInputType('amount')}
+              className={cn("flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all",
+                inputType === 'amount' ? 'bg-primary text-white shadow' : 'text-muted-foreground hover:text-foreground')}>
+              <DollarSign size={11} />금액
+            </button>
+          </div>
         </div>
-        {parseError && <p className="text-[11px] text-destructive text-center -mt-1">{parseError}</p>}
-        {parseNote && <p className="text-[11px] text-muted-foreground text-center -mt-1">💡 {parseNote}</p>}
 
-        {/* Compact progress bar — always visible while scrolling ETF list */}
-        <CompactProgressBar total={currentTotal} />
+        {/* Compact progress bar */}
+        <CompactProgressBar total={currentTotal} inputType={inputType} totalAmount={currentTotalAmount} />
       </div>
 
       {/* ── Scrollable content ── */}
       <div className="px-6 py-5 flex flex-col gap-5">
+
+        {/* ── Image import — main feature card ── */}
+        <div className="glass-morphism rounded-2xl border border-primary/20 overflow-hidden">
+          <div className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-white/5">
+            <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+              <ImagePlus size={18} className="text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-foreground">스크린샷으로 바로 시작</p>
+              <p className="text-[11px] text-muted-foreground">증권사 앱 · 엑셀 캡처 → AI가 자동 분석</p>
+            </div>
+          </div>
+          <button
+            onClick={() => imageInputRef.current?.click()}
+            disabled={parsing}
+            className="w-full px-5 py-3 flex items-center justify-center gap-2 text-sm font-bold text-primary hover:bg-primary/10 transition-colors disabled:opacity-40"
+          >
+            {parsing
+              ? <><Loader2 size={15} className="animate-spin" /> AI 분석 중...</>
+              : <><Upload size={15} /> 이미지 업로드하기</>}
+          </button>
+          {parseError && <p className="px-5 pb-3 text-[11px] text-destructive">{parseError}</p>}
+          {parseNote && <p className="px-5 pb-3 text-[11px] text-muted-foreground">💡 {parseNote}</p>}
+        </div>
 
         {/* ── BEGINNER ── */}
         {mode === 'beginner' && (
@@ -548,11 +648,13 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                   </div>
                   {cat.items.map((item, i) => {
                     const w = beginnerWeights[item.ticker] ?? 0;
+                    const a = beginnerAmounts[item.ticker] ?? 0;
+                    const active = inputType === 'weight' ? w > 0 : a > 0;
                     return (
                       <div key={item.ticker} className={cn(
                         "flex items-center justify-between px-4 py-3 gap-3",
                         i < cat.items.length - 1 && "border-b border-white/5",
-                        w > 0 && "bg-primary/5"
+                        active && "bg-primary/5"
                       )}>
                         <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                           <span className="text-sm font-semibold">{item.label}</span>
@@ -561,7 +663,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                             <span className="text-[10px] text-muted-foreground">· {item.desc}</span>
                           </div>
                         </div>
-                        <WeightStepper value={w} onChange={(v) => updateBeginnerWeight(item.ticker, v)} highlight={w > 0} />
+                        {inputType === 'weight'
+                          ? <WeightStepper value={w} onChange={(v) => updateBeginnerWeight(item.ticker, v)} highlight={w > 0} />
+                          : <AmountStepper value={a} onChange={(v) => updateBeginnerAmount(item.ticker, v)} highlight={a > 0} />}
                       </div>
                     );
                   })}
@@ -598,14 +702,19 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               onCustomChange={setRbCustom}
             />
 
-            <Button onClick={handleBeginnerBacktest} disabled={beginnerTotal !== 100}
-              className={cn(
-                "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
-                beginnerTotal === 100 ? "bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 scale-[1.02]" : "bg-muted cursor-not-allowed opacity-50"
-              )}
-            >
-              <TrendingUp className="mr-3 w-6 h-6" />분석 시작하기
-            </Button>
+            {(() => {
+              const canRun = inputType === 'weight' ? beginnerTotal === 100 : beginnerTotalAmount > 0;
+              return (
+                <Button onClick={handleBeginnerBacktest} disabled={!canRun}
+                  className={cn(
+                    "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
+                    canRun ? "bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 scale-[1.02]" : "bg-muted cursor-not-allowed opacity-50"
+                  )}
+                >
+                  <TrendingUp className="mr-3 w-6 h-6" />분석 시작하기
+                </Button>
+              );
+            })()}
           </>
         )}
 
@@ -657,11 +766,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                          <WeightStepper
-                            value={asset.weight}
-                            onChange={(v) => updateWeight(index, v)}
-                            highlight={asset.weight > 0}
-                          />
+                          {inputType === 'weight'
+                            ? <WeightStepper value={asset.weight} onChange={(v) => updateWeight(index, v)} highlight={asset.weight > 0} />
+                            : <AmountStepper value={assetAmounts[index] ?? 0} onChange={(v) => setAssetAmounts(prev => { const n=[...prev]; n[index]=v; return n; })} highlight={(assetAmounts[index] ?? 0) > 0} />}
                           <button onClick={() => removeAsset(index)} className="p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors">
                             <Trash2 size={15} />
                           </button>
@@ -713,10 +820,18 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                 onCustomChange={setRbCustom}
               />
 
-              <Button onClick={() => onBacktest(selectedAssets, rbMonths)} disabled={totalWeight !== 100 || selectedAssets.length === 0}
+              <Button onClick={() => {
+                if (inputType === 'weight') { onBacktest(selectedAssets, rbMonths); }
+                else {
+                  const tot = assetAmounts.reduce((a,b)=>a+b,0);
+                  if (tot <= 0) return;
+                  const assets = selectedAssets.map((a,i)=>({...a, weight:(assetAmounts[i]??0)/tot*100})).filter(a=>a.weight>0);
+                  onBacktest(assets, rbMonths);
+                }
+              }} disabled={(inputType==='weight' ? totalWeight !== 100 : expertAmountTotal <= 0) || selectedAssets.length === 0}
                 className={cn(
                   "h-16 w-full text-white font-black text-xl rounded-2xl transition-all duration-500",
-                  totalWeight === 100 ? "bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 scale-[1.02]" : "bg-muted cursor-not-allowed opacity-50"
+                  (inputType==='weight' ? totalWeight===100 : expertAmountTotal>0) && selectedAssets.length>0 ? "bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 scale-[1.02]" : "bg-muted cursor-not-allowed opacity-50"
                 )}
               >
                 <TrendingUp className="mr-3 w-6 h-6" />분석 시작하기
@@ -784,7 +899,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                     </div>
                     {slotWeights.map((sw, si) => (
                       <div key={si} className="px-4 py-3 border-l border-white/5 flex items-center">
-                        <WeightStepper value={sw[ai] ?? 0} onChange={v => updateSlotWeight(si, ai, v)} highlight={(sw[ai] ?? 0) > 0} />
+                        {inputType === 'weight'
+                          ? <WeightStepper value={sw[ai] ?? 0} onChange={v => updateSlotWeight(si, ai, v)} highlight={(sw[ai] ?? 0) > 0} />
+                          : <AmountStepper value={assetAmounts[ai] ?? 0} onChange={v => setAssetAmounts(prev => { const n=[...prev]; n[ai]=v; return n; })} highlight={(assetAmounts[ai] ?? 0) > 0} />}
                       </div>
                     ))}
                   </div>
