@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2, DollarSign, Percent, Upload } from 'lucide-react';
+import { Plus, Trash2, TrendingUp, Pencil, Shuffle, ImagePlus, Loader2, DollarSign, Percent, Upload, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import etfDataRaw from '@/lib/etf-data.json';
 import { cn } from '@/lib/utils';
@@ -333,6 +333,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   // Expert amount mode (parallel to selectedAssets)
   const [assetAmounts, setAssetAmounts] = useState<number[]>([0, 0, 0]);
 
+  // View: landing (entry) or input (asset editing)
+  const [view, setView] = useState<'landing' | 'input'>('landing');
+
   // Image OCR state
   const [parsing, setParsing] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -358,7 +361,10 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
         return { ticker: a.ticker, weight: a.weight, launch_year: etf?.launch_year };
       });
       setSelectedAssets(assets);
+      setInputType('weight');
+      setAssetAmounts(new Array(assets.length).fill(0));
       onModeChange('expert');
+      setView('input');
       if (json.note) setParseNote(json.note);
     } catch (err: unknown) {
       setParseError(err instanceof Error ? err.message : '이미지 분석 중 오류가 발생했습니다.');
@@ -385,7 +391,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   useEffect(() => {
     if (preloadedAssets && preloadedAssets.length > 0) {
       setSelectedAssets(preloadedAssets);
+      setInputType('weight');
       onModeChange('expert');
+      setView('input');
       onPreloadConsumed?.();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -558,6 +566,65 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const currentTotal = mode === 'beginner' ? beginnerTotal : totalWeight;
   const currentTotalAmount = mode === 'beginner' ? beginnerTotalAmount : expertAmountTotal;
 
+  // ── Landing view ──────────────────────────────────────────────────────────
+  if (view === 'landing') {
+    return (
+      <div className="flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32">
+        <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+
+        <div className="pt-6 md:pt-10 flex flex-col gap-2">
+          <h1 className="text-3xl font-black text-primary text-glow md:hidden">Easybacktest</h1>
+          <p className="text-foreground/80 font-semibold text-lg">내 포트폴리오,<br />과거엔 어떤 성과였을까?</p>
+          <p className="text-muted-foreground text-sm">보유 종목을 입력하면 역대 수익률·리스크를 분석해드려요.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Image path */}
+          <div className="glass-morphism rounded-3xl border border-primary/30 p-6 flex flex-col gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center">
+              <ImagePlus size={24} className="text-primary" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-base font-bold">스크린샷으로 바로 분석</h3>
+              <p className="text-sm text-muted-foreground">증권사 앱·엑셀 화면을 캡처해서 올리면 AI가 자동으로 포트폴리오를 읽어요</p>
+            </div>
+            {parsing ? (
+              <div className="mt-auto flex items-center justify-center gap-2 py-3 text-primary text-sm font-bold">
+                <Loader2 size={16} className="animate-spin" /> AI 분석 중...
+              </div>
+            ) : (
+              <button
+                onClick={() => imageInputRef.current?.click()}
+                className="mt-auto bg-primary text-white font-bold py-3.5 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+              >
+                <Upload size={16} /> 이미지 업로드
+              </button>
+            )}
+            {parseError && <p className="text-[11px] text-destructive -mt-2">{parseError}</p>}
+            {parseNote && <p className="text-[11px] text-muted-foreground -mt-2">💡 {parseNote}</p>}
+          </div>
+
+          {/* Manual path */}
+          <div className="glass-morphism rounded-3xl border border-white/10 p-6 flex flex-col gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
+              <PlusCircle size={24} className="text-muted-foreground" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-base font-bold">직접 구성하기</h3>
+              <p className="text-sm text-muted-foreground">원하는 자산을 선택하거나 티커를 직접 입력해서 포트폴리오를 만들어요</p>
+            </div>
+            <button
+              onClick={() => setView('input')}
+              className="mt-auto bg-white/10 border border-white/15 text-foreground font-bold py-3.5 rounded-2xl hover:bg-white/15 transition-all flex items-center justify-center gap-2"
+            >
+              시작하기 →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col animate-fade-in">
 
@@ -565,29 +632,16 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       {/* sticky top-0 anchors to <main className="overflow-y-auto"> in page.tsx */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md px-6 pt-5 pb-3 flex flex-col gap-3 border-b border-white/5">
 
-        {/* App title — hidden on desktop (sidebar shows it) */}
-        <header className="flex flex-col gap-0.5 md:hidden">
-          <h1 className="text-2xl font-bold font-headline tracking-tight text-glow text-primary">Easybacktest</h1>
-          <p className="text-muted-foreground text-xs">포트폴리오를 구성하고 과거 수익률을 분석하세요.</p>
-        </header>
-
-        {/* Mode toggle + input type toggle — single row */}
+        {/* Header row: back + input type toggle + mode toggle */}
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
         <div className="flex items-center gap-2">
-          <div className="flex flex-1 bg-black/30 rounded-xl p-1 border border-white/5">
-            {(['beginner', 'expert'] as const).map(m => (
-              <button key={m} onClick={() => onModeChange(m)}
-                className={cn(
-                  "flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200",
-                  mode === m ? 'bg-primary text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {m === 'beginner' ? '초심자' : '전문가'}
-              </button>
-            ))}
-          </div>
-          {/* Input type toggle */}
-          <div className="flex bg-black/30 rounded-xl p-1 border border-white/5 shrink-0">
+          {/* Back to landing */}
+          <button onClick={() => setView('landing')} className="shrink-0 p-2 -ml-1 text-muted-foreground hover:text-foreground transition-colors" title="처음으로">
+            <ArrowLeft size={18} />
+          </button>
+
+          {/* Input type toggle: 비중 / 금액 */}
+          <div className="flex bg-black/30 rounded-xl p-1 border border-white/5">
             <button onClick={() => setInputType('weight')}
               className={cn("flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all",
                 inputType === 'weight' ? 'bg-primary text-white shadow' : 'text-muted-foreground hover:text-foreground')}>
@@ -599,6 +653,17 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               <DollarSign size={11} />금액
             </button>
           </div>
+
+          <div className="flex-1" />
+
+          {/* Mode toggle: 추천 / 커스텀 — small on/off style */}
+          <span className="text-[11px] text-muted-foreground shrink-0">커스텀</span>
+          <button
+            onClick={() => onModeChange(mode === 'beginner' ? 'expert' : 'beginner')}
+            className={cn("shrink-0 relative w-10 h-5 rounded-full transition-colors duration-200", mode === 'expert' ? 'bg-primary' : 'bg-white/20')}
+          >
+            <div className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200", mode === 'expert' ? 'left-[22px]' : 'left-0.5')} />
+          </button>
         </div>
 
         {/* Compact progress bar */}
@@ -608,37 +673,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       {/* ── Scrollable content ── */}
       <div className="px-6 py-5 flex flex-col gap-5">
 
-        {/* ── Image import — main feature card ── */}
-        <div className="glass-morphism rounded-2xl border border-primary/20 overflow-hidden">
-          <div className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-white/5">
-            <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-              <ImagePlus size={18} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-foreground">스크린샷으로 바로 시작</p>
-              <p className="text-[11px] text-muted-foreground">증권사 앱 · 엑셀 캡처 → AI가 자동 분석</p>
-            </div>
-          </div>
-          <button
-            onClick={() => imageInputRef.current?.click()}
-            disabled={parsing}
-            className="w-full px-5 py-3 flex items-center justify-center gap-2 text-sm font-bold text-primary hover:bg-primary/10 transition-colors disabled:opacity-40"
-          >
-            {parsing
-              ? <><Loader2 size={15} className="animate-spin" /> AI 분석 중...</>
-              : <><Upload size={15} /> 이미지 업로드하기</>}
-          </button>
-          {parseError && <p className="px-5 pb-3 text-[11px] text-destructive">{parseError}</p>}
-          {parseNote && <p className="px-5 pb-3 text-[11px] text-muted-foreground">💡 {parseNote}</p>}
-        </div>
-
         {/* ── BEGINNER ── */}
         {mode === 'beginner' && (
           <>
-            <p className="text-sm font-semibold text-foreground/70 text-center">
-              원하는 자산에 비중을 설정하세요.<br />
-              <span className="text-xs font-normal text-muted-foreground">합계 100%를 채우면 분석할 수 있어요.</span>
-            </p>
             <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 gap-4">
               {BEGINNER_CATEGORIES.map(cat => (
                 <div key={cat.name} className="glass-morphism rounded-2xl border border-white/5 overflow-hidden">
