@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AssetInputScreen } from '@/components/screens/AssetInputScreen';
 import { ResultScreen } from '@/components/screens/ResultScreen';
 import { CommunityScreen } from '@/components/screens/CommunityScreen';
 import { MyPortfoliosScreen } from '@/components/screens/MyPortfoliosScreen';
-import { LayoutDashboard, Users, PlusCircle, Bookmark } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Screen = 'input' | 'result' | 'community' | 'mine';
@@ -28,6 +28,19 @@ export default function AlphaFlowApp() {
   const [multiPortfolioData, setMultiPortfolioData] = useState<PortfolioSlot[] | null>(null);
   const [rebalancingMonths, setRebalancingMonths] = useState<number>(12);
   const [inputMode, setInputMode] = useState<'beginner' | 'expert'>('beginner');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    if (saved) { setTheme(saved); document.documentElement.classList.toggle('light', saved === 'light'); }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.classList.toggle('light', next === 'light');
+    localStorage.setItem('theme', next);
+  };
 
   const handleBacktest = (data: Asset[], rb: number) => {
     setPortfolioData(data);
@@ -83,12 +96,12 @@ export default function AlphaFlowApp() {
     <div className="flex h-screen bg-background font-body overflow-hidden">
 
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
-      <aside className="hidden md:flex flex-col w-52 shrink-0 border-r border-white/10 glass-morphism">
+      <aside className="hidden md:flex flex-col w-52 shrink-0 border-r border-white/10 glass-morphism h-full">
         <div className="px-6 py-8">
           <h1 className="text-xl font-black text-primary text-glow">Easybacktest</h1>
           <p className="text-[10px] text-muted-foreground mt-1">포트폴리오 백테스트</p>
         </div>
-        <nav className="flex flex-col gap-1 px-3 pb-6">
+        <nav className="flex flex-col gap-1 px-3 pb-6 flex-1">
           {navItems.map(({ screen, Icon, label, disabled }) => (
             <button
               key={screen}
@@ -108,6 +121,15 @@ export default function AlphaFlowApp() {
             </button>
           ))}
         </nav>
+        <div className="px-4 pb-6">
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? '라이트 모드' : '다크 모드'}
+          </button>
+        </div>
       </aside>
 
       {/* ── Content area ── */}
@@ -122,7 +144,7 @@ export default function AlphaFlowApp() {
         </main>
 
         {/* ── Mobile bottom nav — flex child (NOT fixed), so content never hides behind it ── */}
-        <nav className="md:hidden shrink-0 glass-morphism h-16 px-6 flex items-center justify-between border-t border-white/10 z-50">
+        <nav className="md:hidden shrink-0 glass-morphism h-16 px-4 flex items-center justify-between border-t border-white/10 z-50">
           {navItems.map(({ screen, Icon, label, disabled }) => (
             <button
               key={screen}
@@ -138,6 +160,13 @@ export default function AlphaFlowApp() {
               <span className="text-[10px] font-medium">{label}</span>
             </button>
           ))}
+          <button
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-1 text-muted-foreground transition-colors"
+          >
+            {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+            <span className="text-[10px] font-medium">{theme === 'dark' ? '라이트' : '다크'}</span>
+          </button>
         </nav>
 
       </div>

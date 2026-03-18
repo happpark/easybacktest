@@ -30,6 +30,33 @@
     --chart-5: 0 0% 98%;
     --radius: 1rem;
   }
+
+  html.light {
+    --background: 220 20% 97%;
+    --foreground: 224 25% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 25% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 25% 12%;
+    --primary: 212 73% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 184 60% 42%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 212 73% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 84%;
+    --input: 220 13% 84%;
+    --ring: 212 73% 48%;
+    --chart-1: 212 73% 48%;
+    --chart-2: 184 60% 42%;
+    --chart-3: 146 55% 42%;
+    --chart-4: 211 90% 45%;
+    --chart-5: 224 25% 12%;
+  }
 }
 
 @layer base {
@@ -52,6 +79,16 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html.light .glass-morphism {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+html.light body {
+  background-image: radial-gradient(circle at 50% 0%, rgba(55, 135, 224, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 0% 100%, rgba(91, 231, 242, 0.04) 0%, transparent 40%);
 }
 
 .text-glow {
