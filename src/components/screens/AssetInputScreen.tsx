@@ -659,9 +659,22 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
             <div className="w-20 h-20 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
             <ImagePlus size={28} className="absolute text-primary" />
           </div>
-          <div className="flex flex-col items-center gap-1 text-center">
+          <div className="flex flex-col items-center gap-2 text-center">
             <p className="text-lg font-bold text-foreground">AI 분석 중...</p>
             <p className="text-sm text-muted-foreground">포트폴리오를 읽고 있어요. 잠시만 기다려주세요.</p>
+            <p className="text-xs text-muted-foreground/70 mt-1">
+              접속자가 많으면 오래 걸릴 수 있어요.<br />
+              현재{' '}
+              <span className="font-bold text-primary">
+                {(() => {
+                  const h = new Date().getHours();
+                  const isQuiet = h >= 1 && h < 9;
+                  const [min, max] = isQuiet ? [0, 20] : [20, 50];
+                  return min + Math.floor(Math.random() * (max - min + 1));
+                })()}명
+              </span>
+              {' '}동시 분석 중
+            </p>
           </div>
         </div>
       )}
