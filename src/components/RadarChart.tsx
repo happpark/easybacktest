@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Radar,
   RadarChart as RechartsRadarChart,
@@ -19,14 +19,26 @@ export interface SeriesConfig {
 interface RadarChartProps {
   data: Record<string, string | number | undefined>[];
   mini?: boolean;
-  // If provided, renders each series with its color + visibility.
-  // Falls back to default A (portfolio) / B (benchmark) if omitted.
   series?: SeriesConfig[];
 }
 
 export function RadarChart({ data, mini = false, series }: RadarChartProps) {
+  const [isLight, setIsLight] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsLight(document.documentElement.classList.contains('light'));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const gridStroke = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.1)';
+  const labelColor = isLight ? '#334155' : '#94a3b8';
+  const bmColor    = isLight ? '#64748b' : '#94a3b8';
+
   const defaultSeries: SeriesConfig[] = [
-    { key: 'B', color: '#94a3b8' },
+    { key: 'B', color: bmColor },
     { key: 'A', color: 'hsl(212, 73%, 55%)' },
   ].filter(s => data[0]?.[s.key] !== undefined);
 
@@ -36,10 +48,10 @@ export function RadarChart({ data, mini = false, series }: RadarChartProps) {
     <div className={`w-full h-full flex items-center justify-center ${!mini ? 'chart-glow' : ''}`}>
       <ResponsiveContainer width="100%" height="100%">
         <RechartsRadarChart cx="50%" cy="50%" outerRadius={mini ? "70%" : "80%"} data={data}>
-          <PolarGrid stroke="rgba(255,255,255,0.1)" />
+          <PolarGrid stroke={gridStroke} />
           <PolarAngleAxis
             dataKey="subject"
-            tick={mini ? false : { fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+            tick={mini ? false : { fill: labelColor, fontSize: 10, fontWeight: 700 }}
           />
           <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
 

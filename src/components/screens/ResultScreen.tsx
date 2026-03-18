@@ -404,17 +404,17 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           <div className="overflow-x-auto">
             <table className="w-full text-[11px]">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left pb-3 font-normal text-muted-foreground/60 w-20">지표</th>
+                <tr className="border-b border-border">
+                  <th className="text-left pb-3 font-semibold text-muted-foreground w-20">지표</th>
                   {multiData.map((slot, i) => (
-                    <th key={i} className="text-right pb-3 font-semibold">
+                    <th key={i} className="text-right pb-3 font-bold">
                       <span className="inline-flex items-center justify-end gap-1.5">
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[i] }} />
-                        <span className="text-foreground/80">{slot.name}</span>
+                        <span className="text-foreground">{slot.name}</span>
                       </span>
                     </th>
                   ))}
-                  <th className="text-right pb-3 font-normal text-muted-foreground/60">S&P 500</th>
+                  <th className="text-right pb-3 font-semibold text-muted-foreground">S&P 500</th>
                 </tr>
               </thead>
               <tbody>
@@ -429,24 +429,24 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                   const bmVal = backtestResults[0]?.benchmark_metrics?.[row.key] ?? 0;
                   const best = row.higherBetter ? Math.max(...vals) : Math.min(...vals);
                   return (
-                    <tr key={row.key} className={ri < arr.length - 1 ? 'border-b border-white/5' : ''}>
-                      <td className="py-2.5 text-muted-foreground/70 font-medium">{row.label}</td>
+                    <tr key={row.key} className={ri < arr.length - 1 ? 'border-b border-border/50' : ''}>
+                      <td className="py-2.5 text-muted-foreground font-semibold">{row.label}</td>
                       {vals.map((v, i) => {
                         const isBest = v === best;
                         return (
                           <td key={i} className="text-right py-2.5">
                             {isBest ? (
-                              <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
+                              <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
                                 <span className="text-[8px] opacity-70">▲</span>
                                 {v}{row.unit}
                               </span>
                             ) : (
-                              <span className="font-semibold text-foreground/60">{v}{row.unit}</span>
+                              <span className="font-semibold text-foreground">{v}{row.unit}</span>
                             )}
                           </td>
                         );
                       })}
-                      <td className="text-right py-2.5 text-muted-foreground/40">{bmVal}{row.unit}</td>
+                      <td className="text-right py-2.5 text-muted-foreground">{bmVal}{row.unit}</td>
                     </tr>
                   );
                 })}
@@ -726,10 +726,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           <div className="w-full md:w-2/5 md:self-center">
             <table className="w-full text-[11px]">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left pb-3 font-normal text-muted-foreground/60 w-16">지표</th>
-                  <th className="text-right pb-3 font-semibold text-foreground/80">Portfolio</th>
-                  <th className="text-right pb-3 font-normal text-muted-foreground/60">S&P 500</th>
+                <tr className="border-b border-border">
+                  <th className="text-left pb-3 font-semibold text-muted-foreground w-16">지표</th>
+                  <th className="text-right pb-3 font-bold text-foreground">Portfolio</th>
+                  <th className="text-right pb-3 font-semibold text-muted-foreground">S&P 500</th>
                 </tr>
               </thead>
               <tbody>
@@ -743,26 +743,26 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                   const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;
                   const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
                   return (
-                    <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-white/5' : ''}>
-                      <td className="py-2.5 text-muted-foreground/70 font-medium">{row.label}</td>
+                    <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-border/50' : ''}>
+                      <td className="py-2.5 text-muted-foreground font-semibold">{row.label}</td>
                       <td className="text-right py-2.5">
                         {portfolioWins ? (
-                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
                             <span className="text-[8px] opacity-70">▲</span>
                             {row.pv}{row.unit}
                           </span>
                         ) : (
-                          <span className="font-semibold text-foreground/60">{row.pv}{row.unit}</span>
+                          <span className="font-semibold text-foreground">{row.pv}{row.unit}</span>
                         )}
                       </td>
                       <td className="text-right py-2.5">
                         {benchmarkWins ? (
-                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#7AE9AB]">
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
                             <span className="text-[8px] opacity-70">▲</span>
                             {row.bv}{row.unit}
                           </span>
                         ) : (
-                          <span className="text-muted-foreground/40">{row.bv}{row.unit}</span>
+                          <span className="text-muted-foreground">{row.bv}{row.unit}</span>
                         )}
                       </td>
                     </tr>
