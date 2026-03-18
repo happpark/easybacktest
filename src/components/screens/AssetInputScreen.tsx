@@ -501,7 +501,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     setSelectedAssets(prev => prev.map((a, i) => ({ ...a, weight: share + (i === 0 ? remainder : 0) })));
   };
 
-  const totalWeight = selectedAssets.reduce((a, c) => a + c.weight, 0);
+  const totalWeight = Math.round(selectedAssets.reduce((a, c) => a + c.weight, 0) * 10) / 10;
 
   // Beginner helpers
   const updateBeginnerWeight = (ticker: string, val: number) =>
@@ -536,7 +536,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   };
 
   // PC Multi-portfolio helpers
-  const slotTotals = portfolioSlots.map(s => s.weights.reduce((a, b) => a + b, 0));
+  const slotTotals = portfolioSlots.map(s => Math.round(s.weights.reduce((a, b) => a + b, 0) * 10) / 10);
   const allSlotsValid = slotTotals.every(t => t === 100);
 
   const updateSlotWeight = (slotIdx: number, assetIdx: number, val: number) => {

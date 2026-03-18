@@ -157,20 +157,18 @@ export async function POST(req: NextRequest) {
       note?: string;
     };
 
-    // ── Server-side float rescaling (safety net) ─────────────────────────────
+    // ── Server-side rescaling → 소수점 1자리, 합 = 100.0 보장 ────────────────
     const assets = mapped.assets;
     const weightSum = assets.reduce((s, a) => s + a.weight, 0);
-    if (Math.abs(weightSum - 100) > 0.01) {
-      const scaled = assets.map(a => ({
-        ...a,
-        weight: Math.round((a.weight / weightSum) * 10000) / 100,
-      }));
-      const scaledSum = scaled.reduce((s, a) => s + a.weight, 0);
-      const diff = Math.round((100 - scaledSum) * 100) / 100;
+    const round1 = (v: number) => Math.round(v * 10) / 10;
+    const scaled = assets.map(a => ({ ...a, weight: round1((a.weight / weightSum) * 100) }));
+    const scaledSum = round1(scaled.reduce((s, a) => s + a.weight, 0));
+    const diff = round1(100 - scaledSum);
+    if (diff !== 0) {
       const maxIdx = scaled.reduce((mi, a, i, arr) => (a.weight > arr[mi].weight ? i : mi), 0);
-      scaled[maxIdx].weight = Math.round((scaled[maxIdx].weight + diff) * 100) / 100;
-      mapped.assets = scaled;
+      scaled[maxIdx].weight = round1(scaled[maxIdx].weight + diff);
     }
+    mapped.assets = scaled;
 
     const note = [extracted.ocr_note, mapped.note].filter(Boolean).join(' / ') || null;
     return NextResponse.json({ assets: mapped.assets, note });
