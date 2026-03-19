@@ -229,6 +229,16 @@ function PortfolioCard({
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">VOL</span>
           <span className="text-sm font-bold font-mono text-foreground/70">{m.volatility}%</span>
         </div>
+        {m.dividend > 0 && (
+          <>
+            <div className="w-px h-6 bg-white/10" />
+            {/* Dividend */}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">DIV</span>
+              <span className="text-sm font-bold font-mono text-[#F5A623]">{m.dividend}%</span>
+            </div>
+          </>
+        )}
 
         {/* Spacer + date + actions */}
         <div className="flex-1" />
