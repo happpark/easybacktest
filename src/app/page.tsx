@@ -9,7 +9,7 @@ import { AuthButton } from '@/components/AuthButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useLang } from '@/lib/i18n';
 import { track } from '@/lib/posthog/events';
-import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon, Globe } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Screen = 'input' | 'result' | 'community' | 'mine';
@@ -162,9 +162,9 @@ export default function AlphaFlowApp() {
           <button
             onClick={toggleLang}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-sm font-bold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+            title={lang === 'ko' ? 'Switch to English' : '한국어로 전환'}
           >
-            <Globe size={16} />
-            <span className="text-xs">{lang === 'ko' ? 'EN' : '한'}</span>
+            <span className="text-lg leading-none">{lang === 'ko' ? '🇺🇸' : '🇰🇷'}</span>
           </button>
           <AuthButton />
         </div>
