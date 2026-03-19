@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 interface MyPortfoliosScreenProps {
   onLoad: (assets: Asset[]) => void;
+  userId?: string | null;
 }
 
 // ── Mini metric pill ──────────────────────────────────────────────────────────
@@ -307,8 +308,8 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
 }
 
 // ── Main screen ───────────────────────────────────────────────────────────────
-export function MyPortfoliosScreen({ onLoad }: MyPortfoliosScreenProps) {
-  const { portfolios, rename, remove } = useMyPortfolios();
+export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) {
+  const { portfolios, rename, remove } = useMyPortfolios(userId);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);

@@ -5,6 +5,9 @@ import { AssetInputScreen } from '@/components/screens/AssetInputScreen';
 import { ResultScreen } from '@/components/screens/ResultScreen';
 import { CommunityScreen } from '@/components/screens/CommunityScreen';
 import { MyPortfoliosScreen } from '@/components/screens/MyPortfoliosScreen';
+import { AuthButton } from '@/components/AuthButton';
+import { useAuth } from '@/hooks/useAuth';
+import { track } from '@/lib/posthog/events';
 import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +25,7 @@ export interface PortfolioSlot {
 }
 
 export default function AlphaFlowApp() {
+  const { user } = useAuth();
   const [activeScreen, setActiveScreen] = useState<Screen>('input');
   const [portfolioData, setPortfolioData] = useState<Asset[] | null>(null);
   const [preloadedAssets, setPreloadedAssets] = useState<Asset[] | null>(null);
@@ -47,6 +51,7 @@ export default function AlphaFlowApp() {
     setRebalancingMonths(rb);
     setMultiPortfolioData(null);
     setActiveScreen('result');
+    track.backtestRun({ assetCount: data.length, mode: inputMode, source: 'manual' });
   };
 
   const handleMultiBacktest = (slots: PortfolioSlot[], rb: number) => {
@@ -54,11 +59,13 @@ export default function AlphaFlowApp() {
     setRebalancingMonths(rb);
     setPortfolioData(null);
     setActiveScreen('result');
+    track.backtestRun({ assetCount: slots.reduce((s, sl) => s + sl.assets.length, 0), mode: inputMode, source: 'manual' });
   };
 
-  const handleLoadPortfolio = (assets: Asset[]) => {
+  const handleLoadPortfolio = (assets: Asset[], source: 'community' | 'mine' = 'community') => {
     setPreloadedAssets(assets);
     setActiveScreen('input');
+    track.portfolioLoaded(source);
   };
 
   const renderScreen = () => {
@@ -77,9 +84,9 @@ export default function AlphaFlowApp() {
       case 'result':
         return <ResultScreen data={portfolioData} multiData={multiPortfolioData} rebalancingMonths={rebalancingMonths} onReset={() => setActiveScreen('input')} />;
       case 'community':
-        return <CommunityScreen onLoadPortfolio={handleLoadPortfolio} />;
+        return <CommunityScreen onLoadPortfolio={(assets) => handleLoadPortfolio(assets, 'community')} />;
       case 'mine':
-        return <MyPortfoliosScreen onLoad={handleLoadPortfolio} />;
+        return <MyPortfoliosScreen onLoad={(assets) => handleLoadPortfolio(assets, 'mine')} userId={user?.id} />;
       default:
         return <AssetInputScreen onBacktest={handleBacktest} onMultiBacktest={handleMultiBacktest} mode={inputMode} onModeChange={setInputMode} />;
     }
@@ -132,7 +139,10 @@ export default function AlphaFlowApp() {
             </div>
           ))}
         </nav>
-        <div className="px-4 pb-6">
+        <div className="px-4 pb-6 flex flex-col gap-2">
+          <div className="px-1">
+            <AuthButton />
+          </div>
           <button
             onClick={toggleTheme}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
