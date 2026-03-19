@@ -304,10 +304,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
         {/* Period badge */}
         <div className="flex justify-center gap-2 flex-wrap">
-          <span className="text-[10px] bg-white/10 px-3 py-1 rounded text-muted-foreground">
+          <span className="text-xs bg-white/10 px-3 py-1 rounded text-muted-foreground">
             {backtestResults[0]?.period}
           </span>
-          <span className="text-[10px] bg-primary/10 px-3 py-1 rounded text-primary/70">
+          <span className="text-xs bg-primary/10 px-3 py-1 rounded text-primary/70">
             {rbLabel(rebalancingMonths)}
           </span>
         </div>
@@ -364,7 +364,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Growth chart - multiple lines */}
         <div className="glass-morphism p-5 rounded-3xl flex flex-col gap-3">
           <span className="text-sm font-bold text-primary">포트폴리오 성장 비교</span>
-          <span className="text-[10px] text-muted-foreground">$1,000 초기 투자 기준</span>
+          <span className="text-xs text-muted-foreground">$1,000 초기 투자 기준</span>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -402,7 +402,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         <div className="glass-morphism p-5 rounded-3xl">
           <span className="text-sm font-bold text-primary block mb-4">전략별 수치 비교</span>
           <div className="overflow-x-auto">
-            <table className="w-full text-[11px]">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left pb-3 font-semibold text-muted-foreground w-20">지표</th>
@@ -463,9 +463,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             return (
               <div key={i} className="glass-morphism p-4 rounded-2xl border border-white/5 flex flex-col gap-1">
                 <div className="w-2 h-2 rounded-full mb-1" style={{ backgroundColor: COLORS[i] }} />
-                <div className="text-[10px] text-muted-foreground">{multiData[i].name}</div>
+                <div className="text-xs text-muted-foreground">{multiData[i].name}</div>
                 <div className="text-lg font-black font-mono" style={{ color: COLORS[i] }}>${finalVal.toLocaleString()}</div>
-                <div className="text-[10px] text-muted-foreground">CAGR {result.metrics.cagr}%</div>
+                <div className="text-xs text-muted-foreground">CAGR {result.metrics.cagr}%</div>
                 <button
                   onClick={() => {
                     if (isSaved) return;
@@ -473,7 +473,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                     setSavingSlotIdx(i);
                   }}
                   className={cn(
-                    'mt-2 h-7 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 border transition-colors',
+                    'mt-2 h-7 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border transition-colors',
                     isSaved
                       ? 'bg-[#7AE9AB]/10 text-[#7AE9AB] border-[#7AE9AB]/20'
                       : 'bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10'
@@ -553,18 +553,18 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   }));
 
   return (
-    <div className="flex flex-col gap-6 p-6 animate-fade-in pb-32">
-      <header className="flex justify-between items-center">
+    <div className="flex flex-col gap-6 p-6 animate-fade-in pb-8">
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm -mx-6 px-6 py-3 flex justify-between items-center border-b border-white/5">
         <button onClick={onReset} className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft size={24} />
         </button>
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-lg font-bold">백테스트 결과</h2>
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-muted-foreground">
+            <span className="text-xs bg-white/10 px-2 py-0.5 rounded text-muted-foreground">
               {backtestResult.period}
             </span>
-            <span className="text-[10px] bg-primary/10 px-2 py-0.5 rounded text-primary/70">
+            <span className="text-xs bg-primary/10 px-2 py-0.5 rounded text-primary/70">
               {rbLabel(rebalancingMonths)}
             </span>
           </div>
@@ -583,26 +583,26 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
         {/* CAGR + MDD stacked */}
         <div className="grid grid-cols-2 gap-3 md:flex md:flex-col md:h-full">
-          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1 md:flex-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-              <TrendingUp size={14} className="text-[#7AE9AB]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">CAGR (수익률)</span>
+          <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <TrendingUp size={16} className="text-[#7AE9AB]" />
+              <span className="text-xs font-bold uppercase tracking-wider">CAGR (수익률)</span>
             </div>
-            <span className="text-2xl font-bold text-[#7AE9AB]">{m.cagr}%</span>
-            <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
-              <span className="font-semibold">최고 실적 연도: {m.best_year.year}</span>
-              <span>수익률: {m.best_year.value}%</span>
+            <span className="text-3xl md:text-4xl font-black text-[#7AE9AB]">{m.cagr}%</span>
+            <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
+              <span className="font-semibold">최고 실적: {m.best_year.year}</span>
+              <span>수익률 {m.best_year.value}%</span>
             </div>
           </div>
 
-          <div className="glass-morphism p-4 rounded-2xl flex flex-col gap-1 md:flex-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-              <ShieldAlert size={14} className="text-[#F25B5B]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
+          <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <ShieldAlert size={16} className="text-[#F25B5B]" />
+              <span className="text-xs font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
             </div>
-            <span className="text-2xl font-bold text-[#F25B5B]">{m.mdd}%</span>
-            <div className="flex flex-col text-[10px] text-muted-foreground border-t border-white/5 pt-1 mt-1">
-              <span className="font-semibold">최대 하락 연도: {m.mdd_year}</span>
+            <span className="text-3xl md:text-4xl font-black text-[#F25B5B]">{m.mdd}%</span>
+            <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
+              <span className="font-semibold">최대 하락: {m.mdd_year}</span>
               <span className="opacity-0">—</span>
             </div>
           </div>
@@ -613,20 +613,20 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-0.5">
             <span className="text-sm font-bold text-primary">포트폴리오 성장 추이</span>
-            <span className="text-[10px] text-muted-foreground">$1,000 초기 투자 기준</span>
+            <span className="text-xs text-muted-foreground">$1,000 초기 투자 기준</span>
           </div>
           <div className="flex gap-3">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-[9px] text-muted-foreground">Portfolio</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+              <span className="text-xs text-muted-foreground">Portfolio</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-              <span className="text-[9px] text-muted-foreground">S&P 500</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground/40" />
+              <span className="text-xs text-muted-foreground">S&P 500</span>
             </div>
           </div>
         </div>
-        <div className="h-44 w-full">
+        <div className="h-44 md:h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={historyData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
@@ -682,8 +682,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           </ResponsiveContainer>
         </div>
         <div className="flex justify-between items-center border-t border-white/5 pt-3">
-          <span className="text-[10px] text-muted-foreground">초기 투자금</span>
-          <span className="text-[10px] text-muted-foreground">최종 평가액</span>
+          <span className="text-xs text-muted-foreground">초기 투자금</span>
+          <span className="text-xs text-muted-foreground">최종 평가액</span>
         </div>
         <div className="flex justify-between items-center -mt-2">
           <span className="text-sm font-mono font-bold">$1,000</span>
@@ -701,16 +701,16 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         <div className="flex justify-between items-start mb-4">
           <div className="flex flex-col">
             <span className="text-sm font-bold text-primary">포트폴리오 오각형</span>
-            <span className="text-[10px] text-muted-foreground">S&P 500(SPY) 벤치마크 비교</span>
+            <span className="text-xs text-muted-foreground">S&P 500(SPY) 벤치마크 비교</span>
           </div>
           <div className="flex gap-3">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-[9px] text-muted-foreground">Portfolio</span>
+              <span className="text-xs text-muted-foreground">Portfolio</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-              <span className="text-[9px] text-muted-foreground">Benchmark</span>
+              <span className="text-xs text-muted-foreground">Benchmark</span>
             </div>
           </div>
         </div>
@@ -724,7 +724,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
           {/* Table */}
           <div className="w-full md:w-2/5 md:self-center">
-            <table className="w-full text-[11px]">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left pb-3 font-semibold text-muted-foreground w-16">지표</th>
@@ -775,11 +775,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       </div>
 
       {/* AI Backtest Insight */}
-      <div className="bg-primary/10 border border-primary/20 p-4 rounded-2xl flex gap-3">
-        <Zap size={20} className="text-primary shrink-0 mt-0.5" />
-        <p className="text-xs leading-relaxed italic text-primary-foreground/90">
-          &quot;{backtestResult.aiInsight}&quot;
-        </p>
+      <div className="bg-primary/10 border border-primary/20 p-5 rounded-2xl flex gap-4">
+        <Zap size={24} className="text-primary shrink-0 mt-0.5" />
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-bold text-primary uppercase tracking-wider">AI 인사이트</span>
+          <p className="text-sm leading-relaxed text-primary-foreground/90">
+            &quot;{backtestResult.aiInsight}&quot;
+          </p>
+        </div>
       </div>
 
       {/* Save + Share */}

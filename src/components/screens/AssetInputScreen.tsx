@@ -216,13 +216,13 @@ function CompactProgressBar({ total, inputType, totalAmount }: { total: number; 
     const amt = totalAmount ?? 0;
     const hasAmt = amt > 0;
     return (
-      <div className={cn("rounded-xl border px-3 py-2 flex items-center gap-3 transition-all duration-300",
+      <div className={cn("rounded-xl border px-4 py-3 flex items-center gap-3 transition-all duration-300",
         hasAmt ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/10')}>
-        <DollarSign size={14} className={hasAmt ? 'text-primary' : 'text-muted-foreground'} />
-        <span className={cn("text-sm font-black font-mono tabular-nums flex-1", hasAmt ? 'text-primary' : 'text-muted-foreground')}>
+        <DollarSign size={16} className={hasAmt ? 'text-primary' : 'text-muted-foreground'} />
+        <span className={cn("text-base font-black font-mono tabular-nums flex-1", hasAmt ? 'text-primary' : 'text-muted-foreground')}>
           ${amt.toLocaleString()}
         </span>
-        <span className={cn("text-xs font-medium", hasAmt ? 'text-primary/70' : 'text-muted-foreground')}>
+        <span className={cn("text-sm font-medium", hasAmt ? 'text-primary/70' : 'text-muted-foreground')}>
           {hasAmt ? '✓ 입력됨' : '금액 입력하세요'}
         </span>
       </div>
@@ -236,16 +236,16 @@ function CompactProgressBar({ total, inputType, totalAmount }: { total: number; 
 
   return (
     <div className={cn(
-      "rounded-xl border px-3 py-2 flex items-center gap-3 transition-all duration-300",
+      "rounded-xl border px-4 py-3 flex items-center gap-3 transition-all duration-300",
       ok ? 'bg-[#7AE9AB]/10 border-[#7AE9AB]/30' : 'bg-white/5 border-white/10'
     )}>
-      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+      <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
         <div className={cn("h-full rounded-full transition-all duration-500", barColor)} style={{ width: `${pct}%` }} />
       </div>
-      <span className={cn("text-sm font-black font-mono tabular-nums", ok ? 'text-[#7AE9AB]' : over ? 'text-destructive' : 'text-foreground')}>
+      <span className={cn("text-base font-black font-mono tabular-nums", ok ? 'text-[#7AE9AB]' : over ? 'text-destructive' : 'text-foreground')}>
         {total}%
       </span>
-      <span className={cn("text-xs font-medium w-14 text-right", ok ? 'text-[#7AE9AB]/80' : 'text-muted-foreground')}>
+      <span className={cn("text-sm font-semibold w-16 text-right", ok ? 'text-[#7AE9AB]/80' : 'text-muted-foreground')}>
         {ok ? '✓ 완료' : over ? `${total - 100}% 초과` : `${100 - total}% 남음`}
       </span>
     </div>
@@ -680,61 +680,58 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </div>
         </div>
       )}
-      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32", parseStep && "pointer-events-none")}>
+      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 md:p-10 gap-8 animate-fade-in pb-8 md:justify-center", parseStep && "pointer-events-none")}>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
-        <div className="pt-6 md:pt-10 flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-black text-primary text-glow md:hidden">Easybacktest</h1>
-          <p className="text-foreground/80 font-semibold text-lg">내 포트폴리오,<br />과거엔 어떤 성과였을까?</p>
-          <p className="text-muted-foreground text-sm">보유 종목을 입력하면 역대 수익률·리스크를 분석해드려요.</p>
+          <p className="text-foreground/80 font-semibold text-xl md:text-2xl">내 포트폴리오,<br />과거엔 어떤 성과였을까?</p>
+          <p className="text-muted-foreground text-sm md:text-base">보유 종목을 입력하면 역대 수익률·리스크를 분석해드려요.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Image path */}
-          <div className="glass-morphism rounded-3xl border border-primary/30 p-6 flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center">
-              <ImagePlus size={24} className="text-primary" />
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+          {/* Image path — primary action, wider on PC */}
+          <div className="glass-morphism rounded-3xl border border-primary/30 p-6 md:p-8 flex flex-col gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center">
+              <ImagePlus size={28} className="text-primary" />
             </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-base font-bold">스크린샷으로 바로 분석</h3>
+            <div className="flex flex-col gap-1.5">
+              <h3 className="text-lg font-bold">스크린샷으로 바로 분석</h3>
               <p className="text-sm text-muted-foreground">증권사 앱·엑셀 화면을 캡처해서 올리면 AI가 자동으로 포트폴리오를 읽어요</p>
             </div>
             {!parseStep && (
-              <div className="mt-auto flex flex-col gap-2">
+              <div className="mt-auto flex flex-col gap-3">
                 <button
                   onClick={() => imageInputRef.current?.click()}
-                  className="bg-primary text-white font-bold py-3.5 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
+                  className="bg-primary text-white font-bold py-4 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 text-base"
                 >
-                  <Upload size={16} /> 이미지 파일 선택
+                  <Upload size={18} /> 이미지 파일 선택
                 </button>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <div className="flex-1 h-px bg-border" />
-                  <span className="text-xs">또는</span>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-                <div className="flex items-center justify-center gap-2 py-2 rounded-2xl border border-dashed border-border bg-muted/30">
-                  <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono font-semibold">⌘V</kbd>
-                  <span className="text-xs text-muted-foreground">/</span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border text-xs font-mono font-semibold">Ctrl V</kbd>
-                  <span className="text-xs text-muted-foreground">로 클립보드에서 붙여넣기</span>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-primary/20 bg-primary/5">
+                  <div className="flex items-center gap-1.5">
+                    <kbd className="px-2 py-1 rounded bg-muted border border-border text-xs font-mono font-bold">⌘V</kbd>
+                    <span className="text-xs text-muted-foreground">/</span>
+                    <kbd className="px-2 py-1 rounded bg-muted border border-border text-xs font-mono font-bold">Ctrl+V</kbd>
+                  </div>
+                  <span className="text-xs text-muted-foreground">클립보드 이미지 바로 붙여넣기</span>
                 </div>
               </div>
             )}
-            {parseError && <p className="text-[11px] text-destructive -mt-2">{parseError}</p>}
+            {parseError && <p className="text-xs text-destructive">{parseError}</p>}
           </div>
 
-          {/* Manual path */}
-          <div className="glass-morphism rounded-3xl border border-white/10 p-6 flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
-              <PlusCircle size={24} className="text-muted-foreground" />
+          {/* Manual path — secondary */}
+          <div className="glass-morphism rounded-3xl border border-white/10 p-6 md:p-8 flex flex-col gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center">
+              <PlusCircle size={28} className="text-muted-foreground" />
             </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-base font-bold">직접 구성하기</h3>
+            <div className="flex flex-col gap-1.5">
+              <h3 className="text-lg font-bold">직접 구성하기</h3>
               <p className="text-sm text-muted-foreground">원하는 자산을 선택하거나 티커를 직접 입력해서 포트폴리오를 만들어요</p>
             </div>
             <button
               onClick={() => setView('input')}
-              className="mt-auto bg-white/10 border border-white/15 text-foreground font-bold py-3.5 rounded-2xl hover:bg-white/15 transition-all flex items-center justify-center gap-2"
+              className="mt-auto bg-white/10 border border-white/15 text-foreground font-bold py-4 rounded-2xl hover:bg-white/15 transition-all flex items-center justify-center gap-2 text-base"
             >
               시작하기 →
             </button>
@@ -872,8 +869,8 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                         <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                           <span className="text-sm font-semibold">{item.label}</span>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-bold text-primary">{item.ticker}</span>
-                            <span className="text-[10px] text-muted-foreground">· {item.desc}</span>
+                            <span className="text-xs font-bold text-primary">{item.ticker}</span>
+                            <span className="text-xs text-muted-foreground">· {item.desc}</span>
                           </div>
                         </div>
                         {inputType === 'weight'
@@ -888,7 +885,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
 
             {/* Preset portfolios — PC only */}
             <div className="hidden md:flex flex-col gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">유명 포트폴리오 바로 테스트</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">유명 포트폴리오 바로 테스트</span>
               <div className="flex gap-2">
                 {PRESET_PORTFOLIOS.map(preset => (
                   <button
@@ -973,7 +970,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                               <Pencil size={10} className="text-muted-foreground/40 group-hover:text-primary transition-colors" />
                             </button>
                           )}
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-xs text-muted-foreground">
                             {asset.launch_year && asset.launch_year !== 'Unknown' ? `Since ${asset.launch_year}` : 'Custom'}
                           </span>
                         </div>
@@ -1052,7 +1049,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
             </div>
 
             {/* PC Portfolio Slots */}
-            <div className="hidden md:flex flex-col gap-4">
+            <div className={cn("hidden md:grid gap-4", portfolioSlots.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
 
               {portfolioSlots.map((slot, si) => {
                 const total = slotTotals[si] ?? 0;

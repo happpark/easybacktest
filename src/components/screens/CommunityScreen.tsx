@@ -101,55 +101,58 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
   };
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in pb-32">
+    <div className="p-6 md:p-8 flex flex-col gap-6 animate-fade-in pb-8">
       <header className="flex flex-col gap-1">
         <h2 className="text-2xl font-bold">커뮤니티</h2>
-        <p className="text-xs text-muted-foreground">인기 포트폴리오를 가져와 직접 백테스트하세요.</p>
+        <p className="text-sm text-muted-foreground">인기 포트폴리오를 가져와 직접 백테스트하세요.</p>
       </header>
 
-      <div className="grid grid-cols-2 gap-4">
-        {COMMUNITY_PORTFOLIOS.map((p) => (
-          <div
-            key={p.id}
-            onClick={() => setExpandedId(expandedId === p.id ? null : p.id)}
-            className={`glass-morphism rounded-3xl p-4 flex flex-col gap-3 transition-all cursor-pointer border border-white/5 hover:border-primary/20 ${expandedId === p.id ? 'col-span-2' : ''}`}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex flex-col">
-                <span className="text-sm font-bold truncate max-w-[120px]">{p.title}</span>
-                <span className="text-[10px] text-muted-foreground">@{p.author}</span>
-              </div>
-              <div className={`transition-transform duration-200 ${expandedId === p.id ? 'rotate-180' : ''}`}>
-                <ChevronDown size={14} className="text-muted-foreground" />
-              </div>
-            </div>
-
-            <div className={`w-full ${expandedId === p.id ? 'h-48' : 'h-24'} transition-all duration-300`}>
-              <RadarChart data={p.radar} mini={expandedId !== p.id} />
-            </div>
-
-            {expandedId === p.id && (
-              <div className="mt-2 flex flex-col gap-3 animate-fade-in border-t border-white/5 pt-4">
-                <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">구성 자산</h4>
-                <div className="flex flex-wrap gap-2">
-                  {p.assets.map((a) => (
-                    <div key={a.ticker} className="bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 flex items-center gap-2">
-                      <span className="text-xs font-bold">{a.ticker}</span>
-                      <span className="text-[10px] text-primary">{a.weight}%</span>
-                    </div>
-                  ))}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {COMMUNITY_PORTFOLIOS.map((p) => {
+          const isExpanded = expandedId === p.id;
+          return (
+            <div
+              key={p.id}
+              className={`glass-morphism rounded-3xl p-5 flex flex-col gap-3 transition-all border group
+                ${isExpanded ? 'col-span-2 md:col-span-1 border-primary/30 bg-primary/5' : 'border-white/5 hover:border-primary/30 hover:bg-primary/5 cursor-pointer'}`}
+            >
+              <div
+                className="flex justify-between items-start cursor-pointer"
+                onClick={() => setExpandedId(isExpanded ? null : p.id)}
+              >
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-bold">{p.title}</span>
+                  <span className="text-xs text-muted-foreground">@{p.author}</span>
                 </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleLoad(p); }}
-                  className="w-full mt-2 h-10 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
-                >
-                  <Download size={14} />
-                  이 포트폴리오 가져오기
-                </button>
+                <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
               </div>
-            )}
-          </div>
-        ))}
+
+              <div className={`w-full transition-all duration-300 ${isExpanded ? 'h-48' : 'h-28 group-hover:h-36'}`}>
+                <RadarChart data={p.radar} mini={!isExpanded} />
+              </div>
+
+              {/* 자산 태그 — 항상 표시 */}
+              <div className="flex flex-wrap gap-1.5">
+                {p.assets.map((a) => (
+                  <div key={a.ticker} className="bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20 flex items-center gap-1.5">
+                    <span className="text-xs font-bold">{a.ticker}</span>
+                    <span className="text-xs text-primary">{a.weight}%</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* 가져오기 버튼 — 확장 시 or hover 시 */}
+              <button
+                onClick={(e) => { e.stopPropagation(); handleLoad(p); }}
+                className={`w-full h-10 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2
+                  ${isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+              >
+                <Download size={14} />
+                이 포트폴리오 가져오기
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

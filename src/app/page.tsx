@@ -96,29 +96,40 @@ export default function AlphaFlowApp() {
     <div className="flex h-screen bg-background font-body overflow-hidden">
 
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
-      <aside className="hidden md:flex flex-col w-52 shrink-0 border-r border-white/10 glass-morphism h-full">
+      <aside className="hidden md:flex flex-col w-56 shrink-0 border-r border-white/10 glass-morphism h-full">
         <div className="px-6 py-8">
           <h1 className="text-xl font-black text-primary text-glow">Easybacktest</h1>
-          <p className="text-[10px] text-muted-foreground mt-1">포트폴리오 백테스트</p>
+          <p className="text-xs text-muted-foreground mt-1">포트폴리오 백테스트</p>
         </div>
         <nav className="flex flex-col gap-1 px-3 pb-6 flex-1">
           {navItems.map(({ screen, Icon, label, disabled }) => (
-            <button
-              key={screen}
-              onClick={() => !disabled && setActiveScreen(screen)}
-              disabled={disabled}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left",
-                activeScreen === screen
-                  ? 'bg-primary/15 text-primary'
-                  : disabled
-                  ? 'text-muted-foreground/30 cursor-not-allowed'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+            <div key={screen} className="relative group">
+              <button
+                onClick={() => !disabled && setActiveScreen(screen)}
+                disabled={disabled}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left relative",
+                  activeScreen === screen
+                    ? 'bg-primary/15 text-primary'
+                    : disabled
+                    ? 'text-muted-foreground/30 cursor-not-allowed'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                )}
+              >
+                {activeScreen === screen && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-r-full" />
+                )}
+                <Icon size={18} />
+                {label}
+              </button>
+              {disabled && (
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 hidden group-hover:block">
+                  <div className="bg-popover border border-border text-xs text-muted-foreground px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-lg">
+                    먼저 백테스트를 실행하세요
+                  </div>
+                </div>
               )}
-            >
-              <Icon size={18} />
-              {label}
-            </button>
+            </div>
           ))}
         </nav>
         <div className="px-4 pb-6">
@@ -137,8 +148,7 @@ export default function AlphaFlowApp() {
 
         {/* Scrollable main — sticky elements inside screens anchor to this */}
         <main className="flex-1 overflow-y-auto">
-          {/* Mobile: constrain + center. Desktop: full width */}
-          <div className="max-w-md mx-auto md:max-w-none">
+          <div className="max-w-md mx-auto md:max-w-5xl md:mx-auto">
             {renderScreen()}
           </div>
         </main>
