@@ -758,7 +758,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
               <tbody>
                 {[
                   { label: 'CAGR', pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
-                  { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: false },
+                  { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: true },
                   { label: t('result_volatility'), pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
                   { label: 'Sharpe', pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
                   { label: t('result_dividend'), pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
