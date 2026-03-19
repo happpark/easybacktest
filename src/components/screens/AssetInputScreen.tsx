@@ -680,7 +680,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </div>
         </div>
       )}
-      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 md:p-10 gap-8 animate-fade-in pb-8 md:justify-center", parseStep && "pointer-events-none")}>
+      <div className={cn("flex flex-col min-h-[calc(100vh-7.5rem)] md:min-h-[calc(100vh-3.5rem)] p-6 md:p-10 gap-8 animate-fade-in pb-8 justify-center", parseStep && "pointer-events-none")}>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
         <div className="flex flex-col gap-2">
