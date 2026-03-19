@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Bookmark, Trash2, TrendingUp, GitCompare, X, Pencil, Check, ChevronUp, ChevronDown } from 'lucide-react';
+import { Bookmark, Trash2, TrendingUp, GitCompare, X, Pencil, Check, ChevronUp } from 'lucide-react';
 import { RadarChart } from '@/components/RadarChart';
 import { useMyPortfolios, type SavedPortfolio } from '@/lib/useMyPortfolios';
 import { buildRadar } from '@/lib/radar';
@@ -14,21 +14,11 @@ interface MyPortfoliosScreenProps {
   userId?: string | null;
 }
 
-// ── Mini metric pill ──────────────────────────────────────────────────────────
-function MetricPill({ label, value, color }: { label: string; value: string; color?: string }) {
-  return (
-    <div className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl bg-white/5 border border-white/5 min-w-0">
-      <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-wide">{label}</span>
-      <span className={cn("text-xs font-mono font-black", color ?? 'text-foreground')}>{value}</span>
-    </div>
-  );
-}
-
-// ── Rename input ──────────────────────────────────────────────────────────────
+// ── Rename input ───────────────────────────────────────────────────────────────
 function RenameInput({ initial, onCommit, onCancel }: { initial: string; onCommit: (v: string) => void; onCancel: () => void }) {
   const [val, setVal] = useState(initial);
   return (
-    <div className="flex items-center gap-1 flex-1">
+    <div className="flex items-center gap-1.5 flex-1 min-w-0">
       <input
         autoFocus
         value={val}
@@ -37,23 +27,22 @@ function RenameInput({ initial, onCommit, onCancel }: { initial: string; onCommi
           if (e.key === 'Enter') onCommit(val.trim() || initial);
           if (e.key === 'Escape') onCancel();
         }}
-        className="flex-1 font-bold text-sm bg-transparent border-b border-primary/60 outline-none text-foreground min-w-0"
+        className="flex-1 font-bold text-base bg-transparent border-b-2 border-primary/60 outline-none text-foreground min-w-0 pb-0.5"
       />
-      <button onClick={() => onCommit(val.trim() || initial)} className="p-1 text-primary"><Check size={14} /></button>
-      <button onClick={onCancel} className="p-1 text-muted-foreground"><X size={14} /></button>
+      <button onClick={() => onCommit(val.trim() || initial)} className="p-1.5 text-primary hover:text-primary/80 transition-colors">
+        <Check size={15} />
+      </button>
+      <button onClick={onCancel} className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
+        <X size={15} />
+      </button>
     </div>
   );
 }
 
-// ── Portfolio card ────────────────────────────────────────────────────────────
+// ── Portfolio card ─────────────────────────────────────────────────────────────
 function PortfolioCard({
-  portfolio,
-  compareMode,
-  selected,
-  onToggleSelect,
-  onLoad,
-  onRename,
-  onDelete,
+  portfolio, compareMode, selected,
+  onToggleSelect, onLoad, onRename, onDelete,
 }: {
   portfolio: SavedPortfolio;
   compareMode: boolean;
@@ -65,118 +54,124 @@ function PortfolioCard({
 }) {
   const { t } = useLang();
   const [renaming, setRenaming] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const m = portfolio.result.metrics;
-  const radar = buildRadar(m); // always recomputed with latest thresholds
-  const date = new Date(portfolio.savedAt).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
+
+  const cagrPositive = m.cagr >= 0;
+  const date = new Date(portfolio.savedAt).toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric' });
 
   return (
     <div
+      onClick={compareMode ? onToggleSelect : undefined}
       className={cn(
-        "glass-morphism rounded-2xl border transition-all duration-200",
-        selected ? "border-primary/50 bg-primary/5" : "border-white/5",
+        "glass-morphism rounded-2xl border transition-all duration-200 overflow-hidden group",
+        selected ? "border-primary/60 bg-primary/5 shadow-lg shadow-primary/10" : "border-white/8 hover:border-white/15",
         compareMode && "cursor-pointer"
       )}
-      onClick={compareMode ? onToggleSelect : undefined}
     >
-      {/* Card header */}
-      <div className="px-4 pt-4 pb-3">
-        <div className="flex items-start justify-between gap-2">
-          {renaming ? (
-            <RenameInput
-              initial={portfolio.name}
-              onCommit={name => { onRename(name); setRenaming(false); }}
-              onCancel={() => setRenaming(false)}
-            />
-          ) : (
-            <div className="flex items-center gap-1.5 flex-1 min-w-0">
+      {/* ── Top section ── */}
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex items-start justify-between gap-4">
+
+          {/* Left: name + chips */}
+          <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+            {/* Name row */}
+            <div className="flex items-center gap-2 min-w-0">
               {compareMode && (
                 <div className={cn(
-                  "w-4 h-4 rounded-full border-2 shrink-0 transition-all",
+                  "w-5 h-5 rounded-full border-2 shrink-0 transition-all",
                   selected ? "bg-primary border-primary" : "border-white/30"
                 )} />
               )}
-              <span className="font-bold text-sm truncate">{portfolio.name}</span>
+              {renaming ? (
+                <RenameInput
+                  initial={portfolio.name}
+                  onCommit={name => { onRename(name); setRenaming(false); }}
+                  onCancel={() => setRenaming(false)}
+                />
+              ) : (
+                <span className="font-bold text-base leading-snug truncate">{portfolio.name}</span>
+              )}
             </div>
-          )}
 
-          {!compareMode && !renaming && (
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-[10px] text-muted-foreground">{date}</span>
-              <button onClick={() => setRenaming(true)} className="p-1 text-muted-foreground/40 hover:text-primary transition-colors">
-                <Pencil size={12} />
-              </button>
-              <button onClick={onDelete} className="p-1 text-muted-foreground/40 hover:text-destructive transition-colors">
-                <Trash2 size={12} />
-              </button>
+            {/* Asset chips */}
+            <div className="flex flex-wrap gap-1.5">
+              {portfolio.assets.map(a => (
+                <span
+                  key={a.ticker}
+                  className="text-xs font-bold bg-white/5 text-foreground/80 border border-white/10 px-2.5 py-1 rounded-lg tracking-wide"
+                >
+                  {a.ticker}
+                  <span className="text-muted-foreground font-medium ml-1">{Math.round(a.weight)}%</span>
+                </span>
+              ))}
             </div>
-          )}
-        </div>
-
-        {/* Asset chips */}
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {portfolio.assets.map(a => (
-            <span key={a.ticker} className="text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-lg">
-              {a.ticker} <span className="text-primary/70">{a.weight}%</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Metrics + mini radar */}
-      <div className="px-4 pb-3 flex items-center justify-between gap-3">
-        <div className="flex gap-1.5 flex-wrap">
-          <MetricPill label="CAGR" value={`${m.cagr}%`} color="text-[#7AE9AB]" />
-          <MetricPill label="MDD" value={`${m.mdd}%`} color="text-[#F25B5B]" />
-          <MetricPill label="Sharpe" value={`${m.sharpe}`} color="text-primary" />
-        </div>
-        <div className="w-16 h-16 shrink-0" onClick={e => { e.stopPropagation(); setExpanded(v => !v); }}>
-          <RadarChart data={radar} mini />
-        </div>
-      </div>
-
-      {/* Period */}
-      <div className="px-4 pb-2 flex items-center justify-between">
-        <span className="text-[9px] text-muted-foreground/60">{portfolio.result.period}</span>
-        <button
-          onClick={e => { e.stopPropagation(); setExpanded(v => !v); }}
-          className="flex items-center gap-0.5 text-[9px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-        >
-          {expanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
-          {expanded ? t('my_collapse') : t('my_expand')}
-        </button>
-      </div>
-
-      {/* Expanded detail */}
-      {expanded && (
-        <div className="px-4 pb-4 border-t border-white/5 pt-3 flex flex-col gap-3 animate-fade-in">
-          <div className="w-full h-40">
-            <RadarChart data={radar} />
           </div>
-          <div className="grid grid-cols-2 gap-2 text-[10px]">
-            {[
-              { label: t('my_metric_cagr'), value: `${m.cagr}%` },
-              { label: t('my_metric_mdd'), value: `${m.mdd}%` },
-              { label: t('my_metric_volatility'), value: `${m.volatility}%` },
-              { label: t('my_metric_sharpe'), value: `${m.sharpe}` },
-              { label: t('my_metric_dividend'), value: `${m.dividend}%` },
-              { label: t('my_metric_best_year'), value: `${m.best_year.year} (+${m.best_year.value}%)` },
-            ].map(row => (
-              <div key={row.label} className="flex justify-between bg-white/5 rounded-lg px-3 py-2">
-                <span className="text-muted-foreground">{row.label}</span>
-                <span className="font-bold text-foreground">{row.value}</span>
-              </div>
-            ))}
+
+          {/* Right: hero CAGR */}
+          <div className="flex flex-col items-end shrink-0 gap-1">
+            <div className={cn(
+              "text-3xl font-black font-mono tabular-nums leading-none",
+              cagrPositive ? "text-[#7AE9AB]" : "text-[#F25B5B]"
+            )}>
+              {cagrPositive ? '+' : ''}{m.cagr}%
+            </div>
+            <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">CAGR</div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Load button */}
+      {/* ── Metrics bar ── */}
+      <div className="px-5 pb-4 flex items-center gap-3">
+        {/* MDD */}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">MDD</span>
+          <span className="text-sm font-bold font-mono text-[#F25B5B]">{m.mdd}%</span>
+        </div>
+        <div className="w-px h-6 bg-white/10" />
+        {/* Sharpe */}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Sharpe</span>
+          <span className="text-sm font-bold font-mono text-primary">{m.sharpe}</span>
+        </div>
+        <div className="w-px h-6 bg-white/10" />
+        {/* Volatility */}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">VOL</span>
+          <span className="text-sm font-bold font-mono text-foreground/70">{m.volatility}%</span>
+        </div>
+
+        {/* Spacer + date + actions */}
+        <div className="flex-1" />
+        {!compareMode && !renaming && (
+          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-xs text-muted-foreground/60 mr-1.5">{date}</span>
+            <button
+              onClick={e => { e.stopPropagation(); setRenaming(true); }}
+              className="p-1.5 rounded-lg text-muted-foreground/50 hover:text-primary hover:bg-primary/10 transition-all"
+            >
+              <Pencil size={13} />
+            </button>
+            <button
+              onClick={e => { e.stopPropagation(); onDelete(); }}
+              className="p-1.5 rounded-lg text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-all"
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
+        )}
+        {/* Always show date on mobile (no hover) */}
+        {!compareMode && !renaming && (
+          <span className="text-xs text-muted-foreground/50 md:hidden">{date}</span>
+        )}
+      </div>
+
+      {/* ── Period + load button ── */}
       {!compareMode && (
-        <div className="px-4 pb-4">
+        <div className="border-t border-white/5 px-5 py-3 flex items-center justify-between gap-3">
+          <span className="text-xs text-muted-foreground/50">{portfolio.result.period}</span>
           <button
-            onClick={onLoad}
-            className="w-full h-9 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-primary/20"
+            onClick={e => { e.stopPropagation(); onLoad(); }}
+            className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 px-4 py-2 rounded-xl transition-all"
           >
             <TrendingUp size={12} />
             {t('my_reanalyze')}
@@ -187,7 +182,7 @@ function PortfolioCard({
   );
 }
 
-// ── Compare view ──────────────────────────────────────────────────────────────
+// ── Compare view ───────────────────────────────────────────────────────────────
 function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; onClose: () => void }) {
   const { t } = useLang();
   const COLORS = ['hsl(212, 73%, 55%)', '#7AE9AB', '#F5A623'];
@@ -195,28 +190,17 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
 
   const [hidden, setHidden] = useState<Set<number>>(new Set());
   const toggleHidden = (i: number) =>
-    setHidden(prev => {
-      const next = new Set(prev);
-      next.has(i) ? next.delete(i) : next.add(i);
-      return next;
-    });
+    setHidden(prev => { const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next; });
 
-  // Build merged radar — recompute from metrics so thresholds are always current
   const perPortfolioRadar = portfolios.map(p => buildRadar(p.result.metrics));
   const subjects = perPortfolioRadar[0].map(r => r.subject);
   const mergedRadar = subjects.map(subject => {
     const entry: Record<string, number | string> = { subject, fullMark: 100 };
-    perPortfolioRadar.forEach((radar, i) => {
-      entry[labels[i]] = radar.find(x => x.subject === subject)?.A ?? 0;
-    });
+    perPortfolioRadar.forEach((radar, i) => { entry[labels[i]] = radar.find(x => x.subject === subject)?.A ?? 0; });
     return entry;
   });
 
-  const series = portfolios.map((_, i) => ({
-    key: labels[i],
-    color: COLORS[i],
-    hidden: hidden.has(i),
-  }));
+  const series = portfolios.map((_, i) => ({ key: labels[i], color: COLORS[i], hidden: hidden.has(i) }));
 
   const metrics = [
     { label: 'CAGR', key: 'cagr' as const, unit: '%', higherBetter: true },
@@ -229,55 +213,49 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-base">{t('compare_title')}</h3>
-        <button onClick={onClose} className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
+        <h3 className="font-bold text-lg">{t('compare_title')}</h3>
+        <button onClick={onClose} className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all">
           <X size={18} />
         </button>
       </div>
 
-      {/* Clickable legend */}
+      {/* Legend */}
       <div className="flex flex-wrap gap-2">
-        {portfolios.map((p, i) => {
-          const isHidden = hidden.has(i);
-          return (
-            <button
-              key={p.id}
-              onClick={() => toggleHidden(i)}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all duration-200",
-                isHidden
-                  ? "bg-white/5 border-white/10 text-muted-foreground/40 line-through"
-                  : "border-white/20 text-foreground"
-              )}
-              style={isHidden ? {} : { borderColor: `${COLORS[i]}40`, background: `${COLORS[i]}15` }}
-            >
-              <div
-                className="w-2.5 h-2.5 rounded-full shrink-0 transition-opacity"
-                style={{ background: COLORS[i], opacity: isHidden ? 0.2 : 1 }}
-              />
-              <span className="truncate max-w-[90px]">{p.name}</span>
-            </button>
-          );
-        })}
+        {portfolios.map((p, i) => (
+          <button
+            key={p.id}
+            onClick={() => toggleHidden(i)}
+            className={cn(
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm font-semibold transition-all duration-200",
+              hidden.has(i)
+                ? "bg-white/5 border-white/10 text-muted-foreground/40 line-through"
+                : "border-white/20 text-foreground"
+            )}
+            style={hidden.has(i) ? {} : { borderColor: `${COLORS[i]}50`, background: `${COLORS[i]}15` }}
+          >
+            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: COLORS[i], opacity: hidden.has(i) ? 0.2 : 1 }} />
+            <span className="truncate max-w-[100px]">{p.name}</span>
+          </button>
+        ))}
       </div>
 
-      {/* Overlapping radar */}
-      <div className="glass-morphism rounded-2xl border border-white/5 p-4">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">{t('compare_radar_label')}</span>
-        <div className="h-56 mt-2">
+      {/* Radar */}
+      <div className="glass-morphism rounded-2xl border border-white/5 p-5">
+        <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-3">{t('compare_radar_label')}</p>
+        <div className="h-60">
           <RadarChart data={mergedRadar} series={series} />
         </div>
       </div>
 
       {/* Metrics table */}
       <div className="glass-morphism rounded-2xl border border-white/5 overflow-hidden">
-        <table className="w-full text-[11px]">
+        <table className="w-full">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
-              <th className="text-left px-4 py-2.5 font-bold text-muted-foreground text-[10px]">{t('compare_metric_col')}</th>
+              <th className="text-left px-5 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('compare_metric_col')}</th>
               {portfolios.map((p, i) => (
-                <th key={p.id} className="text-right px-3 py-2.5 font-bold text-[10px]" style={{ color: COLORS[i] }}>
-                  {labels[i]}
+                <th key={p.id} className="text-right px-4 py-3 font-bold text-sm" style={{ color: COLORS[i] }}>
+                  {labels[i]}. <span className="text-xs font-medium opacity-70 truncate">{p.name}</span>
                 </th>
               ))}
             </tr>
@@ -287,15 +265,15 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
               const vals = portfolios.map(p => p.result.metrics[row.key]);
               const best = row.higherBetter ? Math.max(...vals) : Math.min(...vals);
               return (
-                <tr key={row.key} className={ri < metrics.length - 1 ? 'border-b border-white/5' : ''}>
-                  <td className="px-4 py-2.5 text-muted-foreground font-medium">{row.label}</td>
+                <tr key={row.key} className={cn("transition-colors hover:bg-white/3", ri < metrics.length - 1 && "border-b border-white/5")}>
+                  <td className="px-5 py-3.5 text-sm text-muted-foreground font-medium">{row.label}</td>
                   {vals.map((v, i) => (
-                    <td key={i} className="text-right px-3 py-2.5">
+                    <td key={i} className="text-right px-4 py-3.5">
                       <span className={cn(
-                        "font-mono font-bold inline-flex items-center justify-end gap-0.5",
-                        v === best ? "text-[#7AE9AB]" : "text-muted-foreground"
+                        "font-mono font-bold text-sm inline-flex items-center justify-end gap-1",
+                        v === best ? "text-[#7AE9AB]" : "text-muted-foreground/70"
                       )}>
-                        {v === best && <ChevronUp size={10} className="text-[#7AE9AB]" />}
+                        {v === best && <ChevronUp size={11} className="text-[#7AE9AB]" />}
                         {v}{row.unit}
                       </span>
                     </td>
@@ -310,7 +288,7 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
   );
 }
 
-// ── Main screen ───────────────────────────────────────────────────────────────
+// ── Main screen ────────────────────────────────────────────────────────────────
 export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) {
   const { t } = useLang();
   const { portfolios, rename, remove, dbLoading } = useMyPortfolios(userId);
@@ -318,50 +296,53 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev =>
-      prev.includes(id)
-        ? prev.filter(x => x !== id)
-        : prev.length < 3 ? [...prev, id] : prev
-    );
-  };
+  const toggleSelect = (id: string) =>
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : prev.length < 3 ? [...prev, id] : prev);
 
   const selectedPortfolios = selectedIds.map(id => portfolios.find(p => p.id === id)!).filter(Boolean);
 
-  const exitCompare = () => {
-    setCompareMode(false);
-    setSelectedIds([]);
-    setShowCompare(false);
-  };
+  const exitCompare = () => { setCompareMode(false); setSelectedIds([]); setShowCompare(false); };
 
+  // ── Loading skeleton ──
   if (dbLoading) {
     return (
-      <div className="p-6 flex flex-col gap-4 animate-fade-in">
-        <div className="h-8 w-40 rounded-xl bg-white/10 animate-pulse" />
-        {[1, 2, 3].map(i => (
-          <div key={i} className="glass-morphism rounded-2xl border border-white/5 p-4 flex flex-col gap-3">
-            <div className="h-4 w-32 rounded-lg bg-white/10 animate-pulse" />
-            <div className="h-3 w-24 rounded-lg bg-white/5 animate-pulse" />
-            <div className="flex gap-2">
-              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
-              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
-              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
+      <div className="p-6 md:p-8 flex flex-col gap-4 animate-fade-in">
+        <div className="h-7 w-44 rounded-xl bg-white/10 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="glass-morphism rounded-2xl border border-white/5 p-5 flex flex-col gap-4">
+              <div className="flex justify-between">
+                <div className="flex flex-col gap-2 flex-1">
+                  <div className="h-4 w-32 rounded-lg bg-white/10 animate-pulse" />
+                  <div className="flex gap-1.5">
+                    <div className="h-7 w-16 rounded-lg bg-white/8 animate-pulse" />
+                    <div className="h-7 w-14 rounded-lg bg-white/8 animate-pulse" />
+                    <div className="h-7 w-16 rounded-lg bg-white/8 animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-9 w-16 rounded-lg bg-white/8 animate-pulse" />
+              </div>
+              <div className="flex gap-4">
+                <div className="h-5 w-20 rounded-lg bg-white/5 animate-pulse" />
+                <div className="h-5 w-20 rounded-lg bg-white/5 animate-pulse" />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
 
+  // ── Empty state ──
   if (portfolios.length === 0) {
     return (
-      <div className="p-6 flex flex-col gap-4 animate-fade-in min-h-[60vh] items-center justify-center text-center">
+      <div className="flex flex-col items-center justify-center gap-4 min-h-[calc(100vh-7rem)] text-center px-6 animate-fade-in">
         <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-          <Bookmark size={28} className="text-muted-foreground/40" />
+          <Bookmark size={28} className="text-muted-foreground/30" />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <h3 className="font-bold text-base">{t('my_empty_title')}</h3>
-          <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-[260px]">
             {t('my_empty_desc').split('\n')[0]}<br />
             <span className="text-primary font-semibold">{t('my_empty_save_hint')}</span>{' '}
             {t('my_empty_desc').split('\n')[1]}
@@ -372,36 +353,39 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
   }
 
   return (
-    <div className="p-6 flex flex-col gap-5 animate-fade-in pb-32">
+    <div className="p-6 md:p-8 flex flex-col gap-6 animate-fade-in pb-8">
+
       {showCompare && selectedPortfolios.length >= 2 ? (
         <CompareView portfolios={selectedPortfolios} onClose={exitCompare} />
       ) : (
         <>
-          <header className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold">{t('my_title')}</h2>
-              <p className="text-xs text-muted-foreground">{portfolios.length}{t('my_count_suffix')}</p>
+          {/* ── Header ── */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2.5">
+              <h2 className="text-xl font-bold">{t('my_title')}</h2>
+              <span className="text-sm text-muted-foreground font-medium">{portfolios.length}{t('my_count_suffix')}</span>
             </div>
             <button
               onClick={() => compareMode ? exitCompare() : setCompareMode(true)}
               className={cn(
-                "flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl transition-colors border",
+                "flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl transition-all border",
                 compareMode
-                  ? "bg-primary/20 text-primary border-primary/30"
-                  : "bg-white/5 text-muted-foreground border-white/10 hover:border-primary/30 hover:text-primary"
+                  ? "bg-primary/20 text-primary border-primary/40"
+                  : "bg-white/5 text-muted-foreground border-white/10 hover:text-foreground hover:border-white/20"
               )}
             >
-              <GitCompare size={13} />
+              <GitCompare size={14} />
               {compareMode ? t('my_cancel') : t('my_compare')}
             </button>
-          </header>
+          </div>
 
+          {/* ── Compare banner ── */}
           {compareMode && (
             <div className={cn(
-              "flex items-center justify-between p-3 rounded-xl border transition-all",
+              "flex items-center justify-between px-4 py-3 rounded-xl border transition-all",
               selectedIds.length >= 2 ? "bg-primary/10 border-primary/30" : "bg-white/5 border-white/10"
             )}>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {selectedIds.length === 0
                   ? t('my_select_hint')
                   : `${selectedIds.length}${t('my_selected_count')}`}
@@ -409,7 +393,7 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
               {selectedIds.length >= 2 && (
                 <button
                   onClick={() => setShowCompare(true)}
-                  className="text-xs font-bold text-primary bg-primary/20 px-3 py-1.5 rounded-lg hover:bg-primary/30 transition-colors"
+                  className="text-sm font-bold text-primary bg-primary/20 hover:bg-primary/30 px-4 py-1.5 rounded-lg transition-colors"
                 >
                   {t('my_compare_button')}
                 </button>
@@ -417,7 +401,8 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
             </div>
           )}
 
-          <div className="flex flex-col gap-4">
+          {/* ── Portfolio grid ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {portfolios.map(p => (
               <PortfolioCard
                 key={p.id}
