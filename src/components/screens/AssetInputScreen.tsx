@@ -387,6 +387,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
       form.append('image', file);
       const res = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
       const json = await res.json();
+      if (res.status === 401) throw new Error(t('parse_login_required'));
       if (!res.ok || json.error) throw new Error(json.error ?? t('parse_dialog_title'));
 
       const KNOWN_EXTRA = new Set(['CASH']);

@@ -50,6 +50,7 @@ const translations = {
     parse_unknown_ticker: '미지원',
     parse_unknown_warning: '미지원 티커는 적용 후 직접 수정해주세요.',
     parse_cancel: '취소',
+    parse_login_required: '이미지 분석은 로그인 후 이용할 수 있어요.',
     parse_apply: '이 비중으로 적용',
 
     // Short history warning dialog
@@ -314,6 +315,7 @@ const translations = {
     parse_unknown_ticker: 'Unsupported',
     parse_unknown_warning: 'Unsupported tickers can be edited after applying.',
     parse_cancel: 'Cancel',
+    parse_login_required: 'Image analysis requires login.',
     parse_apply: 'Apply These Weights',
 
     // Short history warning dialog
