@@ -243,7 +243,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-6 p-6 text-center animate-fade-in min-h-[80vh]">
+      <div className="flex flex-col items-center justify-center gap-6 p-6 text-center animate-fade-in" style={{ minHeight: 'calc(100vh - 4rem)' }}>
         <Zap className="w-10 h-10 text-primary" />
         <div className="flex flex-col items-center gap-3">
           <h3 className="text-xl font-bold">퀀트 엔진 가동 중</h3>
@@ -775,15 +775,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       </div>
 
       {/* AI Backtest Insight */}
-      <div className="bg-primary/10 border border-primary/20 p-5 rounded-2xl flex gap-4">
-        <Zap size={24} className="text-primary shrink-0 mt-0.5" />
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold text-primary uppercase tracking-wider">AI 인사이트</span>
-          <p className="text-sm leading-relaxed text-primary-foreground/90">
-            &quot;{backtestResult.aiInsight}&quot;
-          </p>
-        </div>
-      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed italic px-1">
+        &quot;{backtestResult.aiInsight}&quot;
+      </p>
 
       {/* Save + Share */}
       <div className="flex gap-3">
