@@ -107,7 +107,9 @@ export default function AlphaFlowApp() {
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
       <aside className="hidden md:flex flex-col w-56 shrink-0 border-r border-white/10 glass-morphism h-full">
         <div className="px-6 py-8">
-          <h1 className="text-xl font-black text-primary text-glow">Easybacktest</h1>
+          <button onClick={() => setActiveScreen('input')} className="text-left">
+            <h1 className="text-xl font-black text-primary text-glow hover:opacity-80 transition-opacity">Easybacktest</h1>
+          </button>
           <p className="text-xs text-muted-foreground mt-1">{t('app_subtitle')}</p>
         </div>
         <nav className="flex flex-col gap-1 px-3 pb-6 flex-1">
