@@ -313,7 +313,7 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
 // ── Main screen ───────────────────────────────────────────────────────────────
 export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) {
   const { t } = useLang();
-  const { portfolios, rename, remove } = useMyPortfolios(userId);
+  const { portfolios, rename, remove, dbLoading } = useMyPortfolios(userId);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
@@ -333,6 +333,25 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
     setSelectedIds([]);
     setShowCompare(false);
   };
+
+  if (dbLoading) {
+    return (
+      <div className="p-6 flex flex-col gap-4 animate-fade-in">
+        <div className="h-8 w-40 rounded-xl bg-white/10 animate-pulse" />
+        {[1, 2, 3].map(i => (
+          <div key={i} className="glass-morphism rounded-2xl border border-white/5 p-4 flex flex-col gap-3">
+            <div className="h-4 w-32 rounded-lg bg-white/10 animate-pulse" />
+            <div className="h-3 w-24 rounded-lg bg-white/5 animate-pulse" />
+            <div className="flex gap-2">
+              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
+              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
+              <div className="h-8 w-16 rounded-xl bg-white/10 animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (portfolios.length === 0) {
     return (

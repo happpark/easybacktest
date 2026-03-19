@@ -72,7 +72,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const [slotSaveName, setSlotSaveName] = useState('');
   const [savedSlots, setSavedSlots] = useState<Set<number>>(new Set());
   const runningRef = useRef(false);
-  const { save: savePortfolio } = useMyPortfolios();
+  const { save: savePortfolio } = useMyPortfolios(user?.id);
 
   const LOADING_MESSAGES = [
     t('result_loading_step0'),

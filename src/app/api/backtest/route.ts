@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runBacktest } from '@/ai/flows/backtest-portfolio';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const input = await req.json();
+
+    if (input.portfolios?.length > 5) {
+      return NextResponse.json({ error: 'Too many portfolios' }, { status: 400 });
+    }
 
     // Bulk mode: { portfolios: [{assets: [...]}, ...] }
     if (Array.isArray(input.portfolios)) {
@@ -29,8 +38,7 @@ export async function POST(req: NextRequest) {
     const result = await runBacktest(input);
     return NextResponse.json({ ...result, aiInsight: 'Analysis completed based on historical data.' });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : '백테스트 중 오류가 발생했습니다.';
-    console.error('[backtest API error]', e);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('[backtest]', e);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

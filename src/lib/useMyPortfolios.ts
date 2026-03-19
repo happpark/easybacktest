@@ -84,6 +84,7 @@ export function useMyPortfolios(userId?: string | null) {
           assets,
           result,
         };
+        setPortfolios((prev) => [fallback, ...prev]);
         return fallback;
       } else {
         // Save to localStorage
