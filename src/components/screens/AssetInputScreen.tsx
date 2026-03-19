@@ -338,9 +338,8 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const [view, setView] = useState<'landing' | 'input'>('landing');
 
   // Image OCR state
-  const [parsing, setParsing] = useState(false);
+  const [parseStep, setParseStep] = useState<'ocr' | 'map' | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
-  const [parseNote, setParseNote] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Parsed result pending user confirmation
@@ -364,18 +363,27 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   };
 
   const uploadImageFile = async (file: File) => {
-    setParsing(true);
+    setParseStep('ocr');
     setParseError(null);
-    setParseNote(null);
     try {
+      // Step 1: OCR — image → raw items
       const form = new FormData();
       form.append('image', file);
-      const res = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
-      const json = await res.json();
-      if (!res.ok || json.error) throw new Error(json.error ?? '분석 실패');
+      const res1 = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
+      const extracted = await res1.json();
+      if (!res1.ok || extracted.error) throw new Error(extracted.error ?? '이미지 분석 실패');
 
-      // Phase 4: validate each ticker against etf-data.json
-      const KNOWN_EXTRA = new Set(['CASH']); // non-ETF tickers we explicitly support
+      // Step 2: Map — raw items → ETF tickers
+      setParseStep('map');
+      const res2 = await fetch('/api/parse-portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value_type: extracted.value_type, items: extracted.items }),
+      });
+      const json = await res2.json();
+      if (!res2.ok || json.error) throw new Error(json.error ?? '매핑 실패');
+
+      const KNOWN_EXTRA = new Set(['CASH']);
       const parsed: ParsedAsset[] = (
         json.assets as { ticker: string; weight: number; original?: string }[]
       ).map(a => ({
@@ -385,12 +393,11 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
         knownTicker: !!ETF_DATA.find(e => e.ticker === a.ticker) || KNOWN_EXTRA.has(a.ticker),
       }));
 
-      // Phase 3: show confirmation dialog instead of applying immediately
-      setParseConfirm({ assets: parsed, note: json.note ?? null });
+      setParseConfirm({ assets: parsed, note: null });
     } catch (err: unknown) {
       setParseError(err instanceof Error ? err.message : '이미지 분석 중 오류가 발생했습니다.');
     } finally {
-      setParsing(false);
+      setParseStep(null);
     }
   };
 
@@ -653,15 +660,19 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     return (
       <>
       {/* ── Full-screen parsing overlay ─────────────────────────────────────── */}
-      {parsing && (
+      {parseStep && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-background/80 backdrop-blur-sm">
           <div className="relative flex items-center justify-center">
             <div className="w-20 h-20 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
             <ImagePlus size={28} className="absolute text-primary" />
           </div>
           <div className="flex flex-col items-center gap-2 text-center">
-            <p className="text-lg font-bold text-foreground">AI 분석 중...</p>
-            <p className="text-sm text-muted-foreground">포트폴리오를 읽고 있어요. 잠시만 기다려주세요.</p>
+            <p className="text-lg font-bold text-foreground">
+              {parseStep === 'ocr' ? '이미지 읽는 중 ...' : '자산별 비중 계산 중 ...'}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {parseStep === 'ocr' ? '포트폴리오 이미지를 분석하고 있어요.' : 'ETF 티커로 매핑하고 있어요.'}
+            </p>
             <p className="text-xs text-muted-foreground/70 mt-1">
               접속자가 많으면 오래 걸릴 수 있어요.<br />
               현재{' '}
@@ -678,7 +689,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </div>
         </div>
       )}
-      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32", parsing && "pointer-events-none")}>
+      <div className={cn("flex flex-col min-h-[calc(100vh-4rem)] p-6 gap-8 animate-fade-in pb-32", parseStep && "pointer-events-none")}>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
         <div className="pt-6 md:pt-10 flex flex-col gap-2">
@@ -697,7 +708,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               <h3 className="text-base font-bold">스크린샷으로 바로 분석</h3>
               <p className="text-sm text-muted-foreground">증권사 앱·엑셀 화면을 캡처해서 올리면 AI가 자동으로 포트폴리오를 읽어요</p>
             </div>
-            {!parsing && (
+            {!parseStep && (
               <div className="mt-auto flex flex-col gap-2">
                 <button
                   onClick={() => imageInputRef.current?.click()}
@@ -719,7 +730,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </div>
             )}
             {parseError && <p className="text-[11px] text-destructive -mt-2">{parseError}</p>}
-            {parseNote && <p className="text-[11px] text-muted-foreground -mt-2">💡 {parseNote}</p>}
           </div>
 
           {/* Manual path */}
@@ -777,9 +787,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               </div>
             ))}
           </div>
-          {parseConfirm?.note && (
-            <p className="text-xs text-muted-foreground bg-muted rounded-lg px-3 py-2 mt-1">💡 {parseConfirm.note}</p>
-          )}
           {parseConfirm?.assets.some(a => !a.knownTicker) && (
             <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
               <AlertTriangle size={12} />미지원 티커는 적용 후 직접 수정해주세요.
@@ -1240,12 +1247,6 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
             </div>
           ))}
         </div>
-
-        {parseConfirm?.note && (
-          <p className="text-xs text-muted-foreground bg-muted rounded-lg px-3 py-2 mt-1">
-            💡 {parseConfirm.note}
-          </p>
-        )}
 
         {parseConfirm?.assets.some(a => !a.knownTicker) && (
           <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
