@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com';
+    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://app.posthog.com';
     if (!key) {
       console.warn('[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set');
       return;
@@ -19,7 +19,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: true,
       capture_pageleave: true,
       loaded: (ph) => {
-        console.log('[PostHog] initialized, distinct_id:', ph.get_distinct_id());
+        console.log('[PostHog] initialized, host:', host, 'distinct_id:', ph.get_distinct_id());
       },
     });
   }, []);
