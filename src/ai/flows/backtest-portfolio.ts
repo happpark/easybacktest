@@ -110,25 +110,19 @@ async function fetchAdjClose(ticker: string): Promise<Map<string, number>> {
 async function fetchDivYield(ticker: string): Promise<number> {
   if (ticker === 'CASH') return 0;
   try {
-    // summaryDetail is more reliable than quote() for ETF/stock dividend fields
-    const summary = await yahooFinance.quoteSummary(
-      ticker,
-      { modules: ['summaryDetail'] },
-      { validateResult: false },
-    ) as Record<string, unknown>;
-    const sd = (summary.summaryDetail ?? {}) as Record<string, unknown>;
+    const q = await yahooFinance.quote(ticker, {}, { validateResult: false }) as Record<string, unknown>;
 
-    // trailingAnnualDividendYield: decimal (e.g. 0.035 → 3.5%)
-    const tady = sd.trailingAnnualDividendYield;
+    // dividendYield: already in % form (e.g. 3.3 = 3.3%) — most reliable field
+    const dy = q.dividendYield;
+    if (typeof dy === 'number' && dy > 0) return Math.round(dy * 100) / 100;
+
+    // Fallback: trailingAnnualDividendYield is decimal (0.035 → 3.5%)
+    const tady = q.trailingAnnualDividendYield;
     if (typeof tady === 'number' && tady > 0) return Math.round(tady * 10000) / 100;
 
-    // dividendYield: some ETFs only populate this field
-    const dy = sd.dividendYield;
-    if (typeof dy === 'number' && dy > 0) return Math.round(dy * 10000) / 100;
-
     // Fallback: annual cash dividend per share ÷ current price
-    const rate = sd.trailingAnnualDividendRate ?? sd.dividendRate;
-    const price = (sd.regularMarketPrice ?? sd.previousClose) as number | undefined;
+    const rate = q.trailingAnnualDividendRate;
+    const price = q.regularMarketPrice;
     if (typeof rate === 'number' && typeof price === 'number' && rate > 0 && price > 0) {
       return Math.round((rate / price) * 10000) / 100;
     }
