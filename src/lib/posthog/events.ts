@@ -16,6 +16,15 @@ export const track = {
   portfolioLoaded: (source: 'community' | 'mine') =>
     posthog.capture('portfolio_loaded', { source }),
 
+  communityShared: () =>
+    posthog.capture('community_shared'),
+
+  communityUnshared: () =>
+    posthog.capture('community_unshared'),
+
+  communitySavedToMine: () =>
+    posthog.capture('community_saved_to_mine'),
+
   signIn: () =>
     posthog.capture('sign_in'),
 

@@ -7,6 +7,7 @@ import { useMyPortfolios, type SavedPortfolio } from '@/lib/useMyPortfolios';
 import { buildRadar } from '@/lib/radar';
 import { useLang } from '@/lib/i18n';
 import { shareToCommunity, deleteFromCommunity, getMySharedPortfolios, type CommunityPortfolioRow } from '@/lib/supabase/community';
+import { track } from '@/lib/posthog/events';
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
 
@@ -58,7 +59,7 @@ function ShareModal({ portfolio, userId, sharedId, onClose, onShared, onUnshared
     setLoading(true);
     const row = await shareToCommunity(userId, portfolio.name, nickname.trim(), portfolio.assets, portfolio.result);
     setLoading(false);
-    if (row) { onShared(row); onClose(); }
+    if (row) { track.communityShared(); onShared(row); onClose(); }
   };
 
   const handleUnshare = async () => {
@@ -66,6 +67,7 @@ function ShareModal({ portfolio, userId, sharedId, onClose, onShared, onUnshared
     setLoading(true);
     await deleteFromCommunity(sharedId);
     setLoading(false);
+    track.communityUnshared();
     onUnshared();
     onClose();
   };

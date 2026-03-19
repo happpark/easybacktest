@@ -7,6 +7,7 @@ import { useLang } from '@/lib/i18n';
 import { getCommunityPortfolios, type CommunityPortfolioRow } from '@/lib/supabase/community';
 import { useMyPortfolios } from '@/lib/useMyPortfolios';
 import { useAuth } from '@/hooks/useAuth';
+import { track } from '@/lib/posthog/events';
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
 
@@ -257,6 +258,7 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
     if (!user) return;
     setSavingId(row.id);
     await saveToMine(row.name, row.assets, row.result);
+    track.communitySavedToMine();
     setSavedIds(prev => new Set(prev).add(row.id));
     setSavingId(null);
   };
