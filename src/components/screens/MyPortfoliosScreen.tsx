@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Bookmark, Trash2, TrendingUp, GitCompare, X, Pencil, Check, ChevronUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bookmark, Trash2, TrendingUp, GitCompare, X, Pencil, Check, ChevronUp, Share2, Loader2 } from 'lucide-react';
 import { RadarChart } from '@/components/RadarChart';
 import { useMyPortfolios, type SavedPortfolio } from '@/lib/useMyPortfolios';
 import { buildRadar } from '@/lib/radar';
 import { useLang } from '@/lib/i18n';
+import { shareToCommunity, deleteFromCommunity, getMySharedPortfolios, type CommunityPortfolioRow } from '@/lib/supabase/community';
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
 
@@ -39,21 +40,110 @@ function RenameInput({ initial, onCommit, onCancel }: { initial: string; onCommi
   );
 }
 
+// ── Share modal ────────────────────────────────────────────────────────────────
+function ShareModal({ portfolio, userId, sharedId, onClose, onShared, onUnshared }: {
+  portfolio: SavedPortfolio;
+  userId: string;
+  sharedId: string | null;
+  onClose: () => void;
+  onShared: (row: CommunityPortfolioRow) => void;
+  onUnshared: () => void;
+}) {
+  const { t } = useLang();
+  const [nickname, setNickname] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleShare = async () => {
+    if (!nickname.trim()) return;
+    setLoading(true);
+    const row = await shareToCommunity(userId, portfolio.name, nickname.trim(), portfolio.assets, portfolio.result);
+    setLoading(false);
+    if (row) { onShared(row); onClose(); }
+  };
+
+  const handleUnshare = async () => {
+    if (!sharedId) return;
+    setLoading(true);
+    await deleteFromCommunity(sharedId);
+    setLoading(false);
+    onUnshared();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-popover border border-border rounded-2xl p-6 w-80 flex flex-col gap-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-base">{t('share_modal_title')}</h3>
+          <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground"><X size={16} /></button>
+        </div>
+
+        {sharedId ? (
+          <>
+            <p className="text-sm text-muted-foreground">{t('share_done')} — 커뮤니티에서 볼 수 있어요.</p>
+            <button
+              onClick={handleUnshare}
+              disabled={loading}
+              className="w-full py-2.5 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive text-sm font-bold border border-destructive/20 transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 size={14} className="animate-spin" /> : null}
+              {t('share_unshare')}
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">{t('share_modal_desc')}</p>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-muted-foreground">{t('share_nickname_label')}</label>
+              <input
+                autoFocus
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') handleShare(); if (e.key === 'Escape') onClose(); }}
+                placeholder={t('share_nickname_placeholder')}
+                className="w-full px-3 py-2.5 rounded-xl bg-black/30 border border-white/10 focus:border-primary/50 outline-none text-sm text-foreground placeholder:text-muted-foreground/50"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button onClick={onClose} className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold text-muted-foreground border border-white/10 transition-all">
+                {t('share_cancel')}
+              </button>
+              <button
+                onClick={handleShare}
+                disabled={loading || !nickname.trim()}
+                className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? <Loader2 size={14} className="animate-spin" /> : null}
+                {loading ? t('share_loading') : t('share_confirm')}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Portfolio card ─────────────────────────────────────────────────────────────
 function PortfolioCard({
-  portfolio, compareMode, selected,
-  onToggleSelect, onLoad, onRename, onDelete,
+  portfolio, compareMode, selected, userId, sharedId,
+  onToggleSelect, onLoad, onRename, onDelete, onShared, onUnshared,
 }: {
   portfolio: SavedPortfolio;
   compareMode: boolean;
   selected: boolean;
+  userId?: string | null;
+  sharedId: string | null;
   onToggleSelect: () => void;
   onLoad: () => void;
   onRename: (name: string) => void;
   onDelete: () => void;
+  onShared: (row: CommunityPortfolioRow) => void;
+  onUnshared: () => void;
 }) {
   const { t } = useLang();
   const [renaming, setRenaming] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const m = portfolio.result.metrics;
 
   const cagrPositive = m.cagr >= 0;
@@ -165,18 +255,43 @@ function PortfolioCard({
         )}
       </div>
 
-      {/* ── Period + load button ── */}
+      {/* ── Period + actions ── */}
       {!compareMode && (
-        <div className="border-t border-white/5 px-5 py-3 flex items-center justify-between gap-3">
-          <span className="text-xs text-muted-foreground/50">{portfolio.result.period}</span>
+        <div className="border-t border-white/5 px-5 py-3 flex items-center gap-2">
+          <span className="text-xs text-muted-foreground/50 flex-1">{portfolio.result.period}</span>
+          {userId && (
+            <button
+              onClick={e => { e.stopPropagation(); setShowShareModal(true); }}
+              className={cn(
+                "flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all",
+                sharedId
+                  ? "text-[#7AE9AB] bg-[#7AE9AB]/10 border-[#7AE9AB]/30"
+                  : "text-muted-foreground bg-white/5 border-white/10 hover:text-foreground hover:border-white/20"
+              )}
+            >
+              <Share2 size={11} />
+              {sharedId ? t('share_done') : t('share_button')}
+            </button>
+          )}
           <button
             onClick={e => { e.stopPropagation(); onLoad(); }}
-            className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 px-3 py-2 rounded-xl transition-all"
           >
-            <TrendingUp size={12} />
+            <TrendingUp size={11} />
             {t('my_reanalyze')}
           </button>
         </div>
+      )}
+
+      {showShareModal && userId && (
+        <ShareModal
+          portfolio={portfolio}
+          userId={userId}
+          sharedId={sharedId}
+          onClose={() => setShowShareModal(false)}
+          onShared={onShared}
+          onUnshared={onUnshared}
+        />
       )}
     </div>
   );
@@ -296,6 +411,22 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
+  // portfolioId → communityId (for tracking which are shared)
+  const [sharedMap, setSharedMap] = useState<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    if (!userId) return;
+    getMySharedPortfolios(userId).then(rows => {
+      // Match by name (simple heuristic)
+      const map = new Map<string, string>();
+      for (const row of rows) {
+        const match = portfolios.find(p => p.name === row.name);
+        if (match) map.set(match.id, row.id);
+      }
+      setSharedMap(map);
+    });
+  }, [userId, portfolios]);
+
   const toggleSelect = (id: string) =>
     setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : prev.length < 3 ? [...prev, id] : prev);
 
@@ -409,10 +540,14 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
                 portfolio={p}
                 compareMode={compareMode}
                 selected={selectedIds.includes(p.id)}
+                userId={userId}
+                sharedId={sharedMap.get(p.id) ?? null}
                 onToggleSelect={() => toggleSelect(p.id)}
                 onLoad={() => onLoad(p.assets)}
                 onRename={name => rename(p.id, name)}
                 onDelete={() => remove(p.id)}
+                onShared={row => setSharedMap(prev => new Map(prev).set(p.id, row.id))}
+                onUnshared={() => setSharedMap(prev => { const m = new Map(prev); m.delete(p.id); return m; })}
               />
             ))}
           </div>

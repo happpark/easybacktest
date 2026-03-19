@@ -248,6 +248,25 @@ const translations = {
     compare_title: '포트폴리오 비교',
     compare_radar_label: '레이더 비교',
     compare_metric_col: '지표',
+
+    // Share to community
+    share_button: '커뮤니티 공유',
+    share_modal_title: '커뮤니티에 공유',
+    share_modal_desc: '공유하면 다른 사람들이 볼 수 있어요.',
+    share_nickname_label: '닉네임',
+    share_nickname_placeholder: '예: 투자고수',
+    share_confirm: '공유하기',
+    share_cancel: '취소',
+    share_loading: '공유 중...',
+    share_done: '공유됨 ✓',
+    share_unshare: '공유 취소',
+
+    // Community save to mine
+    community_save_mine: '내 포트폴리오에 저장',
+    community_saved: '저장됨 ✓',
+    community_shared_by: '공유자',
+    community_user_section: '커뮤니티 공유',
+    community_preset_section: '추천 포트폴리오',
   },
   en: {
     // Nav
@@ -493,6 +512,25 @@ const translations = {
     compare_title: 'Portfolio Comparison',
     compare_radar_label: 'Radar Comparison',
     compare_metric_col: 'Metric',
+
+    // Share to community
+    share_button: 'Share to Community',
+    share_modal_title: 'Share to Community',
+    share_modal_desc: 'Others will be able to see and import this portfolio.',
+    share_nickname_label: 'Nickname',
+    share_nickname_placeholder: 'e.g. InvestorPro',
+    share_confirm: 'Share',
+    share_cancel: 'Cancel',
+    share_loading: 'Sharing...',
+    share_done: 'Shared ✓',
+    share_unshare: 'Unshare',
+
+    // Community save to mine
+    community_save_mine: 'Save to My Portfolios',
+    community_saved: 'Saved ✓',
+    community_shared_by: 'by',
+    community_user_section: 'Community Shared',
+    community_preset_section: 'Featured Portfolios',
   },
 } as const;
 
