@@ -9,7 +9,7 @@ import { AuthButton } from '@/components/AuthButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useLang } from '@/lib/i18n';
 import { track } from '@/lib/posthog/events';
-import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Screen = 'input' | 'result' | 'community' | 'mine';
@@ -159,13 +159,30 @@ export default function AlphaFlowApp() {
 
         {/* ── Top header bar (mobile + desktop) ── */}
         <div className="h-14 px-6 flex items-center justify-end gap-3 border-b border-white/10 shrink-0">
-          <button
-            onClick={toggleLang}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-sm font-bold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
-            title={lang === 'ko' ? 'Switch to English' : '한국어로 전환'}
-          >
-            <span className="text-lg leading-none">{lang === 'ko' ? '🇺🇸' : '🇰🇷'}</span>
-          </button>
+          {/* Language selector dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all">
+              <span className="text-sm">{lang === 'ko' ? '한국어' : 'English'}</span>
+              <ChevronDown size={13} className="opacity-60" />
+            </button>
+            <div className="absolute right-0 top-full mt-1 w-32 bg-popover border border-border rounded-xl shadow-xl overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
+              {(['ko', 'en'] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => lang !== l && toggleLang()}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors",
+                    lang === l
+                      ? "text-primary font-semibold bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  )}
+                >
+                  <span>{l === 'ko' ? '🇰🇷' : '🇺🇸'}</span>
+                  <span>{l === 'ko' ? '한국어' : 'English'}</span>
+                </button>
+              ))}
+            </div>
+          </div>
           <AuthButton />
         </div>
 
