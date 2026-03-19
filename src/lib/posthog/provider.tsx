@@ -18,9 +18,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       person_profiles: 'always',
       capture_pageview: true,
       capture_pageleave: true,
-      loaded: (ph) => {
-        console.log('[PostHog] initialized, host:', host, 'distinct_id:', ph.get_distinct_id());
-      },
+      disable_flags: true,
     });
   }, []);
 
