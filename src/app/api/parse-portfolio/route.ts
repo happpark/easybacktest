@@ -84,95 +84,96 @@ Return ONLY raw JSON, no markdown:
   "note": "한국어로 애매한 매핑 간략 설명"
 }`;
 
-// ── Step 1: image → raw OCR items ────────────────────────────────────────────
-async function runOcr(file: File) {
-  const arrayBuffer = await file.arrayBuffer();
-  const base64 = Buffer.from(arrayBuffer).toString('base64');
-  const mediaType = (file.type || 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
-
-  const pass1 = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    system: EXTRACT_PROMPT,
-    messages: [{ role: 'user', content: [
-      { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-      { type: 'text', text: '이 포트폴리오 이미지의 모든 자산과 금액을 추출해줘.' },
-    ]}],
-  });
-
-  const raw = pass1.content[0].type === 'text' ? pass1.content[0].text : '';
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('이미지에서 자산 정보를 추출하지 못했습니다. 더 선명한 이미지를 사용해주세요.');
-
-  const extracted = JSON.parse(match[0]) as {
-    value_type: 'amount' | 'percent';
-    currency: string;
-    items: { name: string; value: number; raw_text: string }[];
-    ocr_note?: string;
-  };
-
-  if (!extracted.items || extracted.items.length === 0) throw new Error('이미지에서 자산을 찾을 수 없습니다.');
-  return extracted;
-}
-
-// ── Step 2: raw items → ETF tickers + weights ─────────────────────────────────
-async function runMapping(extracted: { value_type: 'amount' | 'percent'; items: { name: string; value: number; raw_text: string }[] }) {
-  const pass2 = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2048,
-    system: MAP_PROMPT,
-    messages: [{ role: 'user', content:
-      `다음 자산 목록을 ETF 티커로 매핑하고 비중을 계산해줘.\n값 형식: ${extracted.value_type === 'percent' ? '퍼센트(%)로 이미 비중이 표시됨 — 합산 후 100으로 정규화 필요' : '금액(합산 후 비중 계산 필요)'}\n\n${JSON.stringify(extracted.items, null, 2)}`,
-    }],
-  });
-
-  const raw = pass2.content[0].type === 'text' ? pass2.content[0].text : '';
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('ETF 매핑 중 오류가 발생했습니다. 다시 시도해주세요.');
-
-  const mapped = JSON.parse(match[0]) as { assets: { ticker: string; weight: number; original: string }[]; note?: string };
-
-  const assets = mapped.assets;
-  const weightSum = assets.reduce((s, a) => s + a.weight, 0);
-  const round1 = (v: number) => Math.round(v * 10) / 10;
-  const scaled = assets.map(a => ({ ...a, weight: round1((a.weight / weightSum) * 100) }));
-  const scaledSum = round1(scaled.reduce((s, a) => s + a.weight, 0));
-  const diff = round1(100 - scaledSum);
-  if (diff !== 0) {
-    const maxIdx = scaled.reduce((mi, a, i, arr) => (a.weight > arr[mi].weight ? i : mi), 0);
-    scaled[maxIdx].weight = round1(scaled[maxIdx].weight + diff);
-  }
-
-  return { assets: scaled };
-}
-
 export async function POST(req: NextRequest) {
-  const contentType = req.headers.get('content-type') ?? '';
-
-  // ── Step 1 request: multipart/form-data with image ───────────────────────
-  if (contentType.includes('multipart/form-data')) {
-    try {
-      const formData = await req.formData();
-      const file = formData.get('image') as File | null;
-      if (!file) return NextResponse.json({ error: '이미지가 없습니다.' }, { status: 400 });
-      const extracted = await runOcr(file);
-      return NextResponse.json(extracted);
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : '이미지 분석 중 오류가 발생했습니다.';
-      console.error('[parse-portfolio ocr error]', e);
-      return NextResponse.json({ error: msg }, { status: 500 });
-    }
-  }
-
-  // ── Step 2 request: JSON with extracted items ─────────────────────────────
   try {
-    const body = await req.json() as { value_type: 'amount' | 'percent'; items: { name: string; value: number; raw_text: string }[] };
-    if (!body.items) return NextResponse.json({ error: '자산 목록이 없습니다.' }, { status: 400 });
-    const result = await runMapping(body);
-    return NextResponse.json(result);
+    const formData = await req.formData();
+    const file = formData.get('image') as File | null;
+    if (!file) {
+      return NextResponse.json({ error: '이미지가 없습니다.' }, { status: 400 });
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+    const mediaType = (file.type || 'image/jpeg') as
+      | 'image/jpeg'
+      | 'image/png'
+      | 'image/gif'
+      | 'image/webp';
+
+    // ── Pass 1: image → raw assets ────────────────────────────────────────────
+    const pass1 = await client.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: EXTRACT_PROMPT,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            { type: 'text', text: '이 포트폴리오 이미지의 모든 자산과 금액을 추출해줘.' },
+          ],
+        },
+      ],
+    });
+
+    const raw1 = pass1.content[0].type === 'text' ? pass1.content[0].text : '';
+    const match1 = raw1.match(/\{[\s\S]*\}/);
+    if (!match1) {
+      throw new Error('이미지에서 자산 정보를 추출하지 못했습니다. 더 선명한 이미지를 사용해주세요.');
+    }
+
+    const extracted = JSON.parse(match1[0]) as {
+      value_type: 'amount' | 'percent';
+      currency: string;
+      items: { name: string; value: number; raw_text: string }[];
+      ocr_note?: string;
+    };
+
+    if (!extracted.items || extracted.items.length === 0) {
+      throw new Error('이미지에서 자산을 찾을 수 없습니다.');
+    }
+
+    // ── Pass 2: raw assets → ETF tickers + float weights ─────────────────────
+    const pass2 = await client.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: MAP_PROMPT,
+      messages: [
+        {
+          role: 'user',
+          content: `다음 자산 목록을 ETF 티커로 매핑하고 비중을 계산해줘.\n값 형식: ${extracted.value_type === 'percent' ? '퍼센트(%)로 이미 비중이 표시됨 — 합산 후 100으로 정규화 필요' : '금액(합산 후 비중 계산 필요)'}\n\n${JSON.stringify(extracted.items, null, 2)}`,
+        },
+      ],
+    });
+
+    const raw2 = pass2.content[0].type === 'text' ? pass2.content[0].text : '';
+    const match2 = raw2.match(/\{[\s\S]*\}/);
+    if (!match2) {
+      throw new Error('ETF 매핑 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+
+    const mapped = JSON.parse(match2[0]) as {
+      assets: { ticker: string; weight: number; original: string }[];
+      note?: string;
+    };
+
+    // ── Server-side rescaling → 소수점 1자리, 합 = 100.0 보장 ────────────────
+    const assets = mapped.assets;
+    const weightSum = assets.reduce((s, a) => s + a.weight, 0);
+    const round1 = (v: number) => Math.round(v * 10) / 10;
+    const scaled = assets.map(a => ({ ...a, weight: round1((a.weight / weightSum) * 100) }));
+    const scaledSum = round1(scaled.reduce((s, a) => s + a.weight, 0));
+    const diff = round1(100 - scaledSum);
+    if (diff !== 0) {
+      const maxIdx = scaled.reduce((mi, a, i, arr) => (a.weight > arr[mi].weight ? i : mi), 0);
+      scaled[maxIdx].weight = round1(scaled[maxIdx].weight + diff);
+    }
+    mapped.assets = scaled;
+
+    return NextResponse.json({ assets: mapped.assets });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'ETF 매핑 중 오류가 발생했습니다.';
-    console.error('[parse-portfolio map error]', e);
+    const msg = e instanceof Error ? e.message : '이미지 분석 중 오류가 발생했습니다.';
+    console.error('[parse-portfolio error]', e);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

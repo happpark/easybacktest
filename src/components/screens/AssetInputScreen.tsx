@@ -365,23 +365,13 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
   const uploadImageFile = async (file: File) => {
     setParseStep('ocr');
     setParseError(null);
+    const timer = setTimeout(() => setParseStep('map'), 5000);
     try {
-      // Step 1: OCR — image → raw items
       const form = new FormData();
       form.append('image', file);
-      const res1 = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
-      const extracted = await res1.json();
-      if (!res1.ok || extracted.error) throw new Error(extracted.error ?? '이미지 분석 실패');
-
-      // Step 2: Map — raw items → ETF tickers
-      setParseStep('map');
-      const res2 = await fetch('/api/parse-portfolio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value_type: extracted.value_type, items: extracted.items }),
-      });
-      const json = await res2.json();
-      if (!res2.ok || json.error) throw new Error(json.error ?? '매핑 실패');
+      const res = await fetch('/api/parse-portfolio', { method: 'POST', body: form });
+      const json = await res.json();
+      if (!res.ok || json.error) throw new Error(json.error ?? '분석 실패');
 
       const KNOWN_EXTRA = new Set(['CASH']);
       const parsed: ParsedAsset[] = (
@@ -397,6 +387,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     } catch (err: unknown) {
       setParseError(err instanceof Error ? err.message : '이미지 분석 중 오류가 발생했습니다.');
     } finally {
+      clearTimeout(timer);
       setParseStep(null);
     }
   };
@@ -668,7 +659,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
           </div>
           <div className="flex flex-col items-center gap-2 text-center">
             <p className="text-lg font-bold text-foreground">
-              {parseStep === 'ocr' ? '이미지 읽는 중 ...' : '자산별 비중 계산 중 ...'}
+              {parseStep === 'ocr' ? 'AI 분석 중...' : '자산별 비중 계산 중 ...'}
             </p>
             <p className="text-sm text-muted-foreground">
               {parseStep === 'ocr' ? '포트폴리오 이미지를 분석하고 있어요.' : 'ETF 티커로 매핑하고 있어요.'}
