@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { PostHogProvider } from '@/lib/posthog/provider';
+import { LangProvider } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Easybacktest - 포트폴리오 백테스트',
@@ -20,7 +21,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <PostHogProvider>{children}</PostHogProvider>
+        <PostHogProvider><LangProvider>{children}</LangProvider></PostHogProvider>
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import { Share2, ArrowLeft, Zap, TrendingUp, ShieldAlert, Info, AlertTriangle, C
 import { RadarChart } from '@/components/RadarChart';
 import type { BacktestOutput } from '@/ai/flows/backtest-portfolio';
 import { useMyPortfolios } from '@/lib/useMyPortfolios';
+import { useAuth } from '@/hooks/useAuth';
 import { buildRadar, buildMultiRadar } from '@/lib/radar';
 import type { PortfolioSlot } from '@/app/page';
 import {
@@ -65,6 +66,7 @@ function MovingDots() {
 }
 
 export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: ResultScreenProps) {
+  const { user, signInWithGoogle } = useAuth();
   const [backtestResult, setBacktestResult] = useState<BacktestOutput | null>(null);
   const [backtestResults, setBacktestResults] = useState<BacktestOutput[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const [saving, setSaving] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [saved, setSaved] = useState(false);
+  const [loginToast, setLoginToast] = useState(false);
   // Multi-mode: radar series toggle
   const [hiddenSeries, setHiddenSeries] = useState<Set<string>>(new Set());
   // Multi-mode: per-slot save state
@@ -210,6 +213,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
   const handleSave = () => {
     if (!backtestResult) return;
+    if (!user) {
+      setLoginToast(true);
+      setTimeout(() => setLoginToast(false), 3000);
+      signInWithGoogle();
+      return;
+    }
     const defaultName = `포트폴리오 ${new Date().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}`;
     setSaveName(defaultName);
     setSaving(true);
@@ -455,6 +464,13 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           </div>
         </div>
 
+        {/* Login toast (multi) */}
+        {loginToast && (
+          <div className="bg-primary/15 border border-primary/30 text-primary text-sm font-semibold px-4 py-3 rounded-2xl text-center animate-fade-in">
+            로그인 후 저장됩니다
+          </div>
+        )}
+
         {/* Final values + save buttons */}
         <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${backtestResults.length}, 1fr)` }}>
           {backtestResults.map((result, i) => {
@@ -469,6 +485,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 <button
                   onClick={() => {
                     if (isSaved) return;
+                    if (!user) {
+                      setLoginToast(true);
+                      setTimeout(() => setLoginToast(false), 3000);
+                      signInWithGoogle();
+                      return;
+                    }
                     setSlotSaveName(multiData[i].name);
                     setSavingSlotIdx(i);
                   }}
@@ -778,6 +800,13 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <p className="text-sm text-muted-foreground leading-relaxed italic px-1">
         &quot;{backtestResult.aiInsight}&quot;
       </p>
+
+      {/* Login toast */}
+      {loginToast && (
+        <div className="bg-primary/15 border border-primary/30 text-primary text-sm font-semibold px-4 py-3 rounded-2xl text-center animate-fade-in">
+          로그인 후 저장됩니다
+        </div>
+      )}
 
       {/* Save + Share */}
       <div className="flex gap-3">

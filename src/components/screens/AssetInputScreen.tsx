@@ -932,9 +932,9 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
         {mode === 'expert' && (
           <>
             {/* Mobile expert UI */}
-            <div className="md:hidden flex flex-col gap-5">
+            <div className="md:hidden flex flex-col gap-5 min-h-[calc(100vh-8rem)] justify-center">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">포트폴리오 구성</h3>
+                <h3 className="text-base font-semibold uppercase tracking-wider text-muted-foreground">포트폴리오 구성</h3>
                 <button onClick={distributeEvenly}
                   className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10"
                 >
@@ -970,7 +970,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                               <Pencil size={10} className="text-muted-foreground/40 group-hover:text-primary transition-colors" />
                             </button>
                           )}
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-sm text-muted-foreground">
                             {asset.launch_year && asset.launch_year !== 'Unknown' ? `Since ${asset.launch_year}` : 'Custom'}
                           </span>
                         </div>
@@ -1003,14 +1003,14 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                         placeholder="티커 입력 (예: SPY)"
                         className="font-bold text-base leading-none bg-transparent border-b border-primary/60 outline-none w-40 text-foreground placeholder:text-muted-foreground/40"
                       />
-                      <span className="text-[10px] text-muted-foreground">새 종목 추가</span>
+                      <span className="text-xs text-muted-foreground">새 종목 추가</span>
                     </div>
                   ) : (
                     <button onClick={() => { setEditingIndex(-1); setEditingValue(''); }}
                       className="w-full glass-morphism p-4 rounded-2xl border border-dashed border-white/10 flex items-center justify-center gap-2 hover:border-primary/40 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary"
                     >
                       <Plus size={18} />
-                      <span className="text-sm font-medium">자산 추가</span>
+                      <span className="text-base font-medium">자산 추가</span>
                     </button>
                   )}
                   <TickerDropdown forIndex={-1} />

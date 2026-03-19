@@ -7,8 +7,9 @@ import { CommunityScreen } from '@/components/screens/CommunityScreen';
 import { MyPortfoliosScreen } from '@/components/screens/MyPortfoliosScreen';
 import { AuthButton } from '@/components/AuthButton';
 import { useAuth } from '@/hooks/useAuth';
+import { useLang } from '@/lib/i18n';
 import { track } from '@/lib/posthog/events';
-import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, Bookmark, Sun, Moon, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Screen = 'input' | 'result' | 'community' | 'mine';
@@ -26,6 +27,7 @@ export interface PortfolioSlot {
 
 export default function AlphaFlowApp() {
   const { user } = useAuth();
+  const { lang, t, toggleLang } = useLang();
   const [activeScreen, setActiveScreen] = useState<Screen>('input');
   const [portfolioData, setPortfolioData] = useState<Asset[] | null>(null);
   const [preloadedAssets, setPreloadedAssets] = useState<Asset[] | null>(null);
@@ -93,10 +95,10 @@ export default function AlphaFlowApp() {
   };
 
   const navItems = [
-    { screen: 'input' as Screen, Icon: PlusCircle, label: '구성', disabled: false },
-    { screen: 'result' as Screen, Icon: LayoutDashboard, label: '분석', disabled: !portfolioData && !multiPortfolioData },
-    { screen: 'mine' as Screen, Icon: Bookmark, label: '내 기록', disabled: false },
-    { screen: 'community' as Screen, Icon: Users, label: '커뮤니티', disabled: false },
+    { screen: 'input' as Screen, Icon: PlusCircle, label: t('nav_compose'), disabled: false },
+    { screen: 'result' as Screen, Icon: LayoutDashboard, label: t('nav_analysis'), disabled: !portfolioData && !multiPortfolioData },
+    { screen: 'mine' as Screen, Icon: Bookmark, label: t('nav_mine'), disabled: false },
+    { screen: 'community' as Screen, Icon: Users, label: t('nav_community'), disabled: false },
   ];
 
   return (
@@ -106,7 +108,7 @@ export default function AlphaFlowApp() {
       <aside className="hidden md:flex flex-col w-56 shrink-0 border-r border-white/10 glass-morphism h-full">
         <div className="px-6 py-8">
           <h1 className="text-xl font-black text-primary text-glow">Easybacktest</h1>
-          <p className="text-xs text-muted-foreground mt-1">포트폴리오 백테스트</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('app_subtitle')}</p>
         </div>
         <nav className="flex flex-col gap-1 px-3 pb-6 flex-1">
           {navItems.map(({ screen, Icon, label, disabled }) => (
@@ -132,7 +134,7 @@ export default function AlphaFlowApp() {
               {disabled && (
                 <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 hidden group-hover:block">
                   <div className="bg-popover border border-border text-xs text-muted-foreground px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-lg">
-                    먼저 백테스트를 실행하세요
+                    {t('nav_backtest_first')}
                   </div>
                 </div>
               )}
@@ -140,21 +142,30 @@ export default function AlphaFlowApp() {
           ))}
         </nav>
         <div className="px-4 pb-6 flex flex-col gap-2">
-          <div className="px-1">
-            <AuthButton />
-          </div>
           <button
             onClick={toggleTheme}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            {theme === 'dark' ? '라이트 모드' : '다크 모드'}
+            {theme === 'dark' ? t('nav_light_mode') : t('nav_dark_mode')}
           </button>
         </div>
       </aside>
 
       {/* ── Content area ── */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+
+        {/* ── Top header bar (mobile + desktop) ── */}
+        <div className="h-14 px-6 flex items-center justify-end gap-3 border-b border-white/10 shrink-0">
+          <button
+            onClick={toggleLang}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-sm font-bold text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+          >
+            <Globe size={16} />
+            <span className="text-xs">{lang === 'ko' ? 'EN' : '한'}</span>
+          </button>
+          <AuthButton />
+        </div>
 
         {/* Scrollable main — sticky elements inside screens anchor to this */}
         <main className="flex-1 overflow-y-auto">
@@ -185,7 +196,7 @@ export default function AlphaFlowApp() {
             className="flex flex-col items-center gap-1 text-muted-foreground transition-colors"
           >
             {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
-            <span className="text-[10px] font-medium">{theme === 'dark' ? '라이트' : '다크'}</span>
+            <span className="text-[10px] font-medium">{theme === 'dark' ? t('nav_light') : t('nav_dark')}</span>
           </button>
         </nav>
 
