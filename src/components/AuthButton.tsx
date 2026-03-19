@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { LogOut, ChevronDown } from 'lucide-react';
 
@@ -49,6 +50,7 @@ function getInitials(name?: string | null, email?: string | null): string {
 
 export function AuthButton() {
   const { user, loading, signInWithGoogle, signOut } = useAuth();
+  const { t } = useLang();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -91,7 +93,7 @@ export function AuthButton() {
         )}
       >
         <GoogleIcon className="w-4 h-4 shrink-0" />
-        <span>{signingIn ? '로그인 중...' : 'Google로 로그인'}</span>
+        <span>{signingIn ? t('auth_signing_in') : t('auth_sign_in_google')}</span>
       </button>
     );
   }
@@ -115,7 +117,7 @@ export function AuthButton() {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={avatarUrl}
-            alt={displayName ?? email ?? 'User'}
+            alt={displayName ?? email ?? t('auth_user_fallback')}
             className="w-7 h-7 rounded-full object-cover shrink-0"
           />
         ) : (
@@ -138,7 +140,7 @@ export function AuthButton() {
           {/* User info */}
           <div className="px-4 py-3 border-b border-white/10">
             <p className="text-xs font-bold text-foreground truncate">
-              {displayName ?? '사용자'}
+              {displayName ?? t('auth_user_fallback')}
             </p>
             <p className="text-[10px] text-muted-foreground truncate mt-0.5">{email}</p>
           </div>
@@ -152,7 +154,7 @@ export function AuthButton() {
             className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
           >
             <LogOut size={14} />
-            로그아웃
+            {t('auth_sign_out')}
           </button>
         </div>
       )}

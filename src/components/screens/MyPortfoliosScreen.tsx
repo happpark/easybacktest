@@ -5,6 +5,7 @@ import { Bookmark, Trash2, TrendingUp, GitCompare, X, Pencil, Check, ChevronUp, 
 import { RadarChart } from '@/components/RadarChart';
 import { useMyPortfolios, type SavedPortfolio } from '@/lib/useMyPortfolios';
 import { buildRadar } from '@/lib/radar';
+import { useLang } from '@/lib/i18n';
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
 
@@ -62,11 +63,12 @@ function PortfolioCard({
   onRename: (name: string) => void;
   onDelete: () => void;
 }) {
+  const { t } = useLang();
   const [renaming, setRenaming] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const m = portfolio.result.metrics;
   const radar = buildRadar(m); // always recomputed with latest thresholds
-  const date = new Date(portfolio.savedAt).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
+  const date = new Date(portfolio.savedAt).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' });
 
   return (
     <div
@@ -141,7 +143,7 @@ function PortfolioCard({
           className="flex items-center gap-0.5 text-[9px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
         >
           {expanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
-          {expanded ? '접기' : '상세보기'}
+          {expanded ? t('my_collapse') : t('my_expand')}
         </button>
       </div>
 
@@ -153,12 +155,12 @@ function PortfolioCard({
           </div>
           <div className="grid grid-cols-2 gap-2 text-[10px]">
             {[
-              { label: '연평균 수익률', value: `${m.cagr}%` },
-              { label: '최대 낙폭', value: `${m.mdd}%` },
-              { label: '변동성', value: `${m.volatility}%` },
-              { label: '샤프 지수', value: `${m.sharpe}` },
-              { label: '배당 수익률', value: `${m.dividend}%` },
-              { label: '최고 연도', value: `${m.best_year.year} (+${m.best_year.value}%)` },
+              { label: t('my_metric_cagr'), value: `${m.cagr}%` },
+              { label: t('my_metric_mdd'), value: `${m.mdd}%` },
+              { label: t('my_metric_volatility'), value: `${m.volatility}%` },
+              { label: t('my_metric_sharpe'), value: `${m.sharpe}` },
+              { label: t('my_metric_dividend'), value: `${m.dividend}%` },
+              { label: t('my_metric_best_year'), value: `${m.best_year.year} (+${m.best_year.value}%)` },
             ].map(row => (
               <div key={row.label} className="flex justify-between bg-white/5 rounded-lg px-3 py-2">
                 <span className="text-muted-foreground">{row.label}</span>
@@ -177,7 +179,7 @@ function PortfolioCard({
             className="w-full h-9 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-primary/20"
           >
             <TrendingUp size={12} />
-            이 포트폴리오로 다시 분석
+            {t('my_reanalyze')}
           </button>
         </div>
       )}
@@ -187,6 +189,7 @@ function PortfolioCard({
 
 // ── Compare view ──────────────────────────────────────────────────────────────
 function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; onClose: () => void }) {
+  const { t } = useLang();
   const COLORS = ['hsl(212, 73%, 55%)', '#7AE9AB', '#F5A623'];
   const labels = ['A', 'B', 'C'];
 
@@ -218,15 +221,15 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
   const metrics = [
     { label: 'CAGR', key: 'cagr' as const, unit: '%', higherBetter: true },
     { label: 'MDD', key: 'mdd' as const, unit: '%', higherBetter: true },
-    { label: 'Volatility', key: 'volatility' as const, unit: '%', higherBetter: false },
+    { label: t('result_volatility'), key: 'volatility' as const, unit: '%', higherBetter: false },
     { label: 'Sharpe', key: 'sharpe' as const, unit: '', higherBetter: true },
-    { label: 'Dividend', key: 'dividend' as const, unit: '%', higherBetter: true },
+    { label: t('result_dividend'), key: 'dividend' as const, unit: '%', higherBetter: true },
   ];
 
   return (
     <div className="flex flex-col gap-5 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-base">포트폴리오 비교</h3>
+        <h3 className="font-bold text-base">{t('compare_title')}</h3>
         <button onClick={onClose} className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
           <X size={18} />
         </button>
@@ -260,7 +263,7 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
 
       {/* Overlapping radar */}
       <div className="glass-morphism rounded-2xl border border-white/5 p-4">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">레이더 비교</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">{t('compare_radar_label')}</span>
         <div className="h-56 mt-2">
           <RadarChart data={mergedRadar} series={series} />
         </div>
@@ -271,7 +274,7 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
         <table className="w-full text-[11px]">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
-              <th className="text-left px-4 py-2.5 font-bold text-muted-foreground text-[10px]">지표</th>
+              <th className="text-left px-4 py-2.5 font-bold text-muted-foreground text-[10px]">{t('compare_metric_col')}</th>
               {portfolios.map((p, i) => (
                 <th key={p.id} className="text-right px-3 py-2.5 font-bold text-[10px]" style={{ color: COLORS[i] }}>
                   {labels[i]}
@@ -309,6 +312,7 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) {
+  const { t } = useLang();
   const { portfolios, rename, remove } = useMyPortfolios(userId);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -337,10 +341,11 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
           <Bookmark size={28} className="text-muted-foreground/40" />
         </div>
         <div className="flex flex-col gap-1">
-          <h3 className="font-bold text-base">저장된 포트폴리오가 없어요</h3>
+          <h3 className="font-bold text-base">{t('my_empty_title')}</h3>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
-            백테스트 결과 화면 하단의<br />
-            <span className="text-primary font-semibold">저장하기</span> 버튼을 눌러 포트폴리오를 보관하세요.
+            {t('my_empty_desc').split('\n')[0]}<br />
+            <span className="text-primary font-semibold">{t('my_empty_save_hint')}</span>{' '}
+            {t('my_empty_desc').split('\n')[1]}
           </p>
         </div>
       </div>
@@ -355,8 +360,8 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
         <>
           <header className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold">내 포트폴리오</h2>
-              <p className="text-xs text-muted-foreground">{portfolios.length}개 저장됨</p>
+              <h2 className="text-2xl font-bold">{t('my_title')}</h2>
+              <p className="text-xs text-muted-foreground">{portfolios.length}{t('my_count_suffix')}</p>
             </div>
             <button
               onClick={() => compareMode ? exitCompare() : setCompareMode(true)}
@@ -368,7 +373,7 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
               )}
             >
               <GitCompare size={13} />
-              {compareMode ? '취소' : '비교'}
+              {compareMode ? t('my_cancel') : t('my_compare')}
             </button>
           </header>
 
@@ -379,15 +384,15 @@ export function MyPortfoliosScreen({ onLoad, userId }: MyPortfoliosScreenProps) 
             )}>
               <span className="text-xs text-muted-foreground">
                 {selectedIds.length === 0
-                  ? "비교할 포트폴리오를 선택하세요 (최대 3개)"
-                  : `${selectedIds.length}개 선택됨`}
+                  ? t('my_select_hint')
+                  : `${selectedIds.length}${t('my_selected_count')}`}
               </span>
               {selectedIds.length >= 2 && (
                 <button
                   onClick={() => setShowCompare(true)}
                   className="text-xs font-bold text-primary bg-primary/20 px-3 py-1.5 rounded-lg hover:bg-primary/30 transition-colors"
                 >
-                  비교하기
+                  {t('my_compare_button')}
                 </button>
               )}
             </div>

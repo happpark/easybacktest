@@ -6,6 +6,7 @@ import { RadarChart } from '@/components/RadarChart';
 import type { BacktestOutput } from '@/ai/flows/backtest-portfolio';
 import { useMyPortfolios } from '@/lib/useMyPortfolios';
 import { useAuth } from '@/hooks/useAuth';
+import { useLang } from '@/lib/i18n';
 import { buildRadar, buildMultiRadar } from '@/lib/radar';
 import type { PortfolioSlot } from '@/app/page';
 import {
@@ -32,20 +33,6 @@ interface ResultScreenProps {
   onReset: () => void;
 }
 
-
-const LOADING_MESSAGES = [
-  '과거 데이터 다운로드 중',
-  '수익률 계산 중',
-  'AI 인사이트 생성 중',
-];
-
-function rbLabel(months: number): string {
-  if (months === 1) return '매월 리밸런싱';
-  if (months === 3) return '매분기 리밸런싱';
-  if (months === 12) return '매년 리밸런싱';
-  return `${months}개월 리밸런싱`;
-}
-
 function MovingDots() {
   const [pos, setPos] = useState(0);
   useEffect(() => {
@@ -67,6 +54,7 @@ function MovingDots() {
 
 export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: ResultScreenProps) {
   const { user, signInWithGoogle } = useAuth();
+  const { t, lang } = useLang();
   const [backtestResult, setBacktestResult] = useState<BacktestOutput | null>(null);
   const [backtestResults, setBacktestResults] = useState<BacktestOutput[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,6 +73,19 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const [savedSlots, setSavedSlots] = useState<Set<number>>(new Set());
   const runningRef = useRef(false);
   const { save: savePortfolio } = useMyPortfolios();
+
+  const LOADING_MESSAGES = [
+    t('result_loading_step0'),
+    t('result_loading_step1'),
+    t('result_loading_step2'),
+  ];
+
+  const rbLabel = (months: number): string => {
+    if (months === 1) return t('rb_result_monthly');
+    if (months === 3) return t('rb_result_quarterly');
+    if (months === 12) return t('rb_result_yearly');
+    return `${months}${t('rb_result_custom_suffix')}`;
+  };
 
   const toggleSeries = (key: string) => {
     setHiddenSeries(prev => {
@@ -120,7 +121,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           });
           const json = await res.json();
           if (!res.ok || json.error) {
-            setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+            setErrorMessage(json.error ?? t('result_fetch_fail'));
           } else {
             setBacktestResults(json as BacktestOutput[]);
           }
@@ -133,14 +134,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           });
           const json = await res.json();
           if (!res.ok || json.error) {
-            setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+            setErrorMessage(json.error ?? t('result_fetch_fail'));
           } else {
             setBacktestResult(json as BacktestOutput);
           }
         }
       } catch (e: unknown) {
         const err = e as { message?: string };
-        setErrorMessage(err.message ?? '결과를 불러오는 데 실패했습니다.');
+        setErrorMessage(err.message ?? t('result_fetch_fail'));
       } finally {
         clearInterval(stepTimer);
         setLoading(false);
@@ -150,6 +151,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
     fetchData();
     return () => clearInterval(stepTimer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, multiData]);
 
   const handleRetry = () => {
@@ -173,14 +175,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         .then(async res => {
           const json = await res.json();
           if (!res.ok || json.error) {
-            setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+            setErrorMessage(json.error ?? t('result_fetch_fail'));
           } else {
             setBacktestResults(json as BacktestOutput[]);
           }
         })
         .catch((e: unknown) => {
           const err = e as { message?: string };
-          setErrorMessage(err.message ?? '결과를 불러오는 데 실패했습니다.');
+          setErrorMessage(err.message ?? t('result_fetch_fail'));
         })
         .finally(() => {
           clearInterval(stepTimer);
@@ -195,14 +197,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         .then(async res => {
           const json = await res.json();
           if (!res.ok || json.error) {
-            setErrorMessage(json.error ?? '결과를 불러오는 데 실패했습니다.');
+            setErrorMessage(json.error ?? t('result_fetch_fail'));
           } else {
             setBacktestResult(json as BacktestOutput);
           }
         })
         .catch((e: unknown) => {
           const err = e as { message?: string };
-          setErrorMessage(err.message ?? '결과를 불러오는 데 실패했습니다.');
+          setErrorMessage(err.message ?? t('result_fetch_fail'));
         })
         .finally(() => {
           clearInterval(stepTimer);
@@ -219,14 +221,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       signInWithGoogle();
       return;
     }
-    const defaultName = `포트폴리오 ${new Date().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}`;
+    const defaultName = `${t('result_default_portfolio_name')} ${new Date().toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', day: 'numeric' })}`;
     setSaveName(defaultName);
     setSaving(true);
   };
 
   const commitSave = () => {
     if (!backtestResult || !data) return;
-    savePortfolio(saveName || '포트폴리오', data, backtestResult);
+    savePortfolio(saveName || t('result_default_portfolio_name'), data, backtestResult);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -237,11 +239,11 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
     const m = backtestResult.metrics;
     const composition = data.map(a => `${a.ticker} ${a.weight}%`).join(' | ');
     const text = [
-      `📊 AlphaFlow 포트폴리오 백테스트 결과`,
-      `구성: ${composition}`,
-      `기간: ${backtestResult.period}`,
+      t('result_share_text_title'),
+      `${t('result_share_composition')}: ${composition}`,
+      `${t('result_share_period')}: ${backtestResult.period}`,
       `CAGR: ${m.cagr}%  |  MDD: ${m.mdd}%  |  Sharpe: ${m.sharpe}`,
-      `변동성: ${m.volatility}%  |  배당: ${m.dividend}%`,
+      `Volatility: ${m.volatility}%  |  Dividend: ${m.dividend}%`,
     ].join('\n');
     try {
       await navigator.clipboard.writeText(text);
@@ -255,12 +257,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <div className="flex flex-col items-center justify-center gap-6 p-6 text-center animate-fade-in" style={{ minHeight: 'calc(100vh - 4rem)' }}>
         <Zap className="w-10 h-10 text-primary" />
         <div className="flex flex-col items-center gap-3">
-          <h3 className="text-xl font-bold">퀀트 엔진 가동 중</h3>
+          <h3 className="text-xl font-bold">{t('result_loading_title')}</h3>
           <div className="flex items-center gap-2">
             <p className="text-sm text-muted-foreground">{LOADING_MESSAGES[loadingStep]}</p>
             <MovingDots />
           </div>
-          <p className="text-xs text-muted-foreground/60">데이터 양에 따라 30초 이상 소요될 수 있습니다.</p>
+          <p className="text-xs text-muted-foreground/60">{t('result_loading_note')}</p>
         </div>
       </div>
     );
@@ -271,15 +273,15 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <div className="p-6 text-center flex flex-col gap-4 min-h-[80vh] items-center justify-center">
         <AlertTriangle className="w-12 h-12 text-destructive" />
         <div className="flex flex-col gap-1">
-          <p className="font-bold text-base">백테스트 실패</p>
-          <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{errorMessage ?? '알 수 없는 오류가 발생했습니다.'}</p>
+          <p className="font-bold text-base">{t('result_error_title')}</p>
+          <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{errorMessage ?? t('result_error_unknown')}</p>
         </div>
         <div className="flex gap-3">
           <button onClick={handleRetry} className="text-primary font-bold border border-primary/30 px-4 py-2 rounded-xl text-sm hover:bg-primary/10 transition-colors">
-            다시 시도
+            {t('result_retry')}
           </button>
           <button onClick={onReset} className="text-muted-foreground font-bold border border-white/10 px-4 py-2 rounded-xl text-sm hover:bg-white/5 transition-colors">
-            포트폴리오 수정
+            {t('result_edit_portfolio')}
           </button>
         </div>
       </div>
@@ -307,7 +309,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           <button onClick={onReset} className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft size={24} />
           </button>
-          <h2 className="text-lg font-bold">포트폴리오 비교 분석</h2>
+          <h2 className="text-lg font-bold">{t('multi_title')}</h2>
           <div className="w-10" />
         </header>
 
@@ -360,7 +362,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Multi Radar Chart */}
         <div className="glass-morphism p-6 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden min-h-[400px]">
           <div className="absolute top-4 left-6">
-            <span className="text-sm font-bold text-primary">포트폴리오 오각형 비교</span>
+            <span className="text-sm font-bold text-primary">{t('multi_radar_title')}</span>
           </div>
           <div className="w-full h-72 mt-8">
             <RadarChart
@@ -372,8 +374,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
         {/* Growth chart - multiple lines */}
         <div className="glass-morphism p-5 rounded-3xl flex flex-col gap-3">
-          <span className="text-sm font-bold text-primary">포트폴리오 성장 비교</span>
-          <span className="text-xs text-muted-foreground">$1,000 초기 투자 기준</span>
+          <span className="text-sm font-bold text-primary">{t('multi_growth_title')}</span>
+          <span className="text-xs text-muted-foreground">{t('multi_initial')}</span>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -409,12 +411,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
         {/* Comparison Table */}
         <div className="glass-morphism p-5 rounded-3xl">
-          <span className="text-sm font-bold text-primary block mb-4">전략별 수치 비교</span>
+          <span className="text-sm font-bold text-primary block mb-4">{t('multi_table_title')}</span>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left pb-3 font-semibold text-muted-foreground w-20">지표</th>
+                  <th className="text-left pb-3 font-semibold text-muted-foreground w-20">{t('multi_metric_col')}</th>
                   {multiData.map((slot, i) => (
                     <th key={i} className="text-right pb-3 font-bold">
                       <span className="inline-flex items-center justify-end gap-1.5">
@@ -430,9 +432,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 {[
                   { label: 'CAGR', key: 'cagr' as const, unit: '%', higherBetter: true },
                   { label: 'MDD', key: 'mdd' as const, unit: '%', higherBetter: false },
-                  { label: '변동성', key: 'volatility' as const, unit: '%', higherBetter: false },
+                  { label: t('multi_volatility'), key: 'volatility' as const, unit: '%', higherBetter: false },
                   { label: 'Sharpe', key: 'sharpe' as const, unit: '', higherBetter: true },
-                  { label: '배당', key: 'dividend' as const, unit: '%', higherBetter: true },
+                  { label: t('multi_dividend'), key: 'dividend' as const, unit: '%', higherBetter: true },
                 ].map((row, ri, arr) => {
                   const vals = backtestResults.map(r => r.metrics[row.key]);
                   const bmVal = backtestResults[0]?.benchmark_metrics?.[row.key] ?? 0;
@@ -467,7 +469,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Login toast (multi) */}
         {loginToast && (
           <div className="bg-primary/15 border border-primary/30 text-primary text-sm font-semibold px-4 py-3 rounded-2xl text-center animate-fade-in">
-            로그인 후 저장됩니다
+            {t('result_login_toast')}
           </div>
         )}
 
@@ -501,7 +503,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                       : 'bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10'
                   )}
                 >
-                  {isSaved ? <><BookmarkCheck size={10} /> 저장됨</> : <><Bookmark size={10} /> 저장</>}
+                  {isSaved ? <><BookmarkCheck size={10} /> {t('multi_saved')}</> : <><Bookmark size={10} /> {t('multi_save')}</>}
                 </button>
               </div>
             );
@@ -511,7 +513,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Slot save name input */}
         {savingSlotIdx !== null && (
           <div className="glass-morphism border border-primary/30 rounded-2xl p-4 flex flex-col gap-3 animate-fade-in">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">포트폴리오 이름</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('multi_portfolio_name_label')}</span>
             <input
               autoFocus
               value={slotSaveName}
@@ -525,12 +527,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 }
                 if (e.key === 'Escape') setSavingSlotIdx(null);
               }}
-              placeholder="예: 안정형 포트폴리오"
+              placeholder={t('multi_portfolio_name_placeholder')}
               className="bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm font-semibold outline-none focus:border-primary/60 text-foreground placeholder:text-muted-foreground/40"
             />
             <div className="flex gap-2">
               <button onClick={() => setSavingSlotIdx(null)} className="flex-1 h-10 rounded-xl border border-white/10 text-xs font-bold text-muted-foreground hover:bg-white/5 transition-colors">
-                취소
+                {t('multi_cancel')}
               </button>
               <button
                 onClick={() => {
@@ -541,7 +543,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 }}
                 className="flex-[2] h-10 rounded-xl bg-primary/20 text-primary text-xs font-bold hover:bg-primary/30 transition-colors border border-primary/30"
               >
-                저장하기
+                {t('multi_save_confirm')}
               </button>
             </div>
           </div>
@@ -557,15 +559,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const bm = backtestResult.benchmark_metrics;
 
   // Compute radar from metrics using the shared frontend normalization.
-  // This ensures saved portfolios and new results always use the same thresholds.
   const radar = buildRadar(m, bm ?? undefined);
 
   const radarDescriptions: Record<string, string> = {
-    Attack: "수익력: CAGR(연평균 수익률)을 기반으로 자산의 성장성을 나타냅니다.",
-    Defense: "방어력: MDD(최대 낙폭)를 기반으로 위기 시 손실 최소화 능력을 나타냅니다.",
-    Volatility: "변동성 관리: 표준편차를 기반으로 주가 변동 폭이 얼마나 안정적인지 나타냅니다.",
-    Sharpe: "위험 대비 수익: 샤프 지수를 기반으로 위험 한 단위당 얼마나 효율적인 수익을 냈는지 나타냅니다.",
-    Dividend: "배당 수익: 최근 1년 배당 수익률을 기반으로 현금 흐름 창출 능력을 나타냅니다.",
+    Attack: t('radar_attack'),
+    Defense: t('radar_defense'),
+    Volatility: t('radar_volatility'),
+    Sharpe: t('radar_sharpe'),
+    Dividend: t('radar_dividend'),
   };
 
   const historyData = backtestResult.history.map((h, i) => ({
@@ -581,7 +582,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           <ArrowLeft size={24} />
         </button>
         <div className="flex flex-col items-center gap-1">
-          <h2 className="text-lg font-bold">백테스트 결과</h2>
+          <h2 className="text-lg font-bold">{t('result_title')}</h2>
           <div className="flex items-center gap-1.5">
             <span className="text-xs bg-white/10 px-2 py-0.5 rounded text-muted-foreground">
               {backtestResult.period}
@@ -594,7 +595,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         <button
           onClick={handleShare}
           className="p-2 -mr-2 text-muted-foreground hover:text-primary transition-colors relative"
-          title="결과 복사"
+          title={t('result_copy_title')}
         >
           {copied ? <CheckCircle2 size={24} className="text-[#7AE9AB]" /> : <Share2 size={24} />}
         </button>
@@ -608,23 +609,23 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <TrendingUp size={16} className="text-[#7AE9AB]" />
-              <span className="text-xs font-bold uppercase tracking-wider">CAGR (수익률)</span>
+              <span className="text-xs font-bold uppercase tracking-wider">{t('result_cagr_label')}</span>
             </div>
             <span className="text-3xl md:text-4xl font-black text-[#7AE9AB]">{m.cagr}%</span>
             <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
-              <span className="font-semibold">최고 실적: {m.best_year.year}</span>
-              <span>수익률 {m.best_year.value}%</span>
+              <span className="font-semibold">{t('result_best_year')}: {m.best_year.year}</span>
+              <span>{t('result_return')} {m.best_year.value}%</span>
             </div>
           </div>
 
           <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <ShieldAlert size={16} className="text-[#F25B5B]" />
-              <span className="text-xs font-bold uppercase tracking-wider">MDD (최대낙폭)</span>
+              <span className="text-xs font-bold uppercase tracking-wider">{t('result_mdd_label')}</span>
             </div>
             <span className="text-3xl md:text-4xl font-black text-[#F25B5B]">{m.mdd}%</span>
             <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
-              <span className="font-semibold">최대 하락: {m.mdd_year}</span>
+              <span className="font-semibold">{t('result_max_drop')}: {m.mdd_year}</span>
               <span className="opacity-0">—</span>
             </div>
           </div>
@@ -634,8 +635,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <div className="glass-morphism p-5 rounded-3xl flex flex-col gap-3">
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-bold text-primary">포트폴리오 성장 추이</span>
-            <span className="text-xs text-muted-foreground">$1,000 초기 투자 기준</span>
+            <span className="text-sm font-bold text-primary">{t('result_growth_chart_title')}</span>
+            <span className="text-xs text-muted-foreground">{t('result_initial_investment')}</span>
           </div>
           <div className="flex gap-3">
             <div className="flex items-center gap-1.5">
@@ -704,8 +705,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           </ResponsiveContainer>
         </div>
         <div className="flex justify-between items-center border-t border-white/5 pt-3">
-          <span className="text-xs text-muted-foreground">초기 투자금</span>
-          <span className="text-xs text-muted-foreground">최종 평가액</span>
+          <span className="text-xs text-muted-foreground">{t('result_initial_label')}</span>
+          <span className="text-xs text-muted-foreground">{t('result_final_label')}</span>
         </div>
         <div className="flex justify-between items-center -mt-2">
           <span className="text-sm font-mono font-bold">$1,000</span>
@@ -722,8 +723,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
         {/* Header */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex flex-col">
-            <span className="text-sm font-bold text-primary">포트폴리오 오각형</span>
-            <span className="text-xs text-muted-foreground">S&P 500(SPY) 벤치마크 비교</span>
+            <span className="text-sm font-bold text-primary">{t('result_radar_title')}</span>
+            <span className="text-xs text-muted-foreground">{t('result_radar_benchmark')}</span>
           </div>
           <div className="flex gap-3">
             <div className="flex items-center gap-1">
@@ -749,7 +750,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left pb-3 font-semibold text-muted-foreground w-16">지표</th>
+                  <th className="text-left pb-3 font-semibold text-muted-foreground w-16">{t('result_table_metric')}</th>
                   <th className="text-right pb-3 font-bold text-foreground">Portfolio</th>
                   <th className="text-right pb-3 font-semibold text-muted-foreground">S&P 500</th>
                 </tr>
@@ -758,9 +759,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 {[
                   { label: 'CAGR', pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
                   { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: false },
-                  { label: '변동성', pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
+                  { label: t('result_volatility'), pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
                   { label: 'Sharpe', pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
-                  { label: '배당', pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('result_dividend'), pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
                 ].map((row, i, arr) => {
                   const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;
                   const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
@@ -804,7 +805,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       {/* Login toast */}
       {loginToast && (
         <div className="bg-primary/15 border border-primary/30 text-primary text-sm font-semibold px-4 py-3 rounded-2xl text-center animate-fade-in">
-          로그인 후 저장됩니다
+          {t('result_login_toast')}
         </div>
       )}
 
@@ -815,7 +816,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           className="flex-1 glass-morphism h-14 rounded-2xl flex items-center justify-center gap-2 font-bold text-muted-foreground border-white/10 hover:bg-white/5 transition-colors text-sm"
         >
           {copied ? <CheckCircle2 size={16} className="text-[#7AE9AB]" /> : <Share2 size={16} />}
-          {copied ? '복사됨!' : '공유'}
+          {copied ? t('result_copied') : t('result_share')}
         </button>
         <button
           onClick={saved ? undefined : handleSave}
@@ -826,32 +827,36 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           }`}
         >
           {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-          {saved ? '저장 완료!' : '내 포트폴리오에 저장'}
+          {saved ? t('result_saved') : t('result_save_to_portfolio')}
         </button>
       </div>
 
       {/* Save name input */}
       {saving && (
         <div className="glass-morphism border border-primary/30 rounded-2xl p-4 flex flex-col gap-3 animate-fade-in">
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">포트폴리오 이름</span>
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t('result_portfolio_name_label')}</span>
           <input
             autoFocus
             value={saveName}
             onChange={e => setSaveName(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') commitSave(); if (e.key === 'Escape') setSaving(false); }}
-            placeholder="예: 안정형 포트폴리오"
+            placeholder={t('result_portfolio_name_placeholder')}
             className="bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm font-semibold outline-none focus:border-primary/60 text-foreground placeholder:text-muted-foreground/40"
           />
           <div className="flex gap-2">
             <button onClick={() => setSaving(false)} className="flex-1 h-10 rounded-xl border border-white/10 text-xs font-bold text-muted-foreground hover:bg-white/5 transition-colors">
-              취소
+              {t('result_cancel')}
             </button>
             <button onClick={commitSave} className="flex-[2] h-10 rounded-xl bg-primary/20 text-primary text-xs font-bold hover:bg-primary/30 transition-colors border border-primary/30">
-              저장하기
+              {t('result_save_confirm')}
             </button>
           </div>
         </div>
       )}
+
+      {/* Suppress unused variable warning for radarDescriptions */}
+      {/* radarDescriptions is available for tooltip use */}
+      <div className="hidden">{JSON.stringify(radarDescriptions)}</div>
     </div>
   );
 }

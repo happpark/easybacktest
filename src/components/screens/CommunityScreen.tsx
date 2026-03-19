@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import { ChevronDown, Download } from 'lucide-react';
 
 import { RadarChart } from '@/components/RadarChart';
+import { useLang } from '@/lib/i18n';
 import type { Asset } from '@/app/page';
 
 interface CommunityPortfolio {
   id: number;
-  title: string;
+  titleKey: string;
   author: string;
   assets: { ticker: string; weight: number }[];
   radar: { subject: string; A: number; fullMark: number }[];
@@ -17,7 +18,7 @@ interface CommunityPortfolio {
 const COMMUNITY_PORTFOLIOS: CommunityPortfolio[] = [
   {
     id: 1,
-    title: "성장형 올웨더",
+    titleKey: 'cp_growth_allweather',
     author: "KimAlpha",
     assets: [
       { ticker: 'VTI', weight: 40 },
@@ -35,7 +36,7 @@ const COMMUNITY_PORTFOLIOS: CommunityPortfolio[] = [
   },
   {
     id: 2,
-    title: "나스닥 공격형",
+    titleKey: 'cp_nasdaq_aggressive',
     author: "LeeQuant",
     assets: [
       { ticker: 'TQQQ', weight: 60 },
@@ -51,7 +52,7 @@ const COMMUNITY_PORTFOLIOS: CommunityPortfolio[] = [
   },
   {
     id: 3,
-    title: "배당 안정성",
+    titleKey: 'cp_dividend_stable',
     author: "ParkDividend",
     assets: [
       { ticker: 'SCHD', weight: 50 },
@@ -68,7 +69,7 @@ const COMMUNITY_PORTFOLIOS: CommunityPortfolio[] = [
   },
   {
     id: 4,
-    title: "크립토 맥시",
+    titleKey: 'cp_crypto_maxi',
     author: "ChainMaster",
     assets: [
       { ticker: 'BTC', weight: 70 },
@@ -89,6 +90,7 @@ interface CommunityScreenProps {
 }
 
 export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
+  const { t } = useLang();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const handleLoad = (p: CommunityPortfolio) => {
@@ -103,8 +105,8 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
   return (
     <div className="p-6 md:p-8 flex flex-col gap-6 animate-fade-in pb-8">
       <header className="flex flex-col gap-1">
-        <h2 className="text-2xl font-bold">커뮤니티</h2>
-        <p className="text-sm text-muted-foreground">인기 포트폴리오를 가져와 직접 백테스트하세요.</p>
+        <h2 className="text-2xl font-bold">{t('community_title')}</h2>
+        <p className="text-sm text-muted-foreground">{t('community_subtitle')}</p>
       </header>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -121,7 +123,7 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
                 onClick={() => setExpandedId(isExpanded ? null : p.id)}
               >
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-bold">{p.title}</span>
+                  <span className="text-sm font-bold">{t(p.titleKey as Parameters<typeof t>[0])}</span>
                   <span className="text-xs text-muted-foreground">@{p.author}</span>
                 </div>
                 <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
@@ -131,7 +133,7 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
                 <RadarChart data={p.radar} mini={!isExpanded} />
               </div>
 
-              {/* 자산 태그 — 항상 표시 */}
+              {/* Asset tags — always visible */}
               <div className="flex flex-wrap gap-1.5">
                 {p.assets.map((a) => (
                   <div key={a.ticker} className="bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20 flex items-center gap-1.5">
@@ -141,14 +143,14 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
                 ))}
               </div>
 
-              {/* 가져오기 버튼 — 확장 시 or hover 시 */}
+              {/* Load button — visible when expanded or on hover */}
               <button
                 onClick={(e) => { e.stopPropagation(); handleLoad(p); }}
                 className={`w-full h-10 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2
                   ${isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
               >
                 <Download size={14} />
-                이 포트폴리오 가져오기
+                {t('community_load_button')}
               </button>
             </div>
           );
