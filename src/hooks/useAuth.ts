@@ -27,7 +27,7 @@ export function useAuth() {
       setUser(u);
       setLoading(false);
       if (u) {
-        identifyUser(u.id, u.email);
+        identifyUser();
         if (event === 'SIGNED_IN') track.signIn();
       } else if (event === 'SIGNED_OUT') {
         resetUser();

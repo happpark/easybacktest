@@ -1,26 +1,4 @@
-'use client';
-
-import posthog from 'posthog-js';
-import { PostHogProvider as PHProvider } from 'posthog-js/react';
-import { useEffect } from 'react';
-
+// PostHog replaced by Google Analytics 4
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com';
-    if (!key) {
-      console.warn('[PostHog] NEXT_PUBLIC_POSTHOG_KEY is not set');
-      return;
-    }
-
-    posthog.init(key, {
-      api_host: host,
-      person_profiles: 'always',
-      capture_pageview: true,
-      capture_pageleave: true,
-      disable_flags: true,
-    });
-  }, []);
-
-  return <PHProvider client={posthog}>{children}</PHProvider>;
+  return <>{children}</>;
 }

@@ -1,42 +1,36 @@
 'use client';
 
-import posthog from 'posthog-js';
+import { sendGAEvent } from '@next/third-parties/google';
 
-// 이미지 업로드 → 백테스트 → 저장 퍼널 추적
 export const track = {
   imageUploaded: () =>
-    posthog.capture('image_uploaded'),
+    sendGAEvent('event', 'image_uploaded'),
 
   backtestRun: (params: { assetCount: number; mode: 'beginner' | 'expert'; source: 'manual' | 'image' | 'community' | 'mine' }) =>
-    posthog.capture('backtest_run', params),
+    sendGAEvent('event', 'backtest_run', params),
 
   portfolioSaved: (params: { assetCount: number }) =>
-    posthog.capture('portfolio_saved', params),
+    sendGAEvent('event', 'portfolio_saved', params),
 
   portfolioLoaded: (source: 'community' | 'mine') =>
-    posthog.capture('portfolio_loaded', { source }),
+    sendGAEvent('event', 'portfolio_loaded', { source }),
 
   communityShared: () =>
-    posthog.capture('community_shared'),
+    sendGAEvent('event', 'community_shared'),
 
   communityUnshared: () =>
-    posthog.capture('community_unshared'),
+    sendGAEvent('event', 'community_unshared'),
 
   communitySavedToMine: () =>
-    posthog.capture('community_saved_to_mine'),
+    sendGAEvent('event', 'community_saved_to_mine'),
 
   signIn: () =>
-    posthog.capture('sign_in'),
+    sendGAEvent('event', 'sign_in'),
 
   signOut: () =>
-    posthog.capture('sign_out'),
+    sendGAEvent('event', 'sign_out'),
 };
 
-// 로그인 유저 식별 — useAuth에서 user 바뀔 때 호출
-export function identifyUser(userId: string, email?: string | null) {
-  posthog.identify(userId, { email: email ?? undefined });
-}
-
-export function resetUser() {
-  posthog.reset();
-}
+// GA4는 별도 identify 불필요
+export function identifyUser() {}
+export function resetUser() {}
