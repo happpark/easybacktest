@@ -92,9 +92,9 @@ export default function OGImage() {
 
           {/* main headline */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#ffffff', lineHeight: 1.05, letterSpacing: '-0.02em' }}>Screenshot.</span>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#48bb78', lineHeight: 1.05, letterSpacing: '-0.02em' }}>Backtest.</span>
-            <span style={{ fontSize: 80, fontWeight: 900, color: '#ffffff', lineHeight: 1.05, letterSpacing: '-0.02em' }}>Done.</span>
+            <span style={{ fontSize: 80, fontWeight: 900, color: '#ffffff', lineHeight: 1.05 }}>Screenshot.</span>
+            <span style={{ fontSize: 80, fontWeight: 900, color: '#48bb78', lineHeight: 1.05 }}>Backtest.</span>
+            <span style={{ fontSize: 80, fontWeight: 900, color: '#ffffff', lineHeight: 1.05 }}>Done.</span>
           </div>
 
           {/* subtitle */}
