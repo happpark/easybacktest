@@ -151,6 +151,14 @@ export default function AlphaFlowApp() {
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             {theme === 'dark' ? t('nav_light_mode') : t('nav_dark_mode')}
           </button>
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full px-4 py-2 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors text-center"
+          >
+            {lang === 'ko' ? '개인정보처리방침' : 'Privacy Policy'}
+          </a>
         </div>
       </aside>
 
