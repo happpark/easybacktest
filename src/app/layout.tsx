@@ -4,8 +4,22 @@ import { LangProvider } from '@/lib/i18n';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const metadata: Metadata = {
-  title: 'Easybacktest - 포트폴리오 백테스트',
-  description: '간편하고 스마트한 ETF 포트폴리오 백테스팅 앱.',
+  title: 'Easybacktest — 포트폴리오 백테스트',
+  description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석. 스크린샷 하나로 내 포트폴리오 과거 성과를 확인하세요.',
+  metadataBase: new URL('https://easybacktest.app'),
+  openGraph: {
+    title: 'Easybacktest — 포트폴리오 백테스트',
+    description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석. 스크린샷 하나로 내 포트폴리오 과거 성과를 확인하세요.',
+    url: 'https://easybacktest.app',
+    siteName: 'Easybacktest',
+    locale: 'ko_KR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Easybacktest — 포트폴리오 백테스트',
+    description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석.',
+  },
 };
 
 export default function RootLayout({

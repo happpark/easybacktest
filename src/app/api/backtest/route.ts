@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runBacktest } from '@/ai/flows/backtest-portfolio';
-import { createClient } from '@/lib/supabase/server';
+import { logError } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const input = await req.json();
 
@@ -38,7 +35,8 @@ export async function POST(req: NextRequest) {
     const result = await runBacktest(input);
     return NextResponse.json({ ...result, aiInsight: 'Analysis completed based on historical data.' });
   } catch (e: unknown) {
-    console.error('[backtest]', e);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    await logError(e, { route: '/api/backtest' });
+    const msg = e instanceof Error ? e.message : 'Internal server error';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
