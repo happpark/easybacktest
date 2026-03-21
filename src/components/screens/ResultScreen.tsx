@@ -772,7 +772,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                           <span className="min-w-[4.5rem] shrink-0">{row.label}</span>
                           <div className="relative group/tip hidden md:block shrink-0">
                             <Info size={11} className="text-muted-foreground/40 hover:text-muted-foreground cursor-default transition-colors" />
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[13rem] bg-popover border border-border rounded-xl px-3 py-2 text-xs text-foreground shadow-xl opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all duration-150 pointer-events-none z-50 leading-relaxed whitespace-normal">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[13rem] bg-popover border border-border rounded-xl px-3 py-2 text-xs text-foreground shadow-xl opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all duration-150 pointer-events-none z-50 leading-relaxed whitespace-pre-line">
                               {row.tooltip}
                             </div>
                           </div>
