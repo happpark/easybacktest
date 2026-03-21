@@ -757,17 +757,28 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
               </thead>
               <tbody>
                 {[
-                  { label: t('my_metric_cagr'), pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
-                  { label: t('my_metric_mdd'), pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: true },
-                  { label: t('result_volatility'), pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
-                  { label: t('my_metric_sharpe'), pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
-                  { label: t('result_dividend'), pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('my_metric_cagr'), tooltip: t('tooltip_cagr'), pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('my_metric_mdd'), tooltip: t('tooltip_mdd'), pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('result_volatility'), tooltip: t('tooltip_volatility'), pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
+                  { label: t('my_metric_sharpe'), tooltip: t('tooltip_sharpe'), pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
+                  { label: t('result_dividend'), tooltip: t('tooltip_dividend'), pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
                 ].map((row, i, arr) => {
                   const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;
                   const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
                   return (
                     <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-border/50' : ''}>
-                      <td className="py-2.5 text-muted-foreground font-semibold">{row.label}</td>
+                      <td className="py-2.5 text-muted-foreground font-semibold">
+                        <div className="flex items-center gap-1">
+                          {row.label}
+                          <div className="relative group/tip hidden md:inline-flex">
+                            <Info size={11} className="text-muted-foreground/40 hover:text-muted-foreground cursor-default transition-colors" />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-popover border border-border rounded-xl px-3 py-2 text-xs text-foreground shadow-xl opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all duration-150 pointer-events-none z-50 leading-relaxed">
+                              {row.tooltip}
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-popover border-r border-b border-border rotate-45 -mt-1" />
+                            </div>
+                          </div>
+                        </div>
+                      </td>
                       <td className="text-right py-2.5">
                         {portfolioWins ? (
                           <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
