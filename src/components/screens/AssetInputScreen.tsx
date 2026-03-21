@@ -472,6 +472,14 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     });
   }, [selectedAssets.length]);
 
+  // 한국 주식(.KS/.KQ)은 ticker 대신 종목명 표시
+  const displayLabel = (ticker: string) => {
+    if (ticker.endsWith('.KS') || ticker.endsWith('.KQ')) {
+      return ETF_DATA.find(e => e.ticker === ticker)?.name ?? ticker;
+    }
+    return ticker;
+  };
+
   // Expert helpers
   const tickerSuggestions: ETF[] = editingIndex !== null && editingValue.length >= 1
     ? ETF_DATA.filter(a =>
@@ -993,7 +1001,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                             <button onClick={() => { setEditingIndex(index); setEditingValue(asset.ticker); }}
                               className="font-bold text-base leading-none text-left flex items-center gap-1.5 group w-fit"
                             >
-                              {asset.ticker}
+                              {displayLabel(asset.ticker)}
                               <Pencil size={10} className="text-muted-foreground/40 group-hover:text-primary transition-colors" />
                             </button>
                           )}
@@ -1130,12 +1138,12 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                                 <button onClick={() => { setEditingIndex(ai); setEditingValue(asset.ticker); }}
                                   className="font-bold text-xs flex items-center gap-0.5 group"
                                 >
-                                  {asset.ticker}
+                                  {displayLabel(asset.ticker)}
                                   <Pencil size={8} className="text-muted-foreground/30 group-hover:text-primary transition-colors" />
                                 </button>
                               )
                             ) : (
-                              <span className="font-bold text-xs">{asset.ticker}</span>
+                              <span className="font-bold text-xs">{displayLabel(asset.ticker)}</span>
                             )}
                           </div>
                           <span className="text-[9px] text-muted-foreground">
