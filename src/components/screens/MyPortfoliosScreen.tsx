@@ -207,7 +207,7 @@ function PortfolioCard({
             )}>
               {cagrPositive ? '+' : ''}{m.cagr}%
             </div>
-            <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">CAGR</div>
+            <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{t('my_metric_cagr')}</div>
           </div>
         </div>
       </div>
@@ -216,13 +216,13 @@ function PortfolioCard({
       <div className="px-5 pb-4 flex items-center gap-3">
         {/* MDD */}
         <div className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">MDD</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_mdd')}</span>
           <span className="text-sm font-bold font-mono text-[#F25B5B]">{m.mdd}%</span>
         </div>
         <div className="w-px h-6 bg-white/10" />
         {/* Sharpe */}
         <div className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Sharpe</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_sharpe')}</span>
           <span className="text-sm font-bold font-mono text-primary">{m.sharpe}</span>
         </div>
         <div className="w-px h-6 bg-white/10" />
@@ -330,10 +330,10 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
   const series = portfolios.map((_, i) => ({ key: labels[i], color: COLORS[i], hidden: hidden.has(i) }));
 
   const metrics = [
-    { label: 'CAGR', key: 'cagr' as const, unit: '%', higherBetter: true },
-    { label: 'MDD', key: 'mdd' as const, unit: '%', higherBetter: true },
+    { label: t('my_metric_cagr'), key: 'cagr' as const, unit: '%', higherBetter: true },
+    { label: t('my_metric_mdd'), key: 'mdd' as const, unit: '%', higherBetter: true },
     { label: t('result_volatility'), key: 'volatility' as const, unit: '%', higherBetter: false },
-    { label: 'Sharpe', key: 'sharpe' as const, unit: '', higherBetter: true },
+    { label: t('my_metric_sharpe'), key: 'sharpe' as const, unit: '', higherBetter: true },
     { label: t('result_dividend'), key: 'dividend' as const, unit: '%', higherBetter: true },
   ];
 

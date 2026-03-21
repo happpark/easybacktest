@@ -130,19 +130,19 @@ function SharedCard({
           <div className={cn("text-2xl font-black font-mono tabular-nums", cagrPositive ? "text-[#7AE9AB]" : "text-[#F25B5B]")}>
             {cagrPositive ? '+' : ''}{m.cagr}%
           </div>
-          <div className="text-[10px] text-muted-foreground uppercase tracking-wider">CAGR</div>
+          <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('my_metric_cagr')}</div>
         </div>
       </div>
 
       {/* Metrics */}
       <div className="px-5 pb-4 flex items-center gap-3">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">MDD</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_mdd')}</span>
           <span className="text-sm font-bold font-mono text-[#F25B5B]">{m.mdd}%</span>
         </div>
         <div className="w-px h-5 bg-white/10" />
         <div className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Sharpe</span>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_sharpe')}</span>
           <span className="text-sm font-bold font-mono text-primary">{m.sharpe}</span>
         </div>
         <div className="w-px h-5 bg-white/10" />

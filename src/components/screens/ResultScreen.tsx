@@ -242,7 +242,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       t('result_share_text_title'),
       `${t('result_share_composition')}: ${composition}`,
       `${t('result_share_period')}: ${backtestResult.period}`,
-      `CAGR: ${m.cagr}%  |  MDD: ${m.mdd}%  |  Sharpe: ${m.sharpe}`,
+      `${t('result_cagr_label')}: ${m.cagr}%  |  ${t('result_mdd_label')}: ${m.mdd}%  |  ${lang === 'ko' ? '효율성' : 'Efficiency'}: ${m.sharpe}`,
       `Volatility: ${m.volatility}%  |  Dividend: ${m.dividend}%`,
     ].join('\n');
     try {
@@ -430,10 +430,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
               </thead>
               <tbody>
                 {[
-                  { label: 'CAGR', key: 'cagr' as const, unit: '%', higherBetter: true },
-                  { label: 'MDD', key: 'mdd' as const, unit: '%', higherBetter: false },
+                  { label: t('my_metric_cagr'), key: 'cagr' as const, unit: '%', higherBetter: true },
+                  { label: t('my_metric_mdd'), key: 'mdd' as const, unit: '%', higherBetter: false },
                   { label: t('multi_volatility'), key: 'volatility' as const, unit: '%', higherBetter: false },
-                  { label: 'Sharpe', key: 'sharpe' as const, unit: '', higherBetter: true },
+                  { label: t('my_metric_sharpe'), key: 'sharpe' as const, unit: '', higherBetter: true },
                   { label: t('multi_dividend'), key: 'dividend' as const, unit: '%', higherBetter: true },
                 ].map((row, ri, arr) => {
                   const vals = backtestResults.map(r => r.metrics[row.key]);
@@ -757,10 +757,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
               </thead>
               <tbody>
                 {[
-                  { label: 'CAGR', pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
-                  { label: 'MDD', pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('my_metric_cagr'), pv: m.cagr, bv: bm?.cagr ?? 0, unit: '%', higherIsBetter: true },
+                  { label: t('my_metric_mdd'), pv: m.mdd, bv: bm?.mdd ?? 0, unit: '%', higherIsBetter: true },
                   { label: t('result_volatility'), pv: m.volatility, bv: bm?.volatility ?? 0, unit: '%', higherIsBetter: false },
-                  { label: 'Sharpe', pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
+                  { label: t('my_metric_sharpe'), pv: m.sharpe, bv: bm?.sharpe ?? 0, unit: '', higherIsBetter: true },
                   { label: t('result_dividend'), pv: m.dividend, bv: bm?.dividend ?? 0, unit: '%', higherIsBetter: true },
                 ].map((row, i, arr) => {
                   const portfolioWins = row.higherIsBetter ? row.pv > row.bv : row.pv < row.bv;

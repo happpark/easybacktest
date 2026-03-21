@@ -154,10 +154,10 @@ const translations = {
     result_fetch_fail: '결과를 불러오는 데 실패했습니다.',
     result_title: '백테스트 결과',
     result_copy_title: '결과 복사',
-    result_cagr_label: 'CAGR (수익률)',
+    result_cagr_label: '연평균 수익률',
     result_best_year: '최고 실적',
     result_return: '수익률',
-    result_mdd_label: 'MDD (최대낙폭)',
+    result_mdd_label: '최대 낙폭',
     result_max_drop: '최대 하락',
     result_growth_chart_title: '포트폴리오 성장 추이',
     result_initial_investment: '$1,000 초기 투자 기준',
@@ -199,10 +199,10 @@ const translations = {
     multi_save_confirm: '저장하기',
 
     // Radar descriptions
-    radar_attack: '수익력: CAGR(연평균 수익률)을 기반으로 자산의 성장성을 나타냅니다.',
-    radar_defense: '방어력: MDD(최대 낙폭)를 기반으로 위기 시 손실 최소화 능력을 나타냅니다.',
+    radar_attack: '수익력: 연평균 수익률을 기반으로 자산의 성장성을 나타냅니다.',
+    radar_defense: '방어력: 최대 낙폭을 기반으로 위기 시 손실 최소화 능력을 나타냅니다.',
     radar_volatility: '변동성 관리: 표준편차를 기반으로 주가 변동 폭이 얼마나 안정적인지 나타냅니다.',
-    radar_sharpe: '위험 대비 수익: 샤프 지수를 기반으로 위험 한 단위당 얼마나 효율적인 수익을 냈는지 나타냅니다.',
+    radar_sharpe: '효율성: 위험 한 단위당 얼마나 효율적으로 수익을 냈는지 나타냅니다.',
     radar_dividend: '배당 수익: 최근 1년 배당 수익률을 기반으로 현금 흐름 창출 능력을 나타냅니다.',
 
     // Rebalancing labels (result screen)
@@ -241,7 +241,7 @@ const translations = {
     my_metric_cagr: '연평균 수익률',
     my_metric_mdd: '최대 낙폭',
     my_metric_volatility: '변동성',
-    my_metric_sharpe: '샤프 지수',
+    my_metric_sharpe: '효율성',
     my_metric_dividend: '배당 수익률',
     my_metric_best_year: '최고 연도',
 
@@ -419,10 +419,10 @@ const translations = {
     result_fetch_fail: 'Failed to load results.',
     result_title: 'Backtest Results',
     result_copy_title: 'Copy Results',
-    result_cagr_label: 'CAGR (Return)',
+    result_cagr_label: 'Annualized Return',
     result_best_year: 'Best Year',
     result_return: 'Return',
-    result_mdd_label: 'MDD (Max Drawdown)',
+    result_mdd_label: 'Max Drawdown',
     result_max_drop: 'Worst Year',
     result_growth_chart_title: 'Portfolio Growth',
     result_initial_investment: 'Based on $1,000 initial investment',
@@ -464,10 +464,10 @@ const translations = {
     multi_save_confirm: 'Save',
 
     // Radar descriptions
-    radar_attack: 'Offense: Based on CAGR (annualized return), measures the portfolio\'s growth potential.',
-    radar_defense: 'Defense: Based on MDD (max drawdown), measures the ability to minimize losses in downturns.',
+    radar_attack: 'Offense: Based on annualized return, measures the portfolio\'s growth potential.',
+    radar_defense: 'Defense: Based on max drawdown, measures the ability to minimize losses in downturns.',
     radar_volatility: 'Volatility Management: Based on standard deviation, measures how stable price movements are.',
-    radar_sharpe: 'Risk-Adjusted Return: Based on Sharpe ratio, measures how efficiently returns are earned per unit of risk.',
+    radar_sharpe: 'Efficiency: Measures how efficiently returns are earned per unit of risk taken.',
     radar_dividend: 'Dividend Income: Based on trailing 1-year dividend yield, measures cash flow generation.',
 
     // Rebalancing labels (result screen)
@@ -506,7 +506,7 @@ const translations = {
     my_metric_cagr: 'Annualized Return',
     my_metric_mdd: 'Max Drawdown',
     my_metric_volatility: 'Volatility',
-    my_metric_sharpe: 'Sharpe Ratio',
+    my_metric_sharpe: 'Efficiency',
     my_metric_dividend: 'Dividend Yield',
     my_metric_best_year: 'Best Year',
 
