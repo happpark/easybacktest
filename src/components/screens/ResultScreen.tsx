@@ -750,7 +750,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left pb-3 font-semibold text-muted-foreground w-28">{t('result_table_metric')}</th>
+                  <th className="text-left pb-3 font-semibold text-muted-foreground">{t('result_table_metric')}</th>
                   <th className="text-right pb-3 font-bold text-foreground">Portfolio</th>
                   <th className="text-right pb-3 font-semibold text-muted-foreground">S&P 500</th>
                 </tr>
@@ -767,12 +767,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                   const benchmarkWins = row.higherIsBetter ? row.bv > row.pv : row.bv < row.pv;
                   return (
                     <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-border/50' : ''}>
-                      <td className="py-2.5 text-muted-foreground font-semibold w-28">
-                        <div className="flex items-center justify-between gap-2">
-                          <span>{row.label}</span>
+                      <td className="py-2.5 text-muted-foreground font-semibold">
+                        <div className="flex items-center gap-1">
+                          <span className="min-w-[4.5rem] shrink-0">{row.label}</span>
                           <div className="relative group/tip hidden md:block shrink-0">
                             <Info size={11} className="text-muted-foreground/40 hover:text-muted-foreground cursor-default transition-colors" />
-                            <div className="absolute bottom-full right-0 mb-2 w-64 bg-popover border border-border rounded-xl px-3 py-2 text-xs text-foreground shadow-xl opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all duration-150 pointer-events-none z-50 leading-relaxed whitespace-normal">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[13rem] bg-popover border border-border rounded-xl px-3 py-2 text-xs text-foreground shadow-xl opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all duration-150 pointer-events-none z-50 leading-relaxed whitespace-normal">
                               {row.tooltip}
                             </div>
                           </div>
