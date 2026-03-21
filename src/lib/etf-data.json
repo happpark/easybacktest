@@ -4748,5 +4748,560 @@
     "ticker": "ETH-USD",
     "name": "Ethereum / USD",
     "launch_year": "2017"
+  },
+  {
+    "ticker": "005930.KS",
+    "name": "삼성전자",
+    "launch_year": "1975"
+  },
+  {
+    "ticker": "000660.KS",
+    "name": "SK하이닉스",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "035420.KS",
+    "name": "NAVER",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "035720.KS",
+    "name": "카카오",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "005380.KS",
+    "name": "현대자동차",
+    "launch_year": "1974"
+  },
+  {
+    "ticker": "000270.KS",
+    "name": "기아",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "051910.KS",
+    "name": "LG화학",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "006400.KS",
+    "name": "삼성SDI",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "207940.KS",
+    "name": "삼성바이오로직스",
+    "launch_year": "2016"
+  },
+  {
+    "ticker": "068270.KS",
+    "name": "셀트리온",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "005490.KS",
+    "name": "POSCO홀딩스",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "105560.KS",
+    "name": "KB금융",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "055550.KS",
+    "name": "신한지주",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "086790.KS",
+    "name": "하나금융지주",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "032830.KS",
+    "name": "삼성생명",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "003550.KS",
+    "name": "LG",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "066570.KS",
+    "name": "LG전자",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "034730.KS",
+    "name": "SK",
+    "launch_year": "1991"
+  },
+  {
+    "ticker": "017670.KS",
+    "name": "SK텔레콤",
+    "launch_year": "1989"
+  },
+  {
+    "ticker": "030200.KS",
+    "name": "KT",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "096770.KS",
+    "name": "SK이노베이션",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "009150.KS",
+    "name": "삼성전기",
+    "launch_year": "1973"
+  },
+  {
+    "ticker": "028260.KS",
+    "name": "삼성물산",
+    "launch_year": "1975"
+  },
+  {
+    "ticker": "011200.KS",
+    "name": "HMM",
+    "launch_year": "1976"
+  },
+  {
+    "ticker": "323410.KS",
+    "name": "카카오뱅크",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "259960.KS",
+    "name": "크래프톤",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "112040.KS",
+    "name": "위메이드",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "018260.KS",
+    "name": "삼성에스디에스",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "003490.KS",
+    "name": "대한항공",
+    "launch_year": "1976"
+  },
+  {
+    "ticker": "139480.KS",
+    "name": "이마트",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "247540.KQ",
+    "name": "에코프로비엠",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "086520.KQ",
+    "name": "에코프로",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "373220.KQ",
+    "name": "LG에너지솔루션",
+    "launch_year": "2022"
+  },
+  {
+    "ticker": "091990.KQ",
+    "name": "셀트리온헬스케어",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "263750.KQ",
+    "name": "펄어비스",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "293490.KQ",
+    "name": "카카오게임즈",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "035900.KQ",
+    "name": "JYP Ent.",
+    "launch_year": "2001"
+  },
+  {
+    "ticker": "041510.KQ",
+    "name": "에스엠",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "352820.KQ",
+    "name": "하이브",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "011000.KQ",
+    "name": "카카오페이",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "069500.KS",
+    "name": "KODEX 200",
+    "launch_year": "2002"
+  },
+  {
+    "ticker": "114800.KS",
+    "name": "KODEX 인버스",
+    "launch_year": "2009"
+  },
+  {
+    "ticker": "122630.KS",
+    "name": "KODEX 레버리지",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "229200.KS",
+    "name": "KODEX 코스닥150",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "233740.KS",
+    "name": "KODEX 코스닥150 레버리지",
+    "launch_year": "2015"
+  },
+  {
+    "ticker": "133690.KS",
+    "name": "TIGER 미국나스닥100",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "360750.KS",
+    "name": "TIGER 미국S&P500",
+    "launch_year": "2021"
+  },
+  {
+    "ticker": "148020.KS",
+    "name": "KOSEF 국고채10년",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "153130.KS",
+    "name": "KODEX 단기채권",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "261240.KS",
+    "name": "KODEX TDF2050액티브",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "278530.KS",
+    "name": "KODEX 2차전지산업",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "091160.KS",
+    "name": "KODEX 반도체",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "091180.KS",
+    "name": "KODEX 자동차",
+    "launch_year": "2006"
+  },
+  {
+    "ticker": "102110.KS",
+    "name": "TIGER 200",
+    "launch_year": "2008"
+  },
+  {
+    "ticker": "251340.KS",
+    "name": "KODEX 골드선물(H)",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "130680.KS",
+    "name": "TIGER 원유선물(H)",
+    "launch_year": "2011"
+  },
+  {
+    "ticker": "GC=F",
+    "name": "Gold Futures (금 선물)",
+    "launch_year": "1974"
+  },
+  {
+    "ticker": "SI=F",
+    "name": "Silver Futures (은 선물)",
+    "launch_year": "1963"
+  },
+  {
+    "ticker": "CL=F",
+    "name": "Crude Oil WTI Futures (원유 선물)",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "NG=F",
+    "name": "Natural Gas Futures (천연가스)",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "HG=F",
+    "name": "Copper Futures (구리 선물)",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "PL=F",
+    "name": "Platinum Futures (백금 선물)",
+    "launch_year": "1970"
+  },
+  {
+    "ticker": "ZC=F",
+    "name": "Corn Futures (옥수수 선물)",
+    "launch_year": "1959"
+  },
+  {
+    "ticker": "ZW=F",
+    "name": "Wheat Futures (밀 선물)",
+    "launch_year": "1959"
+  },
+  {
+    "ticker": "ZS=F",
+    "name": "Soybean Futures (대두 선물)",
+    "launch_year": "1959"
+  },
+  {
+    "ticker": "BZ=F",
+    "name": "Brent Crude Oil Futures (브렌트유)",
+    "launch_year": "1988"
+  },
+  {
+    "ticker": "^KS11",
+    "name": "KOSPI 지수",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "^KQ11",
+    "name": "KOSDAQ 지수",
+    "launch_year": "1996"
+  },
+  {
+    "ticker": "^GSPC",
+    "name": "S&P 500 Index",
+    "launch_year": "1957"
+  },
+  {
+    "ticker": "^IXIC",
+    "name": "Nasdaq Composite Index",
+    "launch_year": "1971"
+  },
+  {
+    "ticker": "^DJI",
+    "name": "Dow Jones Industrial Average",
+    "launch_year": "1896"
+  },
+  {
+    "ticker": "^RUT",
+    "name": "Russell 2000 Index (소형주)",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "^VIX",
+    "name": "CBOE Volatility Index (공포지수)",
+    "launch_year": "1990"
+  },
+  {
+    "ticker": "^N225",
+    "name": "Nikkei 225 (일본)",
+    "launch_year": "1950"
+  },
+  {
+    "ticker": "^HSI",
+    "name": "Hang Seng Index (홍콩)",
+    "launch_year": "1986"
+  },
+  {
+    "ticker": "^FTSE",
+    "name": "FTSE 100 (영국)",
+    "launch_year": "1984"
+  },
+  {
+    "ticker": "^GDAXI",
+    "name": "DAX Index (독일)",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "^FCHI",
+    "name": "CAC 40 (프랑스)",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "^STI",
+    "name": "Straits Times Index (싱가포르)",
+    "launch_year": "1987"
+  },
+  {
+    "ticker": "^TWII",
+    "name": "Taiwan Weighted Index (대만)",
+    "launch_year": "1967"
+  },
+  {
+    "ticker": "KRW=X",
+    "name": "USD/KRW 환율 (달러/원)",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "EURUSD=X",
+    "name": "EUR/USD 환율 (유로/달러)",
+    "launch_year": "1999"
+  },
+  {
+    "ticker": "JPY=X",
+    "name": "USD/JPY 환율 (달러/엔)",
+    "launch_year": "1971"
+  },
+  {
+    "ticker": "GBPUSD=X",
+    "name": "GBP/USD 환율 (파운드/달러)",
+    "launch_year": "1971"
+  },
+  {
+    "ticker": "CNY=X",
+    "name": "USD/CNY 환율 (달러/위안)",
+    "launch_year": "2003"
+  },
+  {
+    "ticker": "AUDUSD=X",
+    "name": "AUD/USD 환율 (호주달러)",
+    "launch_year": "1983"
+  },
+  {
+    "ticker": "ARM",
+    "name": "Arm Holdings",
+    "launch_year": "2023"
+  },
+  {
+    "ticker": "SAP",
+    "name": "SAP SE",
+    "launch_year": "1998"
+  },
+  {
+    "ticker": "ASML",
+    "name": "ASML Holding (반도체 장비)",
+    "launch_year": "1995"
+  },
+  {
+    "ticker": "TSM",
+    "name": "Taiwan Semiconductor (TSMC)",
+    "launch_year": "1997"
+  },
+  {
+    "ticker": "PDD",
+    "name": "PDD Holdings (Temu)",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "BIDU",
+    "name": "Baidu Inc.",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "ENPH",
+    "name": "Enphase Energy (태양광)",
+    "launch_year": "2012"
+  },
+  {
+    "ticker": "CYBR",
+    "name": "CyberArk Software (보안)",
+    "launch_year": "2014"
+  },
+  {
+    "ticker": "ETHE",
+    "name": "Grayscale Ethereum Trust",
+    "launch_year": "2019"
+  },
+  {
+    "ticker": "MBB",
+    "name": "iShares MBS ETF (모기지)",
+    "launch_year": "2007"
+  },
+  {
+    "ticker": "TIPS",
+    "name": "iShares TIPS Bond ETF",
+    "launch_year": "2000"
+  },
+  {
+    "ticker": "COMB",
+    "name": "GraniteShares Bloomberg Commodity ETF",
+    "launch_year": "2018"
+  },
+  {
+    "ticker": "PPLT",
+    "name": "Aberdeen Standard Physical Platinum",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "PALL",
+    "name": "Sprott Physical Platinum & Palladium",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "VGK",
+    "name": "Vanguard FTSE Europe ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "VPL",
+    "name": "Vanguard FTSE Pacific ETF",
+    "launch_year": "2005"
+  },
+  {
+    "ticker": "EPOL",
+    "name": "iShares MSCI Poland ETF (폴란드)",
+    "launch_year": "2010"
+  },
+  {
+    "ticker": "SOL-USD",
+    "name": "Solana / USD",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "BNB-USD",
+    "name": "Binance Coin / USD",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "XRP-USD",
+    "name": "Ripple / USD",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "ADA-USD",
+    "name": "Cardano / USD",
+    "launch_year": "2017"
+  },
+  {
+    "ticker": "DOGE-USD",
+    "name": "Dogecoin / USD",
+    "launch_year": "2013"
+  },
+  {
+    "ticker": "AVAX-USD",
+    "name": "Avalanche / USD",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "DOT-USD",
+    "name": "Polkadot / USD",
+    "launch_year": "2020"
+  },
+  {
+    "ticker": "MATIC-USD",
+    "name": "Polygon / USD",
+    "launch_year": "2019"
   }
 ]
