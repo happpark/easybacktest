@@ -63,6 +63,10 @@
   * {
     @apply border-border;
   }
+  html, body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     background-image: radial-gradient(circle at 50% 0%, rgba(55, 135, 224, 0.15) 0%, transparent 50%),

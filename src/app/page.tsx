@@ -102,7 +102,7 @@ export default function AlphaFlowApp() {
   ];
 
   return (
-    <div className="flex h-screen bg-background font-body overflow-hidden">
+    <div className="flex bg-background font-body md:h-screen md:overflow-hidden">
 
       {/* ── Desktop Sidebar (hidden on mobile) ── */}
       <aside className="hidden md:flex flex-col w-56 shrink-0 border-r border-white/10 glass-morphism h-full">
@@ -163,10 +163,13 @@ export default function AlphaFlowApp() {
       </aside>
 
       {/* ── Content area ── */}
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+      <div className="flex-1 flex flex-col md:min-h-0 md:overflow-hidden">
 
         {/* ── Top header bar (mobile + desktop) ── */}
-        <div className="h-14 px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 shrink-0">
+        <div
+          className="px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 shrink-0 sticky top-0 z-50 bg-background backdrop-blur-xl md:relative md:backdrop-blur-none"
+          style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(3.5rem + env(safe-area-inset-top))' }}
+        >
           {/* Brand title — mobile only (desktop shows it in sidebar) */}
           <button onClick={() => setActiveScreen('input')} className="md:hidden text-left shrink-0">
             <span className="text-base font-black text-primary text-glow">Easybacktest</span>
@@ -201,37 +204,40 @@ export default function AlphaFlowApp() {
           </div>
         </div>
 
-        {/* Scrollable main — sticky elements inside screens anchor to this */}
-        <main className="flex-1 overflow-y-auto">
+        {/* Scrollable main — md: internal scroll, mobile: body scroll */}
+        <main className="flex-1 md:overflow-y-auto">
           <div className="max-w-md mx-auto md:max-w-5xl md:mx-auto">
             {renderScreen()}
           </div>
         </main>
 
-        {/* ── Mobile bottom nav — flex child (NOT fixed), so content never hides behind it ── */}
-        <nav className="md:hidden shrink-0 glass-morphism h-16 px-4 flex items-center justify-between border-t border-white/10 z-50">
-          {navItems.map(({ screen, Icon, label, disabled }) => (
+        {/* ── Mobile bottom nav — sticky bottom so it stays visible on body scroll ── */}
+        <nav className="md:hidden sticky bottom-0 z-50 glass-morphism border-t border-white/10">
+          <div className="h-16 px-4 flex items-center justify-between">
+            {navItems.map(({ screen, Icon, label, disabled }) => (
+              <button
+                key={screen}
+                onClick={() => !disabled && setActiveScreen(screen)}
+                disabled={disabled}
+                className={cn(
+                  "flex flex-col items-center gap-1 transition-colors",
+                  activeScreen === screen ? 'text-primary' : 'text-muted-foreground',
+                  disabled && 'opacity-30'
+                )}
+              >
+                <Icon size={22} />
+                <span className="text-[10px] font-medium">{label}</span>
+              </button>
+            ))}
             <button
-              key={screen}
-              onClick={() => !disabled && setActiveScreen(screen)}
-              disabled={disabled}
-              className={cn(
-                "flex flex-col items-center gap-1 transition-colors",
-                activeScreen === screen ? 'text-primary' : 'text-muted-foreground',
-                disabled && 'opacity-30'
-              )}
+              onClick={toggleTheme}
+              className="flex flex-col items-center gap-1 text-muted-foreground transition-colors"
             >
-              <Icon size={22} />
-              <span className="text-[10px] font-medium">{label}</span>
+              {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+              <span className="text-[10px] font-medium">{theme === 'dark' ? t('nav_light') : t('nav_dark')}</span>
             </button>
-          ))}
-          <button
-            onClick={toggleTheme}
-            className="flex flex-col items-center gap-1 text-muted-foreground transition-colors"
-          >
-            {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
-            <span className="text-[10px] font-medium">{theme === 'dark' ? t('nav_light') : t('nav_dark')}</span>
-          </button>
+          </div>
+          <div style={{ height: 'env(safe-area-inset-bottom)' }} />
         </nav>
 
       </div>
