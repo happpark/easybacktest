@@ -221,7 +221,7 @@ function PresetCard({
         onClick={e => { e.stopPropagation(); onLoad(); }}
         className={cn(
           "w-full h-10 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2",
-          expanded ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          expanded ? "opacity-100" : "md:opacity-0 md:group-hover:opacity-100"
         )}
       >
         <Download size={13} />
@@ -324,7 +324,7 @@ export function CommunityScreen({ onLoadPortfolio }: CommunityScreenProps) {
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t('community_preset_section')}</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {PRESET_PORTFOLIOS.map(p => (
             <PresetCard
               key={p.id}

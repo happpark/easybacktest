@@ -166,32 +166,39 @@ export default function AlphaFlowApp() {
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
 
         {/* ── Top header bar (mobile + desktop) ── */}
-        <div className="h-14 px-6 flex items-center justify-end gap-3 border-b border-white/10 shrink-0">
-          {/* Language selector dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all">
-              <span className="text-sm">{lang === 'ko' ? '한국어' : 'English'}</span>
-              <ChevronDown size={13} className="opacity-60" />
-            </button>
-            <div className="absolute right-0 top-full mt-1 w-32 bg-popover border border-border rounded-xl shadow-xl overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
-              {(['ko', 'en'] as const).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => lang !== l && toggleLang()}
-                  className={cn(
-                    "w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors",
-                    lang === l
-                      ? "text-primary font-semibold bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                  )}
-                >
-                  <span>{l === 'ko' ? '🇰🇷' : '🇺🇸'}</span>
-                  <span>{l === 'ko' ? '한국어' : 'English'}</span>
-                </button>
-              ))}
+        <div className="h-14 px-4 md:px-6 flex items-center justify-between gap-3 border-b border-white/10 shrink-0">
+          {/* Brand title — mobile only (desktop shows it in sidebar) */}
+          <button onClick={() => setActiveScreen('input')} className="md:hidden text-left shrink-0">
+            <span className="text-base font-black text-primary text-glow">Easybacktest</span>
+          </button>
+          <div className="hidden md:block" />
+          <div className="flex items-center gap-3">
+            {/* Language selector dropdown */}
+            <div className="relative group">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all">
+                <span className="text-sm">{lang === 'ko' ? '한국어' : 'English'}</span>
+                <ChevronDown size={13} className="opacity-60" />
+              </button>
+              <div className="absolute right-0 top-full mt-1 w-32 bg-popover border border-border rounded-xl shadow-xl overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
+                {(['ko', 'en'] as const).map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => lang !== l && toggleLang()}
+                    className={cn(
+                      "w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors",
+                      lang === l
+                        ? "text-primary font-semibold bg-primary/10"
+                        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    )}
+                  >
+                    <span>{l === 'ko' ? '🇰🇷' : '🇺🇸'}</span>
+                    <span>{l === 'ko' ? '한국어' : 'English'}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+            <AuthButton />
           </div>
-          <AuthButton />
         </div>
 
         {/* Scrollable main — sticky elements inside screens anchor to this */}

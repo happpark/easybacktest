@@ -74,7 +74,7 @@ function ShareModal({ portfolio, userId, sharedId, onClose, onShared, onUnshared
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-popover border border-border rounded-2xl p-6 w-80 flex flex-col gap-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+      <div className="bg-popover border border-border rounded-2xl p-6 w-[min(320px,calc(100vw-2rem))] flex flex-col gap-4 shadow-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-base">{t('share_modal_title')}</h3>
           <button onClick={onClose} className="p-1 text-muted-foreground hover:text-foreground"><X size={16} /></button>
@@ -245,7 +245,7 @@ function PortfolioCard({
         {/* Spacer + date + actions */}
         <div className="flex-1" />
         {!compareMode && !renaming && (
-          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-0.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
             <span className="text-xs text-muted-foreground/60 mr-1.5">{date}</span>
             <button
               onClick={e => { e.stopPropagation(); setRenaming(true); }}
@@ -260,10 +260,6 @@ function PortfolioCard({
               <Trash2 size={13} />
             </button>
           </div>
-        )}
-        {/* Always show date on mobile (no hover) */}
-        {!compareMode && !renaming && (
-          <span className="text-xs text-muted-foreground/50 md:hidden">{date}</span>
         )}
       </div>
 
@@ -375,8 +371,8 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
       </div>
 
       {/* Metrics table */}
-      <div className="glass-morphism rounded-2xl border border-white/5 overflow-hidden">
-        <table className="w-full">
+      <div className="glass-morphism rounded-2xl border border-white/5 overflow-x-auto">
+        <table className="w-full min-w-[360px]">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
               <th className="text-left px-5 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">{t('compare_metric_col')}</th>
