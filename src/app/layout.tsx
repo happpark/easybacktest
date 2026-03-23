@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { LangProvider } from '@/lib/i18n';
-import { PostHogProvider } from '@/lib/posthog/provider';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const viewport: Viewport = {
@@ -52,9 +51,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Easybacktest" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <PostHogProvider>
-          <LangProvider>{children}</LangProvider>
-        </PostHogProvider>
+        <LangProvider>{children}</LangProvider>
         <GoogleAnalytics gaId="G-Q1DRZ7VFVS" />
       </body>
     </html>
