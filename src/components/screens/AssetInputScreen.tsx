@@ -916,8 +916,8 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
               ))}
             </div>
 
-            {/* Preset portfolios — PC only */}
-            <div className="hidden md:flex flex-col gap-2">
+            {/* Preset portfolios */}
+            <div className="flex flex-col gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{t('preset_section_label')}</span>
               <div className="flex gap-2">
                 {PRESET_PORTFOLIOS.map(preset => (
