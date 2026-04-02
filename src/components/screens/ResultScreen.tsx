@@ -93,6 +93,12 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const runningRef = useRef(false);
   const { save: savePortfolio } = useMyPortfolios(user?.id);
 
+  // DCA state
+  const [dcaAmount, setDcaAmount] = useState<number | null>(null);
+  const [dcaCustom, setDcaCustom] = useState('');
+  const [dcaLoading, setDcaLoading] = useState(false);
+  const [dcaResult, setDcaResult] = useState<BacktestOutput | null>(null);
+
   const LOADING_MESSAGES = [
     t('result_loading_step0'),
     t('result_loading_step1'),
@@ -825,6 +831,118 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       <p className="text-sm text-muted-foreground leading-relaxed italic px-1">
         &quot;{backtestResult.aiInsight}&quot;
       </p>
+
+      {/* ── DCA Section ── */}
+      {data && (
+        <div className="glass-morphism rounded-3xl border border-white/8 p-6 flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-base font-bold">💰 {t('dca_section_title')}</span>
+            <span className="text-xs text-muted-foreground">{t('dca_section_desc')}</span>
+          </div>
+
+          {/* Amount presets */}
+          <div className="flex flex-wrap gap-2">
+            {[50, 100, 200, 500].map(amt => (
+              <button
+                key={amt}
+                onClick={() => { setDcaAmount(amt); setDcaCustom(''); }}
+                className={cn(
+                  'px-4 py-2 rounded-xl text-sm font-bold border transition-all',
+                  dcaAmount === amt && !dcaCustom
+                    ? 'bg-primary/20 border-primary/50 text-primary'
+                    : 'border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground'
+                )}
+              >
+                ${amt}<span className="text-xs font-normal opacity-70">{t('dca_monthly_label')}</span>
+              </button>
+            ))}
+            <input
+              type="number"
+              placeholder={t('dca_custom_placeholder')}
+              value={dcaCustom}
+              onChange={e => { setDcaCustom(e.target.value); setDcaAmount(null); }}
+              className="w-32 px-3 py-2 rounded-xl text-sm font-bold border border-white/10 bg-black/30 text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/50"
+            />
+          </div>
+
+          <button
+            onClick={async () => {
+              const amount = dcaCustom ? parseInt(dcaCustom) : dcaAmount;
+              if (!amount || amount <= 0 || !data) return;
+              setDcaLoading(true);
+              setDcaResult(null);
+              try {
+                const res = await fetch('/api/backtest', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ assets: data, rebalancingMonths, dcaMonthlyAmount: amount }),
+                });
+                const result = await res.json();
+                setDcaResult(result);
+              } catch { /* ignore */ } finally {
+                setDcaLoading(false);
+              }
+            }}
+            disabled={dcaLoading || (!dcaAmount && !dcaCustom)}
+            className="h-11 rounded-xl bg-primary/15 border border-primary/30 text-primary text-sm font-bold hover:bg-primary/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {dcaLoading ? t('dca_calculating') : t('dca_calculate')}
+          </button>
+
+          {/* DCA Results */}
+          {dcaResult?.dca_metrics && (
+            <div className="flex flex-col gap-4 animate-fade-in">
+              {/* Key stats */}
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: t('dca_total_invested'), value: `$${dcaResult.dca_metrics.totalInvested.toLocaleString()}` },
+                  { label: t('dca_final_value'), value: `$${Math.round(dcaResult.dca_metrics.finalValue).toLocaleString()}` },
+                  { label: t('dca_profit'), value: `+$${Math.round(dcaResult.dca_metrics.finalValue - dcaResult.dca_metrics.totalInvested).toLocaleString()}`, positive: true },
+                  { label: t('dca_return'), value: `+${dcaResult.dca_metrics.totalReturn}%`, positive: true },
+                ].map(({ label, value, positive }) => (
+                  <div key={label} className="bg-white/5 rounded-2xl p-3 flex flex-col gap-1">
+                    <span className="text-xs text-muted-foreground">{label}</span>
+                    <span className={cn('text-base font-bold', positive && 'text-[#7AE9AB]')}>{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* DCA Chart */}
+              {dcaResult.dca_history && (
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={dcaResult.dca_history} margin={{ top: 4, right: 4, left: 4, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="dcaGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(212,73%,55%)" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="hsl(212,73%,55%)" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="date" hide />
+                      <YAxis hide />
+                      <RechartsTooltip
+                        contentStyle={{ background: '#0B0E14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12 }}
+                        formatter={(value: number, name: string) => [`$${Math.round(value).toLocaleString()}`, name === 'value' ? t('dca_chart_portfolio') : t('dca_chart_cost')]}
+                        labelFormatter={(l: string) => l.substring(0, 7)}
+                      />
+                      <Area type="monotone" dataKey="costBasis" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="4 3" fill="none" dot={false} name="costBasis" />
+                      <Area type="monotone" dataKey="value" stroke="hsl(212,73%,55%)" strokeWidth={2} fill="url(#dcaGrad)" dot={false} name="value" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                  <div className="flex gap-4 justify-center mt-2">
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="w-5 h-0.5 bg-primary/70 inline-block" />{t('dca_chart_portfolio')}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="w-5 h-0.5 bg-slate-400 inline-block border-dashed" />{t('dca_chart_cost')}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Login nudge banner — always visible for non-logged-in users */}
       {!user && (

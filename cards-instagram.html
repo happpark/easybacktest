@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Instagram Cards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #111;
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 0;
+  }
+
+  .card {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* ── CARD 1: Cover ── */
+  .cover {
+    background: linear-gradient(145deg, #0d0d1a 0%, #111128 60%, #0a0a14 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px;
+  }
+  .cover .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #6c6cff;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .cover h1 {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    color: #fff;
+    margin-bottom: 28px;
+  }
+  .cover h1 em { color: #6c6cff; font-style: normal; }
+  .cover .sub {
+    font-size: 20px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 56px;
+  }
+  .cover .sub b { color: #888; }
+  .cover .chips {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 64px;
+  }
+  .chip {
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid;
+  }
+  .chip-blue   { border-color: #6c6cff44; color: #6c6cff; background: #6c6cff11; }
+  .chip-green  { border-color: #3cc87844; color: #3cc878; background: #3cc87811; }
+  .chip-red    { border-color: #ff6b6b44; color: #ff6b6b; background: #ff6b6b11; }
+  .chip-yellow { border-color: #ffb43244; color: #ffb432; background: #ffb43211; }
+  .cover .period {
+    font-size: 13px;
+    color: #333;
+  }
+  .cover .brand {
+    position: absolute;
+    bottom: 44px;
+    right: 52px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2a2a3a;
+    letter-spacing: 1px;
+  }
+  /* decorative circles */
+  .cover::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid #6c6cff0a;
+    top: -100px; right: -100px;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    border: 1px solid #6c6cff0d;
+    bottom: 80px; left: -80px;
+  }
+
+  /* ── STRATEGY CARDS ── */
+  .strat {
+    background: linear-gradient(160deg, #0e0e1c 0%, #111118 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 64px 68px;
+  }
+
+  /* top bar */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 44px;
+  }
+  .slide-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #333;
+  }
+  .strat-tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  /* heading */
+  .strat-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #444;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .strat-title {
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .strat-subtitle {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 44px;
+  }
+
+  /* allocation bar */
+  .alloc-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .alloc-bar {
+    display: flex;
+    height: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    gap: 2px;
+  }
+  .alloc-seg { height: 100%; border-radius: 3px; }
+  .alloc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+  .alloc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #888;
+  }
+  .alloc-dot { width: 8px; height: 8px; border-radius: 2px; }
+  .alloc-pct { font-weight: 700; color: #ccc; }
+
+  /* metrics grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-top: auto;
+  }
+  .metric-box {
+    background: #ffffff06;
+    border: 1px solid #ffffff08;
+    border-radius: 16px;
+    padding: 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .metric-box.highlight {
+    border-color: #6c6cff22;
+    background: #6c6cff08;
+  }
+  .m-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #444;
+    text-transform: uppercase;
+  }
+  .m-value {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .m-desc {
+    font-size: 11px;
+    color: #333;
+    margin-top: 2px;
+  }
+
+  .c-blue   { color: #6c6cff; }
+  .c-red    { color: #ff6b6b; }
+  .c-green  { color: #3cc878; }
+  .c-yellow { color: #ffb432; }
+  .c-gray   { color: #aaa; }
+
+  /* bottom brand */
+  .strat .brand {
+    position: absolute;
+    bottom: 44px;
+    right: 68px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: 1px;
+  }
+
+  /* ── CARD 10: CTA ── */
+  .cta {
+    background: linear-gradient(145deg, #0a0a18 0%, #0d0d22 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px;
+  }
+  .cta .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #6c6cff;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .cta h2 {
+    font-size: 56px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  .cta h2 em { color: #6c6cff; font-style: normal; }
+  .cta p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 56px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: #6c6cff;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 20px 52px;
+    border-radius: 100px;
+    margin-bottom: 80px;
+  }
+  .cta .features {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+  }
+  .feat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .feat-icon { font-size: 28px; }
+  .feat-text { font-size: 13px; color: #444; font-weight: 600; }
+  .cta .brand {
+    position: absolute;
+    bottom: 44px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2a2a3a;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── CARD 1: COVER ── -->
+<div class="card cover">
+  <div class="eyebrow">Portfolio Backtest 2007–2026</div>
+  <h1>유명 포트폴리오<br><em>8가지</em> 전략 비교</h1>
+  <p class="sub">실제 데이터로 백테스트한<br><b>CAGR · MDD · 샤프지수</b> 완전 분석</p>
+  <div class="chips">
+    <span class="chip chip-red">공격형</span>
+    <span class="chip chip-blue">균형형</span>
+    <span class="chip chip-green">방어형</span>
+    <span class="chip chip-yellow">수익형</span>
+  </div>
+  <div class="period">▶ 다음 슬라이드에서 전략별 성과 확인</div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 2: 60/40 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">02 / 10</span>
+    <span class="strat-tag chip-blue">균형형</span>
+  </div>
+  <div class="strat-eyebrow">Classic Portfolio</div>
+  <div class="strat-title">60/40<br>포트폴리오</div>
+  <div class="strat-subtitle">수십 년간 검증된 가장 고전적인 균형 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:60%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:40%;background:#3cc878"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">60%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">40%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-blue">7.66%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-red">-33.94%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.53</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-gray">11.51%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">2.16%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 3: 3-펀드 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">03 / 10</span>
+    <span class="strat-tag chip-blue">균형형</span>
+  </div>
+  <div class="strat-eyebrow">Bogleheads Portfolio</div>
+  <div class="strat-title">3-펀드<br>포트폴리오</div>
+  <div class="strat-subtitle">초보자에게 가장 많이 추천되는 단순 분산 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:50%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:30%;background:#a78bfa"></div>
+    <div class="alloc-seg" style="width:20%;background:#3cc878"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">50%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#a78bfa"></div>글로벌 주식 <span class="alloc-pct">30%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">20%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-blue">8.80%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-yellow">-27.83%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.55</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-gray">13.52%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">2.18%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 4: 올웨더 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">04 / 10</span>
+    <span class="strat-tag chip-green">방어형</span>
+  </div>
+  <div class="strat-eyebrow">Ray Dalio's Portfolio</div>
+  <div class="strat-title">올웨더<br>포트폴리오</div>
+  <div class="strat-subtitle">경기 어떤 상황에서도 버티도록 설계된 레이 달리오 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:30%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:40%;background:#3cc878"></div>
+    <div class="alloc-seg" style="width:15%;background:#22d3ee"></div>
+    <div class="alloc-seg" style="width:15%;background:#ffb432"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">30%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 장기국채 <span class="alloc-pct">40%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#22d3ee"></div>물가연동채 <span class="alloc-pct">15%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#ffb432"></div>원자재 <span class="alloc-pct">15%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-green">6.21%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-yellow">-21.00%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.55</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-green">7.94%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">3.09%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 5: 영구 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">05 / 10</span>
+    <span class="strat-tag chip-green">방어형</span>
+  </div>
+  <div class="strat-eyebrow">Harry Browne's Portfolio</div>
+  <div class="strat-title">영구<br>포트폴리오</div>
+  <div class="strat-subtitle">4가지 자산 25%씩 — 가장 단순하고 강한 방어 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:25%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:25%;background:#3cc878"></div>
+    <div class="alloc-seg" style="width:25%;background:#ffb432"></div>
+    <div class="alloc-seg" style="width:25%;background:#888"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">25%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 장기국채 <span class="alloc-pct">25%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#ffb432"></div>금 <span class="alloc-pct">25%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#888"></div>현금 <span class="alloc-pct">25%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-green">6.81%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-green">-17.14%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.67</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-green">7.23%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">1.34%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 6: 공격형 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">06 / 10</span>
+    <span class="strat-tag chip-red">공격형</span>
+  </div>
+  <div class="strat-eyebrow">Aggressive Growth</div>
+  <div class="strat-title">공격형<br>포트폴리오</div>
+  <div class="strat-subtitle">주식 비중 90% — 20년 이상 장기 투자자를 위한 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:60%;background:#ff6b6b"></div>
+    <div class="alloc-seg" style="width:30%;background:#f97316"></div>
+    <div class="alloc-seg" style="width:10%;background:#3cc878"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#ff6b6b"></div>S&amp;P 500 <span class="alloc-pct">60%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#f97316"></div>글로벌 주식 <span class="alloc-pct">30%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">10%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box" style="border-color:#ff6b6b22;background:#ff6b6b08">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-red">9.81%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-red">-31.19%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.56</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-red">15.26%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">1.91%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 7: 보수형 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">07 / 10</span>
+    <span class="strat-tag chip-green">방어형</span>
+  </div>
+  <div class="strat-eyebrow">Conservative Portfolio</div>
+  <div class="strat-title">보수형<br>포트폴리오</div>
+  <div class="strat-subtitle">원금 보호 최우선 — 은퇴 임박 투자자에게 적합</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:30%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:55%;background:#3cc878"></div>
+    <div class="alloc-seg" style="width:15%;background:#22d3ee"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">30%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">55%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#22d3ee"></div>물가연동채 <span class="alloc-pct">15%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-green">5.81%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-green">-18.49%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.63</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-green">6.12%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-yellow">3.03%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 8: 글로벌 분산 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">08 / 10</span>
+    <span class="strat-tag chip-blue">균형형</span>
+  </div>
+  <div class="strat-eyebrow">Global Multi-Asset</div>
+  <div class="strat-title">글로벌 분산<br>포트폴리오</div>
+  <div class="strat-subtitle">ETF 3개로 전 세계에 분산 — 극도로 단순한 글로벌 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:50%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:40%;background:#3cc878"></div>
+    <div class="alloc-seg" style="width:10%;background:#ffb432"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>전세계 주식 <span class="alloc-pct">50%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">40%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#ffb432"></div>원자재 <span class="alloc-pct">10%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-green">5.57%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-red">-31.41%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.37</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-gray">11.04%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-gray">2.70%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 9: 배당 인컴형 ── -->
+<div class="card strat">
+  <div class="top-bar">
+    <span class="slide-num">09 / 10</span>
+    <span class="strat-tag chip-yellow">수익형</span>
+  </div>
+  <div class="strat-eyebrow">Dividend &amp; Income</div>
+  <div class="strat-title">배당 인컴형<br>포트폴리오</div>
+  <div class="strat-subtitle">정기 배당수익을 꾸준히 받고 싶은 투자자를 위한 전략</div>
+
+  <div class="alloc-label">자산 배분</div>
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:45%;background:#6c6cff"></div>
+    <div class="alloc-seg" style="width:45%;background:#3cc878"></div>
+    <div class="alloc-seg" style="width:10%;background:#22d3ee"></div>
+  </div>
+  <div class="alloc-legend">
+    <div class="alloc-item"><div class="alloc-dot" style="background:#6c6cff"></div>S&amp;P 500 <span class="alloc-pct">45%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#3cc878"></div>미국 채권 <span class="alloc-pct">45%</span></div>
+    <div class="alloc-item"><div class="alloc-dot" style="background:#22d3ee"></div>물가연동채 <span class="alloc-pct">10%</span></div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-box highlight">
+      <div class="m-label">CAGR</div>
+      <div class="m-value c-blue">7.49%</div>
+      <div class="m-desc">연평균 수익률</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">MDD</div>
+      <div class="m-value c-green">-19.77%</div>
+      <div class="m-desc">최대 낙폭</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">Sharpe</div>
+      <div class="m-value c-gray">0.69</div>
+      <div class="m-desc">위험 대비 수익</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">변동성</div>
+      <div class="m-value c-green">8.12%</div>
+      <div class="m-desc">연간 변동성</div>
+    </div>
+    <div class="metric-box">
+      <div class="m-label">배당률</div>
+      <div class="m-value c-yellow">2.62%</div>
+      <div class="m-desc">연간 배당</div>
+    </div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+<!-- ── CARD 10: CTA ── -->
+<div class="card cta">
+  <div class="eyebrow">Try It Yourself</div>
+  <h2>내 포트폴리오<br><em>직접 백테스트</em>해보기</h2>
+  <p>원하는 자산과 비중을 입력하면<br>CAGR · MDD · 샤프지수를 바로 확인</p>
+  <div class="cta-btn">easybacktest.com</div>
+  <div class="features">
+    <div class="feat"><div class="feat-icon">⚡</div><div class="feat-text">무료 사용</div></div>
+    <div class="feat"><div class="feat-icon">📊</div><div class="feat-text">실시간 데이터</div></div>
+    <div class="feat"><div class="feat-icon">🌍</div><div class="feat-text">글로벌 ETF 지원</div></div>
+    <div class="feat"><div class="feat-icon">📱</div><div class="feat-text">모바일 최적화</div></div>
+  </div>
+  <div class="brand">easybacktest.com</div>
+</div>
+
+</body>
+</html>

@@ -21,6 +21,7 @@ const BacktestInputSchema = z.object({
     launch_year: z.string().optional(),
   })),
   rebalancingMonths: z.number().optional(),
+  dcaMonthlyAmount: z.number().optional(),
 });
 export type BacktestInput = z.infer<typeof BacktestInputSchema>;
 
@@ -51,6 +52,13 @@ const BacktestOutputSchema = z.object({
   })),
   history: z.array(z.object({ date: z.string(), value: z.number() })),
   benchmark_history: z.array(z.object({ date: z.string(), value: z.number() })).optional(),
+  dca_history: z.array(z.object({ date: z.string(), value: z.number(), costBasis: z.number() })).optional(),
+  dca_metrics: z.object({
+    totalInvested: z.number(),
+    finalValue: z.number(),
+    totalReturn: z.number(),
+    monthlyAmount: z.number(),
+  }).optional(),
   aiInsight: z.string(),
 });
 export type BacktestOutput = z.infer<typeof BacktestOutputSchema>;
@@ -193,6 +201,69 @@ function computeMetrics(
   };
 }
 
+// ── DCA Simulation ────────────────────────────────────────────────────────────
+
+function runDcaSimulation(
+  tickers: string[],
+  weights: number[],
+  pm: Record<string, Map<string, number>>,
+  dates: string[],
+  monthlyAmount: number,
+) {
+  let assetValues = weights.map(w => w * 1000);
+  let totalInvested = 1000;
+  const n = dates.length;
+
+  const allValues: number[] = [];
+  const allCostBasis: number[] = [];
+
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < tickers.length; j++) {
+      const t = tickers[j];
+      const prev = t === 'CASH' ? 1 : pm[t].get(dates[i - 1])!;
+      const curr = t === 'CASH' ? 1 : pm[t].get(dates[i])!;
+      assetValues[j] *= curr / prev;
+    }
+
+    // Monthly contribution on first trading day of each new month
+    const d0 = new Date(dates[i - 1]);
+    const d1 = new Date(dates[i]);
+    if (d1.getUTCMonth() !== d0.getUTCMonth() || d1.getUTCFullYear() !== d0.getUTCFullYear()) {
+      totalInvested += monthlyAmount;
+      for (let j = 0; j < weights.length; j++) {
+        assetValues[j] += monthlyAmount * weights[j];
+      }
+    }
+
+    allValues.push(assetValues.reduce((a, b) => a + b, 0));
+    allCostBasis.push(totalInvested);
+  }
+
+  const nS = Math.min(allValues.length, 100);
+  const history: { date: string; value: number; costBasis: number }[] = [
+    { date: dates[0], value: 1000, costBasis: 1000 },
+  ];
+  for (let k = 0; k < nS; k++) {
+    const idx = Math.round(k * (allValues.length - 1) / Math.max(nS - 1, 1));
+    history.push({
+      date: dates[idx + 1],
+      value: Math.round(allValues[idx] * 100) / 100,
+      costBasis: allCostBasis[idx],
+    });
+  }
+
+  const finalValue = allValues[allValues.length - 1];
+  return {
+    dca_history: history,
+    dca_metrics: {
+      totalInvested: Math.round(totalInvested),
+      finalValue: Math.round(finalValue * 100) / 100,
+      totalReturn: Math.round(((finalValue - totalInvested) / totalInvested) * 10000) / 100,
+      monthlyAmount,
+    },
+  };
+}
+
 // ── Core backtest ─────────────────────────────────────────────────────────────
 
 export async function runBacktest(input: BacktestInput) {
@@ -295,6 +366,11 @@ export async function runBacktest(input: BacktestInput) {
   }
 
   const fmt = (d: string) => d.substring(0, 7).replace('-', '.');
+
+  const dcaResult = (input.dcaMonthlyAmount && input.dcaMonthlyAmount > 0)
+    ? runDcaSimulation(tickers, weights, pm, dates, input.dcaMonthlyAmount)
+    : {};
+
   return {
     metrics: portMetrics,
     benchmark_metrics: {
@@ -306,6 +382,7 @@ export async function runBacktest(input: BacktestInput) {
     radar,
     history,
     benchmark_history,
+    ...dcaResult,
   };
 }
 
