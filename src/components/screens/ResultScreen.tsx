@@ -94,8 +94,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const { save: savePortfolio } = useMyPortfolios(user?.id);
 
   // DCA state
-  const [dcaAmount, setDcaAmount] = useState<number | null>(null);
-  const [dcaCustom, setDcaCustom] = useState('');
+  const [dcaAmount, setDcaAmount] = useState<number>(0);
   const [dcaLoading, setDcaLoading] = useState(false);
   const [dcaResult, setDcaResult] = useState<BacktestOutput | null>(null);
 
@@ -840,50 +839,56 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             <span className="text-xs text-muted-foreground">{t('dca_section_desc')}</span>
           </div>
 
-          {/* Amount presets — KRW for Korean, USD for English */}
+          {/* Additive amount buttons + running total */}
           {(() => {
             const isKo = lang === 'ko';
             const currency = isKo ? '₩' : '$';
-            const presets = isKo ? [50000, 100000, 200000, 500000] : [50, 100, 200, 500];
-            const fmt = (n: number) => isKo ? n.toLocaleString('ko-KR') : n.toString();
+            const presets = isKo ? [10000, 50000, 100000, 500000, 1000000] : [10, 50, 100, 500, 1000];
+            const fmtBtn = (n: number) => isKo
+              ? (n >= 10000 ? `${n / 10000}만` : n.toLocaleString('ko-KR'))
+              : `${n}`;
+            const fmtTotal = (n: number) => isKo
+              ? `${currency}${n.toLocaleString('ko-KR')}`
+              : `${currency}${n.toLocaleString('en-US')}`;
             return (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {presets.map(amt => (
                   <button
                     key={amt}
-                    onClick={() => { setDcaAmount(amt); setDcaCustom(''); }}
-                    className={cn(
-                      'px-4 py-2 rounded-xl text-sm font-bold border transition-all',
-                      dcaAmount === amt && !dcaCustom
-                        ? 'bg-primary/20 border-primary/50 text-primary'
-                        : 'border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground'
-                    )}
+                    onClick={() => setDcaAmount(prev => prev + amt)}
+                    className="px-3 py-1.5 rounded-xl text-sm font-bold border border-white/10 text-muted-foreground hover:border-primary/50 hover:text-primary transition-all"
                   >
-                    {currency}{fmt(amt)}<span className="text-xs font-normal opacity-70">{t('dca_monthly_label')}</span>
+                    +{fmtBtn(amt)}
                   </button>
                 ))}
-                <input
-                  type="number"
-                  placeholder={isKo ? '직접 입력 (₩)' : 'Custom ($)'}
-                  value={dcaCustom}
-                  onChange={e => { setDcaCustom(e.target.value); setDcaAmount(null); }}
-                  className="w-36 px-3 py-2 rounded-xl text-sm font-bold border border-white/10 bg-black/30 text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/50"
-                />
+                <div className="flex items-center gap-2 ml-auto">
+                  <span className="text-xs text-muted-foreground">{t('dca_amount_label')}</span>
+                  <span className={cn('text-sm font-bold', dcaAmount > 0 ? 'text-primary' : 'text-muted-foreground')}>
+                    {fmtTotal(dcaAmount)}{t('dca_monthly_label')}
+                  </span>
+                  {dcaAmount > 0 && (
+                    <button
+                      onClick={() => { setDcaAmount(0); setDcaResult(null); }}
+                      className="text-xs text-muted-foreground/60 hover:text-muted-foreground border border-white/10 rounded-lg px-2 py-1 transition-colors"
+                    >
+                      {t('dca_reset')}
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })()}
 
           <button
             onClick={async () => {
-              const amount = dcaCustom ? parseInt(dcaCustom) : dcaAmount;
-              if (!amount || amount <= 0 || !data) return;
+              if (!dcaAmount || dcaAmount <= 0 || !data) return;
               setDcaLoading(true);
               setDcaResult(null);
               try {
                 const res = await fetch('/api/backtest', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ assets: data, rebalancingMonths, dcaMonthlyAmount: amount }),
+                  body: JSON.stringify({ assets: data, rebalancingMonths, dcaMonthlyAmount: dcaAmount }),
                 });
                 const result = await res.json();
                 setDcaResult(result);
@@ -891,72 +896,102 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                 setDcaLoading(false);
               }
             }}
-            disabled={dcaLoading || (!dcaAmount && !dcaCustom)}
+            disabled={dcaLoading || dcaAmount <= 0}
             className="h-11 rounded-xl bg-primary/15 border border-primary/30 text-primary text-sm font-bold hover:bg-primary/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {dcaLoading ? t('dca_calculating') : t('dca_calculate')}
           </button>
 
-          {/* DCA Results */}
-          {dcaResult?.dca_metrics && (
-            <div className="flex flex-col gap-4 animate-fade-in">
-              {/* Key stats */}
-              {(() => {
-                const isKo = lang === 'ko';
-                const currency = isKo ? '₩' : '$';
-                const fmtMoney = (n: number) => `${currency}${Math.round(n).toLocaleString(isKo ? 'ko-KR' : 'en-US')}`;
-                const profit = dcaResult.dca_metrics!.finalValue - dcaResult.dca_metrics!.totalInvested;
-                return (
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { label: t('dca_total_invested'), value: fmtMoney(dcaResult.dca_metrics!.totalInvested) },
-                      { label: t('dca_final_value'), value: fmtMoney(dcaResult.dca_metrics!.finalValue) },
-                      { label: t('dca_profit'), value: `+${fmtMoney(profit)}`, positive: true },
-                      { label: t('dca_return'), value: `+${dcaResult.dca_metrics!.totalReturn}%`, positive: true },
-                    ].map(({ label, value, positive }) => (
-                      <div key={label} className="bg-white/5 rounded-2xl p-3 flex flex-col gap-1">
-                        <span className="text-xs text-muted-foreground">{label}</span>
-                        <span className={cn('text-base font-bold', positive && 'text-[#7AE9AB]')}>{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })()}
+          {/* DCA Results — 2-column: chart left, stats right */}
+          {dcaResult?.dca_metrics && dcaResult.dca_history && (() => {
+            const isKo = lang === 'ko';
+            const currency = isKo ? '₩' : '$';
+            const fmtMoney = (n: number) => `${currency}${Math.round(n).toLocaleString(isKo ? 'ko-KR' : 'en-US')}`;
+            const m = dcaResult.dca_metrics!;
 
-              {/* DCA Chart */}
-              {dcaResult.dca_history && (
-                <div className="h-48">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={dcaResult.dca_history} margin={{ top: 4, right: 4, left: 4, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="dcaGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(212,73%,55%)" stopOpacity={0.25} />
-                          <stop offset="95%" stopColor="hsl(212,73%,55%)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="date" hide />
-                      <YAxis hide />
-                      <RechartsTooltip
-                        contentStyle={{ background: '#0B0E14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12 }}
-                        formatter={(value: number, name: string) => [`$${Math.round(value).toLocaleString()}`, name === 'value' ? t('dca_chart_portfolio') : t('dca_chart_cost')]}
-                        labelFormatter={(l: string) => l.substring(0, 7)}
-                      />
-                      <Area type="monotone" dataKey="costBasis" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="4 3" fill="none" dot={false} name="costBasis" />
-                      <Area type="monotone" dataKey="value" stroke="hsl(212,73%,55%)" strokeWidth={2} fill="url(#dcaGrad)" dot={false} name="value" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                  <div className="flex gap-4 justify-center mt-2">
+            // Compute year ticks for x-axis
+            const hist = dcaResult.dca_history!;
+            const startYear = parseInt(hist[0].date.substring(0, 4));
+            const endYear = parseInt(hist[hist.length - 1].date.substring(0, 4));
+            const totalYears = endYear - startYear;
+            const step = totalYears < 8 ? 1 : totalYears < 15 ? 2 : 3;
+            const yearTicks: string[] = [];
+            for (let y = startYear; y <= endYear; y += step) {
+              const pt = hist.find(d => parseInt(d.date.substring(0, 4)) === y);
+              if (pt) yearTicks.push(pt.date);
+            }
+
+            return (
+              <div className="flex gap-3 animate-fade-in">
+                {/* Chart — left half */}
+                <div className="flex-1 min-w-0 flex flex-col gap-2">
+                  <div className="h-44">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={hist} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="dcaGrad2" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(212,73%,55%)" stopOpacity={0.2} />
+                            <stop offset="95%" stopColor="hsl(212,73%,55%)" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <XAxis
+                          dataKey="date"
+                          ticks={yearTicks}
+                          tickFormatter={(v: string) => v.substring(0, 4)}
+                          tick={{ fill: '#64748b', fontSize: 9 }}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis hide />
+                        <RechartsTooltip
+                          contentStyle={{ background: '#0B0E14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 11 }}
+                          formatter={(value: number, name: string) => {
+                            const label = name === 'value' ? t('dca_chart_portfolio') : name === 'costBasis' ? t('dca_chart_cost') : t('dca_chart_spy');
+                            return [`${currency}${Math.round(value).toLocaleString()}`, label];
+                          }}
+                          labelFormatter={(l: string) => l.substring(0, 7)}
+                        />
+                        <Area type="monotone" dataKey="spyValue" stroke="#f59e0b" strokeWidth={1.5} fill="none" dot={false} name="spyValue" />
+                        <Area type="monotone" dataKey="costBasis" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="4 3" fill="none" dot={false} name="costBasis" />
+                        <Area type="monotone" dataKey="value" stroke="hsl(212,73%,55%)" strokeWidth={2} fill="url(#dcaGrad2)" dot={false} name="value" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex gap-3 justify-center">
                     <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="w-5 h-0.5 bg-primary/70 inline-block" />{t('dca_chart_portfolio')}
+                      <span className="w-4 h-0.5 bg-primary/70 inline-block" />{t('dca_chart_portfolio')}
                     </span>
                     <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="w-5 h-0.5 bg-slate-400 inline-block border-dashed" />{t('dca_chart_cost')}
+                      <span className="w-4 h-0.5 bg-amber-400/70 inline-block" />{t('dca_chart_spy')}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="w-4 border-t border-dashed border-slate-400 inline-block" />{t('dca_chart_cost')}
                     </span>
                   </div>
                 </div>
-              )}
-            </div>
-          )}
+
+                {/* Stats — right half */}
+                <div className="w-[46%] shrink-0 flex flex-col gap-2">
+                  {[
+                    { label: t('dca_period'), value: `${m.years}${isKo ? '년' : 'yr'}` },
+                    { label: t('dca_cagr'), value: `+${m.cagr}%`, positive: true },
+                    { label: t('dca_mdd'), value: `${m.mdd}%`, negative: true },
+                    { label: t('dca_total_invested'), value: fmtMoney(m.totalInvested) },
+                    { label: t('dca_final_value'), value: fmtMoney(m.finalValue), positive: true },
+                  ].map(({ label, value, positive, negative }) => (
+                    <div key={label} className="bg-white/5 rounded-xl px-3 py-2 flex flex-col gap-0.5">
+                      <span className="text-[10px] text-muted-foreground">{label}</span>
+                      <span className={cn(
+                        'text-sm font-bold',
+                        positive && 'text-[#7AE9AB]',
+                        negative && 'text-rose-400',
+                      )}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 

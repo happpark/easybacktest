@@ -52,12 +52,15 @@ const BacktestOutputSchema = z.object({
   })),
   history: z.array(z.object({ date: z.string(), value: z.number() })),
   benchmark_history: z.array(z.object({ date: z.string(), value: z.number() })).optional(),
-  dca_history: z.array(z.object({ date: z.string(), value: z.number(), costBasis: z.number() })).optional(),
+  dca_history: z.array(z.object({ date: z.string(), value: z.number(), costBasis: z.number(), spyValue: z.number().optional() })).optional(),
   dca_metrics: z.object({
     totalInvested: z.number(),
     finalValue: z.number(),
     totalReturn: z.number(),
     monthlyAmount: z.number(),
+    cagr: z.number(),
+    mdd: z.number(),
+    years: z.number(),
   }).optional(),
   aiInsight: z.string(),
 });
@@ -211,11 +214,13 @@ function runDcaSimulation(
   monthlyAmount: number,
 ) {
   let assetValues = weights.map(w => w * 1000);
+  let spyValue = 1000;
   let totalInvested = 1000;
   const n = dates.length;
 
   const allValues: number[] = [];
   const allCostBasis: number[] = [];
+  const allSpyValues: number[] = [];
 
   for (let i = 1; i < n; i++) {
     for (let j = 0; j < tickers.length; j++) {
@@ -225,6 +230,11 @@ function runDcaSimulation(
       assetValues[j] *= curr / prev;
     }
 
+    // Update SPY DCA value
+    const spyPrev = pm['SPY'].get(dates[i - 1])!;
+    const spyCurr = pm['SPY'].get(dates[i])!;
+    spyValue *= spyCurr / spyPrev;
+
     // Monthly contribution on first trading day of each new month
     const d0 = new Date(dates[i - 1]);
     const d1 = new Date(dates[i]);
@@ -233,15 +243,31 @@ function runDcaSimulation(
       for (let j = 0; j < weights.length; j++) {
         assetValues[j] += monthlyAmount * weights[j];
       }
+      spyValue += monthlyAmount;
     }
 
     allValues.push(assetValues.reduce((a, b) => a + b, 0));
     allCostBasis.push(totalInvested);
+    allSpyValues.push(spyValue);
   }
 
-  const nS = Math.min(allValues.length, 100);
-  const history: { date: string; value: number; costBasis: number }[] = [
-    { date: dates[0], value: 1000, costBasis: 1000 },
+  // MDD
+  let peak = allValues[0] ?? 1000;
+  let mdd = 0;
+  for (const v of allValues) {
+    if (v > peak) peak = v;
+    const dd = (v - peak) / peak;
+    if (dd < mdd) mdd = dd;
+  }
+
+  // Years and CAGR
+  const years = (new Date(dates[n - 1]).getTime() - new Date(dates[0]).getTime()) / (365.25 * 86400000);
+  const finalValue = allValues[allValues.length - 1] ?? 1000;
+  const cagr = years > 0 ? (Math.pow(finalValue / totalInvested, 1 / years) - 1) * 100 : 0;
+
+  const nS = Math.min(allValues.length, 150);
+  const history: { date: string; value: number; costBasis: number; spyValue: number }[] = [
+    { date: dates[0], value: 1000, costBasis: 1000, spyValue: 1000 },
   ];
   for (let k = 0; k < nS; k++) {
     const idx = Math.round(k * (allValues.length - 1) / Math.max(nS - 1, 1));
@@ -249,10 +275,10 @@ function runDcaSimulation(
       date: dates[idx + 1],
       value: Math.round(allValues[idx] * 100) / 100,
       costBasis: allCostBasis[idx],
+      spyValue: Math.round(allSpyValues[idx] * 100) / 100,
     });
   }
 
-  const finalValue = allValues[allValues.length - 1];
   return {
     dca_history: history,
     dca_metrics: {
@@ -260,6 +286,9 @@ function runDcaSimulation(
       finalValue: Math.round(finalValue * 100) / 100,
       totalReturn: Math.round(((finalValue - totalInvested) / totalInvested) * 10000) / 100,
       monthlyAmount,
+      cagr: Math.round(cagr * 100) / 100,
+      mdd: Math.round(mdd * 10000) / 100,
+      years: Math.round(years * 10) / 10,
     },
   };
 }
