@@ -840,30 +840,38 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             <span className="text-xs text-muted-foreground">{t('dca_section_desc')}</span>
           </div>
 
-          {/* Amount presets */}
-          <div className="flex flex-wrap gap-2">
-            {[50, 100, 200, 500].map(amt => (
-              <button
-                key={amt}
-                onClick={() => { setDcaAmount(amt); setDcaCustom(''); }}
-                className={cn(
-                  'px-4 py-2 rounded-xl text-sm font-bold border transition-all',
-                  dcaAmount === amt && !dcaCustom
-                    ? 'bg-primary/20 border-primary/50 text-primary'
-                    : 'border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground'
-                )}
-              >
-                ${amt}<span className="text-xs font-normal opacity-70">{t('dca_monthly_label')}</span>
-              </button>
-            ))}
-            <input
-              type="number"
-              placeholder={t('dca_custom_placeholder')}
-              value={dcaCustom}
-              onChange={e => { setDcaCustom(e.target.value); setDcaAmount(null); }}
-              className="w-32 px-3 py-2 rounded-xl text-sm font-bold border border-white/10 bg-black/30 text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/50"
-            />
-          </div>
+          {/* Amount presets — KRW for Korean, USD for English */}
+          {(() => {
+            const isKo = lang === 'ko';
+            const currency = isKo ? '₩' : '$';
+            const presets = isKo ? [50000, 100000, 200000, 500000] : [50, 100, 200, 500];
+            const fmt = (n: number) => isKo ? n.toLocaleString('ko-KR') : n.toString();
+            return (
+              <div className="flex flex-wrap gap-2">
+                {presets.map(amt => (
+                  <button
+                    key={amt}
+                    onClick={() => { setDcaAmount(amt); setDcaCustom(''); }}
+                    className={cn(
+                      'px-4 py-2 rounded-xl text-sm font-bold border transition-all',
+                      dcaAmount === amt && !dcaCustom
+                        ? 'bg-primary/20 border-primary/50 text-primary'
+                        : 'border-white/10 text-muted-foreground hover:border-white/25 hover:text-foreground'
+                    )}
+                  >
+                    {currency}{fmt(amt)}<span className="text-xs font-normal opacity-70">{t('dca_monthly_label')}</span>
+                  </button>
+                ))}
+                <input
+                  type="number"
+                  placeholder={isKo ? '직접 입력 (₩)' : 'Custom ($)'}
+                  value={dcaCustom}
+                  onChange={e => { setDcaCustom(e.target.value); setDcaAmount(null); }}
+                  className="w-36 px-3 py-2 rounded-xl text-sm font-bold border border-white/10 bg-black/30 text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-primary/50"
+                />
+              </div>
+            );
+          })()}
 
           <button
             onClick={async () => {
@@ -893,19 +901,27 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           {dcaResult?.dca_metrics && (
             <div className="flex flex-col gap-4 animate-fade-in">
               {/* Key stats */}
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: t('dca_total_invested'), value: `$${dcaResult.dca_metrics.totalInvested.toLocaleString()}` },
-                  { label: t('dca_final_value'), value: `$${Math.round(dcaResult.dca_metrics.finalValue).toLocaleString()}` },
-                  { label: t('dca_profit'), value: `+$${Math.round(dcaResult.dca_metrics.finalValue - dcaResult.dca_metrics.totalInvested).toLocaleString()}`, positive: true },
-                  { label: t('dca_return'), value: `+${dcaResult.dca_metrics.totalReturn}%`, positive: true },
-                ].map(({ label, value, positive }) => (
-                  <div key={label} className="bg-white/5 rounded-2xl p-3 flex flex-col gap-1">
-                    <span className="text-xs text-muted-foreground">{label}</span>
-                    <span className={cn('text-base font-bold', positive && 'text-[#7AE9AB]')}>{value}</span>
+              {(() => {
+                const isKo = lang === 'ko';
+                const currency = isKo ? '₩' : '$';
+                const fmtMoney = (n: number) => `${currency}${Math.round(n).toLocaleString(isKo ? 'ko-KR' : 'en-US')}`;
+                const profit = dcaResult.dca_metrics!.finalValue - dcaResult.dca_metrics!.totalInvested;
+                return (
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { label: t('dca_total_invested'), value: fmtMoney(dcaResult.dca_metrics!.totalInvested) },
+                      { label: t('dca_final_value'), value: fmtMoney(dcaResult.dca_metrics!.finalValue) },
+                      { label: t('dca_profit'), value: `+${fmtMoney(profit)}`, positive: true },
+                      { label: t('dca_return'), value: `+${dcaResult.dca_metrics!.totalReturn}%`, positive: true },
+                    ].map(({ label, value, positive }) => (
+                      <div key={label} className="bg-white/5 rounded-2xl p-3 flex flex-col gap-1">
+                        <span className="text-xs text-muted-foreground">{label}</span>
+                        <span className={cn('text-base font-bold', positive && 'text-[#7AE9AB]')}>{value}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                );
+              })()}
 
               {/* DCA Chart */}
               {dcaResult.dca_history && (
