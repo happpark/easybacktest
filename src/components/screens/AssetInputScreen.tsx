@@ -732,7 +732,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                 >
                   <Upload size={18} /> {t('landing_upload_button')}
                 </button>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-primary/20 bg-primary/5">
+                <div className="hidden md:flex items-center gap-3 px-4 py-3 rounded-2xl border border-primary/20 bg-primary/5">
                   <div className="flex items-center gap-1.5">
                     <kbd className="px-2 py-1 rounded bg-muted border border-border text-xs font-mono font-bold">⌘V</kbd>
                     <span className="text-xs text-muted-foreground">/</span>
@@ -762,6 +762,70 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
             </button>
           </div>
         </div>
+
+        {/* ── Sample portfolios ── */}
+        <div className="flex flex-col gap-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {lang === 'ko' ? '예시로 바로 돌려보기' : 'Try a sample'}
+          </p>
+          <div className="flex flex-col gap-2">
+            {[
+              {
+                label: lang === 'ko' ? '올웨더 포트폴리오' : 'All Weather',
+                emoji: '🌦️',
+                desc: lang === 'ko' ? 'VTI · TLT · IEF · GLD · DBC' : 'VTI · TLT · IEF · GLD · DBC',
+                assets: [
+                  { ticker: 'VTI', weight: 30 },
+                  { ticker: 'TLT', weight: 40 },
+                  { ticker: 'IEF', weight: 15 },
+                  { ticker: 'GLD', weight: 7.5 },
+                  { ticker: 'DBC', weight: 7.5 },
+                ],
+              },
+              {
+                label: lang === 'ko' ? '나스닥 집중형' : 'Nasdaq Focus',
+                emoji: '🚀',
+                desc: lang === 'ko' ? 'QQQ 60% · SCHD 40%' : 'QQQ 60% · SCHD 40%',
+                assets: [
+                  { ticker: 'QQQ', weight: 60 },
+                  { ticker: 'SCHD', weight: 40 },
+                ],
+              },
+              {
+                label: lang === 'ko' ? '배당 안정형' : 'Dividend Stable',
+                emoji: '💰',
+                desc: lang === 'ko' ? 'SCHD 50% · TLT 30% · VNQ 20%' : 'SCHD 50% · TLT 30% · VNQ 20%',
+                assets: [
+                  { ticker: 'SCHD', weight: 50 },
+                  { ticker: 'TLT', weight: 30 },
+                  { ticker: 'VNQ', weight: 20 },
+                ],
+              },
+            ].map(({ label, emoji, desc, assets }) => (
+              <button
+                key={label}
+                onClick={() => onBacktest(
+                  assets.map(a => ({
+                    ...a,
+                    launch_year: ETF_DATA.find(e => e.ticker === a.ticker)?.launch_year || 'Unknown',
+                  })),
+                  12
+                )}
+                className="glass-morphism flex items-center justify-between px-4 py-3 rounded-2xl border border-white/5 hover:border-primary/30 hover:bg-primary/5 transition-all text-left group"
+              >
+                <span className="flex items-center gap-3">
+                  <span className="text-xl">{emoji}</span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold">{label}</span>
+                    <span className="text-xs text-muted-foreground">{desc}</span>
+                  </span>
+                </span>
+                <span className="text-muted-foreground group-hover:text-primary transition-colors text-sm">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {/* ── Parse-portfolio confirmation dialog (landing) ─────────────────── */}
@@ -824,11 +888,12 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
     <>
     <div className="flex flex-col animate-fade-in">
 
+      <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+
       {/* ── Sticky header: always visible while scrolling ── */}
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md px-6 pt-5 pb-3 flex flex-col gap-3 border-b border-white/5">
 
         {/* Header row: back + input type toggle + mode toggle */}
-        <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
         <div className="flex items-center gap-2">
           {/* Back to landing */}
           <button onClick={() => setView('landing')} className="shrink-0 p-2 -ml-1 text-muted-foreground hover:text-foreground transition-colors" title={lang === 'ko' ? '처음으로' : 'Back to Home'}>
