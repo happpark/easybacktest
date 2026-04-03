@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import type { ScenarioKey, ScenarioResult, ScenarioPoint } from '@/ai/flows/scenario';
@@ -25,19 +25,17 @@ const PEAK_DATES: Record<ScenarioKey, string> = {
   '2022': '2022-01-03',
 };
 
-// Week column: Monday date + 5 slots (Mon–Fri)
 interface WeekCol { monday: string; days: (ScenarioPoint | null)[] }
 
 function toWeekColumns(points: ScenarioPoint[]): WeekCol[] {
   const map = new Map<string, (ScenarioPoint | null)[]>();
   for (const p of points) {
     const d = new Date(p.date + 'T00:00:00Z');
-    const dow = d.getUTCDay(); // 0=Sun,1=Mon,...6=Sat
-    const monOffset = dow === 0 ? -6 : 1 - dow; // days to subtract to reach Monday
-    const mondayMs = d.getTime() + monOffset * 86400000;
-    const key = new Date(mondayMs).toISOString().split('T')[0];
+    const dow = d.getUTCDay();
+    const monOffset = dow === 0 ? -6 : 1 - dow;
+    const key = new Date(d.getTime() + monOffset * 86400000).toISOString().split('T')[0];
     if (!map.has(key)) map.set(key, [null, null, null, null, null]);
-    const slot = dow === 0 ? 6 : dow - 1; // Mon=0..Fri=4
+    const slot = dow === 0 ? 6 : dow - 1;
     if (slot < 5) map.get(key)![slot] = p;
   }
   return [...map.entries()]
@@ -56,16 +54,16 @@ function pctToBg(pct: number): string {
   return 'rgba(185,28,28,0.85)';
 }
 
-function pctToText(pct: number): string {
-  return pct >= 0 ? '#86efac' : '#fca5a5';
-}
+function pctToText(pct: number): string { return pct >= 0 ? '#86efac' : '#fca5a5'; }
 
-const MONTH_SHORT_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-const MONTH_SHORT_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const MONTH_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-const CELL = 11;   // px
-const GAP  = 2;    // px
+const CELL = 14;
+const GAP  = 3;
 const STEP = CELL + GAP;
+const WEEKS_PER_PAGE = 28;   // ~7 months visible at once
+const PAGE_JUMP      = 8;    // arrow moves by 8 weeks (~2 months)
 
 export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props) {
   const { t, lang } = useLang();
@@ -73,6 +71,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const [result, setResult]     = useState<ScenarioResult | null>(null);
   const [loading, setLoading]   = useState(false);
   const [hovered, setHovered]   = useState<ScenarioPoint | null>(null);
+  const [weekOffset, setWeekOffset] = useState(0);
   const loadingRef = useRef(false);
 
   const availableScenarios = useMemo((): ScenarioKey[] => {
@@ -86,7 +85,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const loadScenario = useCallback(async (key: ScenarioKey) => {
     if (loadingRef.current) return;
     loadingRef.current = true;
-    setSelected(key); setResult(null); setHovered(null); setLoading(true);
+    setSelected(key); setResult(null); setHovered(null); setWeekOffset(0); setLoading(true);
     try {
       const res = await fetch('/api/scenario', {
         method: 'POST',
@@ -100,36 +99,54 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const weeks = useMemo(() => result?.available ? toWeekColumns(result.points) : [], [result]);
   const peakDate = selected ? PEAK_DATES[selected] : null;
   const meta = selected ? SCENARIO_META[selected] : null;
-  const monthNames = lang === 'ko' ? MONTH_SHORT_KO : MONTH_SHORT_EN;
+  const monthNames = lang === 'ko' ? MONTH_KO : MONTH_EN;
 
-  // Build month label positions: first week of each new month
+  // Visible slice
+  const visibleWeeks = weeks.slice(weekOffset, weekOffset + WEEKS_PER_PAGE);
+  const canBack = weekOffset > 0;
+  const canNext = weekOffset + WEEKS_PER_PAGE < weeks.length;
+
+  // Range label for current view
+  const rangeLabel = useMemo(() => {
+    if (!visibleWeeks.length) return '';
+    const first = new Date(visibleWeeks[0].monday + 'T00:00:00Z');
+    const last  = new Date(visibleWeeks[visibleWeeks.length - 1].monday + 'T00:00:00Z');
+    const fmt = (d: Date) => `${monthNames[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    return `${fmt(first)} – ${fmt(last)}`;
+  }, [visibleWeeks, monthNames]);
+
+  // Month labels within the visible slice
   const monthLabels = useMemo(() => {
     const labels: { colIdx: number; label: string }[] = [];
     let lastMonth = '';
-    weeks.forEach(({ monday }, i) => {
+    visibleWeeks.forEach(({ monday }, i) => {
       const mo = monday.substring(0, 7);
       if (mo !== lastMonth) {
         const d = new Date(monday + 'T00:00:00Z');
-        labels.push({ colIdx: i, label: monthNames[d.getUTCMonth()] + (d.getUTCMonth() === 0 ? ` ${d.getUTCFullYear()}` : '') });
+        labels.push({
+          colIdx: i,
+          label: monthNames[d.getUTCMonth()] + (d.getUTCMonth() === 0 || i === 0 ? ` ${d.getUTCFullYear()}` : ''),
+        });
         lastMonth = mo;
       }
     });
     return labels;
-  }, [weeks, monthNames]);
+  }, [visibleWeeks, monthNames]);
 
-  const totalWidth = weeks.length * STEP - GAP;
-  const gridHeight = 5 * STEP - GAP; // Mon–Fri
+  const gridWidth  = visibleWeeks.length * STEP - GAP;
+  const gridHeight = 5 * STEP - GAP;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg bg-[#0B0E14] border border-white/10 rounded-t-3xl md:rounded-3xl flex flex-col max-h-[92dvh]">
+    /* Always centered overlay */
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-xl bg-[#0B0E14] border border-white/10 rounded-3xl flex flex-col max-h-[90dvh] overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-4 shrink-0 border-b border-white/5">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 border-b border-white/5">
           <div className="flex items-center gap-3">
             {selected && (
               <button onClick={() => { setSelected(null); setResult(null); setHovered(null); }}
-                className="text-muted-foreground hover:text-foreground transition-colors text-sm px-1">←</button>
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm">←</button>
             )}
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-bold">
@@ -147,7 +164,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
 
         {/* Scenario picker */}
         {!selected && (
-          <div className="px-5 py-5 flex flex-col gap-3">
+          <div className="px-6 py-5 flex flex-col gap-3 overflow-y-auto">
             {(['2008', '2020', '2022'] as ScenarioKey[]).map(key => {
               const m = SCENARIO_META[key];
               const available = availableScenarios.includes(key);
@@ -156,7 +173,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                   onClick={() => available && loadScenario(key)}
                   disabled={!available}
                   className={cn(
-                    'flex items-center justify-between px-4 py-4 rounded-2xl border text-left transition-all',
+                    'flex items-center justify-between px-5 py-4 rounded-2xl border text-left transition-all',
                     available ? 'border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/15'
                               : 'border-white/4 bg-white/[0.01] opacity-35 cursor-not-allowed'
                   )}>
@@ -167,7 +184,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                       {!available && (lang === 'ko' ? ' · 백테스트 기간 외' : ' · outside backtest period')}
                     </span>
                   </div>
-                  {available && <span className="text-muted-foreground/30 text-sm">›</span>}
+                  {available && <span className="text-muted-foreground/30 text-lg">›</span>}
                 </button>
               );
             })}
@@ -176,7 +193,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
 
         {/* Loading */}
         {selected && loading && (
-          <div className="flex-1 flex items-center justify-center py-16">
+          <div className="flex-1 flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-3">
               <div className="w-7 h-7 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
               <span className="text-xs text-muted-foreground">{t('scenario_loading')}</span>
@@ -184,17 +201,15 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
           </div>
         )}
 
-        {/* GitHub-style heatmap */}
+        {/* Heatmap */}
         {selected && !loading && result?.available && (
-          <div className="flex flex-col gap-4 px-5 py-4 overflow-hidden">
+          <div className="flex flex-col gap-4 px-6 py-5 overflow-hidden">
 
             {/* Tooltip bar */}
             <div className={cn(
-              'px-4 py-2.5 rounded-xl border flex items-center justify-between transition-all duration-150 shrink-0',
+              'px-4 py-3 rounded-xl border flex items-center justify-between transition-all duration-150',
               hovered
-                ? hovered.pctFromPeak >= 0
-                  ? 'bg-green-500/10 border-green-500/20'
-                  : 'bg-rose-500/10 border-rose-500/20'
+                ? hovered.pctFromPeak >= 0 ? 'bg-green-500/10 border-green-500/20' : 'bg-rose-500/10 border-rose-500/20'
                 : 'border-white/5 bg-white/[0.02]'
             )}>
               {hovered ? (
@@ -208,42 +223,59 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                     )}
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-sm font-black tabular-nums" style={{ color: pctToText(hovered.pctFromPeak) }}>
+                    <span className="text-base font-black tabular-nums" style={{ color: pctToText(hovered.pctFromPeak) }}>
                       {hovered.pctFromPeak >= 0 ? '+' : ''}{hovered.pctFromPeak.toFixed(2)}%
                     </span>
-                    <span className="text-xs text-muted-foreground tabular-nums">
-                      ${Math.round(hovered.value).toLocaleString()}
-                    </span>
+                    <span className="text-xs text-muted-foreground tabular-nums">${Math.round(hovered.value).toLocaleString()}</span>
                   </div>
                 </>
               ) : (
                 <span className="text-xs text-muted-foreground/40 w-full text-center">
-                  {lang === 'ko' ? '날짜에 커서를 올리거나 탭하세요' : 'Hover or tap a date'}
+                  {lang === 'ko' ? '날짜에 커서를 올리거나 탭하세요' : 'Hover or tap a date to see returns'}
                 </span>
               )}
             </div>
 
-            {/* Day-of-week labels + heatmap grid */}
-            <div className="flex gap-2 overflow-hidden">
+            {/* Navigation row */}
+            <div className="flex items-center justify-between shrink-0">
+              <button
+                onClick={() => setWeekOffset(o => Math.max(0, o - PAGE_JUMP))}
+                disabled={!canBack}
+                className="p-1.5 rounded-lg border border-white/10 text-muted-foreground hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span className="text-xs text-muted-foreground/60 font-medium">{rangeLabel}</span>
+              <button
+                onClick={() => setWeekOffset(o => Math.min(weeks.length - WEEKS_PER_PAGE, o + PAGE_JUMP))}
+                disabled={!canNext}
+                className="p-1.5 rounded-lg border border-white/10 text-muted-foreground hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+
+            {/* DOW labels + fixed-width grid (no scrollbar) */}
+            <div className="flex gap-2">
               {/* DOW labels */}
-              <div className="flex flex-col shrink-0" style={{ gap: GAP, paddingTop: 16 }}>
+              <div className="flex flex-col shrink-0" style={{ gap: GAP, paddingTop: 18 }}>
                 {(lang === 'ko' ? ['월','수','금'] : ['M','W','F']).map((label, i) => (
                   <div key={label}
-                    className="text-[9px] text-muted-foreground/40 flex items-center justify-end"
+                    className="text-[9px] text-muted-foreground/40 flex items-center justify-end pr-1"
                     style={{ height: CELL, marginTop: i === 0 ? 0 : CELL + GAP }}>
                     {label}
                   </div>
                 ))}
               </div>
 
-              {/* Scrollable grid */}
-              <div className="overflow-x-auto flex-1">
-                <div style={{ width: totalWidth, userSelect: 'none' }}>
-                  {/* Month labels row */}
-                  <div className="relative" style={{ height: 16, marginBottom: 4 }}>
+              {/* Fixed grid — no overflow, no scrollbar */}
+              <div className="flex-1 overflow-hidden">
+                <div style={{ width: gridWidth }}>
+                  {/* Month labels */}
+                  <div className="relative" style={{ height: 18, marginBottom: 2 }}>
                     {monthLabels.map(({ colIdx, label }) => (
                       <span key={colIdx}
-                        className="absolute text-[9px] text-muted-foreground/50 font-medium"
+                        className="absolute text-[9px] text-muted-foreground/50 font-medium whitespace-nowrap"
                         style={{ left: colIdx * STEP }}>
                         {label}
                       </span>
@@ -252,33 +284,29 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
 
                   {/* Week columns */}
                   <div style={{ display: 'flex', gap: GAP, height: gridHeight }}>
-                    {weeks.map(({ monday, days }) => (
+                    {visibleWeeks.map(({ monday, days }) => (
                       <div key={monday} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
-                        {days.map((point, dayIdx) => {
-                          const isPeak = point?.date === peakDate;
-                          const isHovered = hovered?.date === point?.date;
+                        {days.map((point, di) => {
+                          const isPeak  = point?.date === peakDate;
+                          const isHov   = hovered?.date === point?.date;
                           return (
-                            <div
-                              key={dayIdx}
+                            <div key={di}
                               onMouseEnter={() => point && setHovered(point)}
                               onMouseLeave={() => setHovered(null)}
                               onClick={() => point && setHovered(h => h?.date === point.date ? null : point)}
                               style={{
-                                width: CELL,
-                                height: CELL,
-                                borderRadius: 2,
+                                width: CELL, height: CELL,
+                                borderRadius: 3,
                                 background: isPeak
-                                  ? 'rgba(99,179,237,0.5)'
-                                  : point
-                                    ? pctToBg(point.pctFromPeak)
-                                    : 'rgba(255,255,255,0.04)',
+                                  ? 'rgba(99,179,237,0.45)'
+                                  : point ? pctToBg(point.pctFromPeak) : 'rgba(255,255,255,0.04)',
                                 cursor: point ? 'pointer' : 'default',
-                                outline: isPeak ? '1.5px solid rgba(99,179,237,0.8)' : isHovered ? '1px solid rgba(255,255,255,0.5)' : 'none',
+                                outline: isPeak ? '2px solid rgba(99,179,237,0.7)' : isHov ? '1.5px solid rgba(255,255,255,0.55)' : 'none',
                                 outlineOffset: isPeak ? 1 : 0,
-                                transform: isHovered ? 'scale(1.5)' : 'scale(1)',
-                                transition: 'transform 0.1s, outline 0.1s',
-                                zIndex: isHovered ? 10 : 1,
+                                transform: isHov ? 'scale(1.5)' : 'scale(1)',
+                                transition: 'transform 0.08s',
                                 position: 'relative',
+                                zIndex: isHov ? 10 : 1,
                               }}
                             />
                           );
@@ -290,19 +318,29 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
               </div>
             </div>
 
-            {/* Legend */}
+            {/* Progress dots + legend */}
             <div className="flex items-center justify-between shrink-0">
+              {/* Progress dots */}
               <div className="flex items-center gap-1">
-                <span className="text-[9px] text-muted-foreground/40 mr-1">{lang === 'ko' ? '낮음' : 'Less'}</span>
-                {['rgba(185,28,28,0.85)','rgba(220,38,38,0.62)','rgba(239,68,68,0.42)','rgba(248,113,113,0.22)',
-                  'rgba(74,222,128,0.14)','rgba(74,222,128,0.30)','rgba(74,222,128,0.52)','rgba(74,222,128,0.75)'].map((bg, i) => (
-                  <div key={i} style={{ width: CELL, height: CELL, borderRadius: 2, background: bg }} />
-                ))}
-                <span className="text-[9px] text-muted-foreground/40 ml-1">{lang === 'ko' ? '높음' : 'More'}</span>
+                {Array.from({ length: Math.ceil((weeks.length - WEEKS_PER_PAGE) / PAGE_JUMP) + 1 }).map((_, i) => {
+                  const active = Math.floor(weekOffset / PAGE_JUMP) === i;
+                  return (
+                    <button key={i}
+                      onClick={() => setWeekOffset(Math.min(i * PAGE_JUMP, weeks.length - WEEKS_PER_PAGE))}
+                      className={cn('rounded-full transition-all', active ? 'w-3 h-1.5 bg-primary/70' : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30')}
+                    />
+                  );
+                })}
               </div>
-              <span className="text-[9px] text-muted-foreground/40">
-                {lang === 'ko' ? `총 ${result.points.length}거래일` : `${result.points.length} trading days`}
-              </span>
+
+              {/* Color legend */}
+              <div className="flex items-center gap-1">
+                {['rgba(185,28,28,0.85)','rgba(239,68,68,0.42)','rgba(248,113,113,0.22)',
+                  'rgba(74,222,128,0.14)','rgba(74,222,128,0.52)','rgba(74,222,128,0.75)'].map((bg, i) => (
+                  <div key={i} style={{ width: CELL, height: CELL, borderRadius: 3, background: bg }} />
+                ))}
+                <span className="text-[9px] text-muted-foreground/30 ml-0.5">+15%</span>
+              </div>
             </div>
 
           </div>
