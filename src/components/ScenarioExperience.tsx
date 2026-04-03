@@ -138,9 +138,20 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const currentPage = Math.floor(weekOffset / PAGE_JUMP);
 
   return (
-    /* m-auto on the modal itself guarantees true centering regardless of page scroll */
-    <div className="fixed inset-0 z-50 overflow-y-auto flex bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="m-auto w-full max-w-2xl bg-[#0B0E14] border border-white/10 rounded-3xl flex flex-col overflow-hidden">
+    <div
+      className="animate-fade-in"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 16,
+        background: 'rgba(0,0,0,0.80)',
+        backdropFilter: 'blur(6px)',
+      }}
+    >
+      <div
+        className="w-full bg-[#0B0E14] border border-white/10 rounded-3xl flex flex-col"
+        style={{ maxWidth: 672, maxHeight: 'calc(100dvh - 32px)', overflowY: 'auto' }}
+      >
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 border-b border-white/5">
@@ -202,13 +213,13 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
         {selected && !loading && result?.available && (
           <div className="flex flex-col gap-4 px-6 py-5">
 
-            {/* Tooltip bar */}
+            {/* Tooltip bar — fixed height so layout never shifts */}
             <div className={cn(
-              'px-4 py-3 rounded-xl border flex items-center justify-between transition-all duration-150',
+              'px-4 rounded-xl border flex items-center justify-between transition-colors duration-150',
               hovered
                 ? hovered.pctFromPeak >= 0 ? 'bg-green-500/10 border-green-500/20' : 'bg-rose-500/10 border-rose-500/20'
                 : 'border-white/5 bg-white/[0.02]'
-            )}>
+            )} style={{ height: 48, minHeight: 48 }}>
               {hovered ? (
                 <>
                   <div className="flex items-center gap-2 flex-wrap">
