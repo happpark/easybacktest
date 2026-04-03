@@ -60,6 +60,7 @@ const BacktestOutputSchema = z.object({
     monthlyAmount: z.number(),
     cagr: z.number(),
     mdd: z.number(),
+    mdd_year: z.string(),
     years: z.number(),
   }).optional(),
   aiInsight: z.string(),
@@ -251,14 +252,16 @@ function runDcaSimulation(
     allSpyValues.push(spyValue);
   }
 
-  // MDD
+  // MDD + year
   let peak = allValues[0] ?? 1000;
   let mdd = 0;
-  for (const v of allValues) {
-    if (v > peak) peak = v;
-    const dd = (v - peak) / peak;
-    if (dd < mdd) mdd = dd;
+  let mddIdx = 0;
+  for (let i = 0; i < allValues.length; i++) {
+    if (allValues[i] > peak) peak = allValues[i];
+    const dd = (allValues[i] - peak) / peak;
+    if (dd < mdd) { mdd = dd; mddIdx = i; }
   }
+  const mddYear = new Date(dates[mddIdx + 1]).getFullYear().toString();
 
   // Years and CAGR
   const years = (new Date(dates[n - 1]).getTime() - new Date(dates[0]).getTime()) / (365.25 * 86400000);
@@ -288,6 +291,7 @@ function runDcaSimulation(
       monthlyAmount,
       cagr: Math.round(cagr * 100) / 100,
       mdd: Math.round(mdd * 10000) / 100,
+      mdd_year: mddYear,
       years: Math.round(years * 10) / 10,
     },
   };

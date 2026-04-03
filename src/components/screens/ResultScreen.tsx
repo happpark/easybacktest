@@ -924,8 +924,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             return (
               <div className="flex gap-3 animate-fade-in">
                 {/* Chart — left half */}
-                <div className="flex-1 min-w-0 flex flex-col gap-2">
-                  <div className="h-44">
+                <div className="flex-1 min-w-0 flex flex-col">
+                  <div className="flex-1 min-h-0 h-56">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={hist} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
                         <defs>
@@ -957,7 +957,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="flex gap-3 justify-center">
+                  <div className="flex gap-3 justify-center mt-auto pt-2">
                     <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <span className="w-4 h-0.5 bg-primary/70 inline-block" />{t('dca_chart_portfolio')}
                     </span>
@@ -975,7 +975,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                   {[
                     { label: t('dca_period'), value: `${m.years}${isKo ? '년' : 'yr'}` },
                     { label: t('dca_cagr'), value: `+${m.cagr}%`, positive: true },
-                    { label: t('dca_mdd'), value: `${m.mdd}%`, negative: true },
+                    { label: t('dca_mdd'), value: `${m.mdd}% (${m.mdd_year ?? '-'})`, negative: true },
                     { label: t('dca_total_invested'), value: fmtMoney(m.totalInvested) },
                     { label: t('dca_final_value'), value: fmtMoney(m.finalValue), positive: true },
                   ].map(({ label, value, positive, negative }) => (
