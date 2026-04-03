@@ -295,8 +295,8 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                           >
                             {isPeak ? (
                               <>
-                                <span className="text-[8px] text-primary font-bold leading-none">BUY</span>
-                                <span className="text-[9px] text-primary/80 font-mono leading-none mt-0.5">{cell.day}</span>
+                                <span className="text-[9px] text-primary font-bold leading-none">BUY</span>
+                                <span className="text-[11px] text-primary/80 font-mono leading-none mt-0.5">{cell.day}</span>
                               </>
                             ) : isOpen && cell.point ? (
                               <>
@@ -304,14 +304,14 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                                   <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-white/60" />
                                 )}
                                 <span
-                                  className="text-[9px] font-bold leading-none"
+                                  className="text-[10px] font-bold leading-none"
                                   style={{ color: colors.text }}
                                 >
                                   {cell.point.pctFromPeak >= 0 ? '+' : ''}{cell.point.pctFromPeak.toFixed(1)}%
                                 </span>
                               </>
                             ) : (
-                              <span className="text-[10px] text-muted-foreground/40 font-mono">{cell.day}</span>
+                              <span className="text-[12px] text-muted-foreground/50 font-mono">{cell.day}</span>
                             )}
                           </button>
                         );
