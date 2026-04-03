@@ -104,24 +104,21 @@ export async function runScenario(
 
   if (allDates.length < 10) return { available: false, points: [], troughIdx: 0, maxDrawdown: 0 };
 
-  const sampledDates: string[] = [];
-  for (let i = 0; i < allDates.length; i += 5) sampledDates.push(allDates[i]);
-  if (sampledDates[sampledDates.length - 1] !== allDates[allDates.length - 1])
-    sampledDates.push(allDates[allDates.length - 1]);
-
   const peakPrices: Record<string, number> = {};
   for (const t of realTickers) peakPrices[t] = pm[t].get(allDates[0]) ?? 1;
 
+  // Milestone lookup: map each milestone to nearest trading date
   const milestoneMap: Record<string, string> = {};
   for (const m of def.milestones) {
-    const nearest = sampledDates.reduce((best, d) =>
+    const nearest = allDates.reduce((best, d) =>
       Math.abs(new Date(d).getTime() - new Date(m.date).getTime()) <
       Math.abs(new Date(best).getTime() - new Date(m.date).getTime()) ? d : best
     );
     milestoneMap[nearest] = lang === 'ko' ? m.ko : m.en;
   }
 
-  const points: ScenarioPoint[] = sampledDates.map(date => {
+  // Return ALL daily trading dates (for calendar view)
+  const points: ScenarioPoint[] = allDates.map(date => {
     let value = 0;
     for (let j = 0; j < tickers.length; j++) {
       const t = tickers[j];

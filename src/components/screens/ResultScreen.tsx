@@ -1030,7 +1030,11 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
 
       {/* Scenario modal */}
       {showScenario && data && (
-        <ScenarioExperience data={data} onClose={() => setShowScenario(false)} />
+        <ScenarioExperience
+          data={data}
+          backtestPeriodStart={backtestResult?.period?.split(' ~ ')[0] ?? '1990.01'}
+          onClose={() => setShowScenario(false)}
+        />
       )}
 
       {/* Login nudge banner — always visible for non-logged-in users */}

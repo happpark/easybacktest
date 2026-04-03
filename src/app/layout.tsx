@@ -10,21 +10,21 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Easybacktest — 포트폴리오 백테스트',
-  description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석. 스크린샷 하나로 내 포트폴리오 과거 성과를 확인하세요.',
+  title: 'EasyBacktest — Backtest Any Portfolio in Seconds',
+  description: 'Enter your holdings or upload a screenshot — instantly see CAGR, Max Drawdown, Sharpe Ratio and more. Free portfolio backtester.',
   metadataBase: new URL('https://easybacktest.app'),
   openGraph: {
-    title: 'Easybacktest — 포트폴리오 백테스트',
-    description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석. 스크린샷 하나로 내 포트폴리오 과거 성과를 확인하세요.',
+    title: 'EasyBacktest — Backtest Any Portfolio in Seconds',
+    description: 'Enter your holdings or upload a screenshot — instantly see CAGR, Max Drawdown, Sharpe Ratio and more. Free portfolio backtester.',
     url: 'https://easybacktest.app',
-    siteName: 'Easybacktest',
-    locale: 'ko_KR',
+    siteName: 'EasyBacktest',
+    locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Easybacktest — 포트폴리오 백테스트',
-    description: '보유 종목을 입력하면 CAGR·MDD·Sharpe를 즉시 분석.',
+    title: 'EasyBacktest — Backtest Any Portfolio in Seconds',
+    description: 'Enter your holdings or upload a screenshot — instantly see CAGR, Max Drawdown & Sharpe. Free.',
   },
 };
 
