@@ -25,6 +25,7 @@ import {
 } from 'recharts';
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
+import { ScenarioExperience } from '@/components/ScenarioExperience';
 
 interface ResultScreenProps {
   data: Asset[] | null;
@@ -92,6 +93,9 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
   const [savedSlots, setSavedSlots] = useState<Set<number>>(new Set());
   const runningRef = useRef(false);
   const { save: savePortfolio } = useMyPortfolios(user?.id);
+
+  // Scenario state
+  const [showScenario, setShowScenario] = useState(false);
 
   // DCA state
   const [dcaAmount, setDcaAmount] = useState<number>(0);
@@ -993,6 +997,40 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
             );
           })()}
         </div>
+      )}
+
+      {/* ── Scenario Experience Section ── */}
+      {data && (
+        <div className="glass-morphism rounded-3xl border border-white/8 p-6 flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <span className="text-base font-bold">📉 {t('scenario_section_title')}</span>
+            <span className="text-xs text-muted-foreground">{t('scenario_section_desc')}</span>
+          </div>
+          <div className="flex gap-2">
+            {(['2008', '2020', '2022'] as const).map((key, i) => {
+              const colors = ['#ef4444', '#f97316', '#eab308'];
+              const labels = [t('scenario_2008'), t('scenario_2020'), t('scenario_2022')];
+              const subs = [t('scenario_2008_sub'), t('scenario_2020_sub'), t('scenario_2022_sub')];
+              return (
+                <div key={key} className="flex-1 flex flex-col gap-0.5 bg-white/[0.03] border border-white/8 rounded-xl px-3 py-2">
+                  <span className="text-[10px] font-bold" style={{ color: colors[i] }}>{labels[i].replace(' ', '\n')}</span>
+                  <span className="text-[9px] text-muted-foreground/60">{subs[i]}</span>
+                </div>
+              );
+            })}
+          </div>
+          <button
+            onClick={() => setShowScenario(true)}
+            className="h-11 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-sm font-bold hover:bg-rose-500/25 transition-colors flex items-center justify-center gap-2"
+          >
+            📊 {t('scenario_cta')}
+          </button>
+        </div>
+      )}
+
+      {/* Scenario modal */}
+      {showScenario && data && (
+        <ScenarioExperience data={data} onClose={() => setShowScenario(false)} />
       )}
 
       {/* Login nudge banner — always visible for non-logged-in users */}
