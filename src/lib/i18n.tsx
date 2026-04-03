@@ -194,6 +194,8 @@ const translations = {
     dca_reset: '초기화',
     dca_amount_label: '월 적립',
 
+    result_save_hint: '저장하면 내 다른 전략과 수익률을 나란히 비교할 수 있어요',
+    result_save_compare_nudge: "→ 상단 '내 기록' 탭에서 비교 분석해보세요",
     result_login_nudge_title: '이 결과를 저장하고 싶으신가요?',
     result_login_nudge_desc: '로그인하면 포트폴리오 저장 · 비교 분석을 무제한으로 이용할 수 있어요',
     result_login_nudge_cta: 'Google로 로그인',
@@ -487,6 +489,8 @@ const translations = {
     dca_reset: 'Reset',
     dca_amount_label: 'Monthly',
 
+    result_save_hint: 'Save to compare returns side-by-side with your other strategies',
+    result_save_compare_nudge: "→ Compare in 'My Portfolios' tab above",
     result_login_nudge_title: 'Want to save these results?',
     result_login_nudge_desc: 'Sign in to save portfolios and compare them anytime',
     result_login_nudge_cta: 'Sign in with Google',

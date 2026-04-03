@@ -975,7 +975,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
                   {[
                     { label: t('dca_period'), value: `${m.years}${isKo ? '년' : 'yr'}` },
                     { label: t('dca_cagr'), value: `+${m.cagr}%`, positive: true },
-                    { label: t('dca_mdd'), value: `${m.mdd}% (${m.mdd_year ?? '-'})`, negative: true },
+                    { label: t('dca_mdd'), value: `${m.mdd}% (${m.mdd_year ?? '-'}${isKo ? '년' : ''})`, negative: true },
                     { label: t('dca_total_invested'), value: fmtMoney(m.totalInvested) },
                     { label: t('dca_final_value'), value: fmtMoney(m.finalValue), positive: true },
                   ].map(({ label, value, positive, negative }) => (
@@ -1025,25 +1025,40 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
       )}
 
       {/* Save + Share */}
-      <div className="flex gap-3">
-        <button
-          onClick={handleShare}
-          className="flex-1 glass-morphism h-14 rounded-2xl flex items-center justify-center gap-2 font-bold text-muted-foreground border-white/10 hover:bg-white/5 transition-colors text-sm"
-        >
-          {copied ? <CheckCircle2 size={16} className="text-[#7AE9AB]" /> : <Share2 size={16} />}
-          {copied ? t('result_copied') : t('result_share')}
-        </button>
-        <button
-          onClick={saved ? undefined : handleSave}
-          className={`flex-[2] h-14 rounded-2xl flex items-center justify-center gap-2 font-bold transition-colors text-sm border ${
-            saved
-              ? 'bg-[#7AE9AB]/15 text-[#7AE9AB] border-[#7AE9AB]/30'
-              : 'bg-primary/15 text-primary border-primary/30 hover:bg-primary/25'
-          }`}
-        >
-          {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-          {saved ? t('result_saved') : t('result_save_to_portfolio')}
-        </button>
+      <div className="flex flex-col gap-2">
+        {/* Save CTA block */}
+        {user && !saved && (
+          <div className="flex items-center gap-2 px-1">
+            <TrendingUp size={12} className="text-primary/60 shrink-0" />
+            <span className="text-[11px] text-muted-foreground/70">{t('result_save_hint')}</span>
+          </div>
+        )}
+        <div className="flex gap-3">
+          <button
+            onClick={handleShare}
+            className="flex-1 glass-morphism h-14 rounded-2xl flex items-center justify-center gap-2 font-bold text-muted-foreground border-white/10 hover:bg-white/5 transition-colors text-sm"
+          >
+            {copied ? <CheckCircle2 size={16} className="text-[#7AE9AB]" /> : <Share2 size={16} />}
+            {copied ? t('result_copied') : t('result_share')}
+          </button>
+          <button
+            onClick={saved ? undefined : handleSave}
+            className={`flex-[2] h-14 rounded-2xl flex items-center justify-center gap-2 font-bold transition-colors text-sm border ${
+              saved
+                ? 'bg-[#7AE9AB]/15 text-[#7AE9AB] border-[#7AE9AB]/30'
+                : 'bg-primary/15 text-primary border-primary/30 hover:bg-primary/25'
+            }`}
+          >
+            {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+            {saved ? t('result_saved') : t('result_save_to_portfolio')}
+          </button>
+        </div>
+        {/* Post-save compare nudge */}
+        {saved && (
+          <div className="flex items-center justify-center gap-1.5 py-1 animate-fade-in">
+            <span className="text-xs text-[#7AE9AB]/80 font-medium">{t('result_save_compare_nudge')}</span>
+          </div>
+        )}
       </div>
 
       {/* Save name input */}
