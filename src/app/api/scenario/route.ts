@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { runScenario, type ScenarioKey } from '@/ai/flows/backtest-portfolio';
+import { runScenario, type ScenarioKey } from '@/ai/flows/scenario';
 import type { BacktestInput } from '@/ai/flows/backtest-portfolio';
 
 export async function POST(req: NextRequest) {

@@ -5,7 +5,7 @@ import { X, ChevronRight } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, ReferenceLine, Tooltip as RechartsTooltip } from 'recharts';
 import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
-import type { ScenarioKey, ScenarioResult } from '@/ai/flows/backtest-portfolio';
+import type { ScenarioKey, ScenarioResult } from '@/ai/flows/scenario';
 import type { Asset } from '@/app/page';
 
 interface Props {
