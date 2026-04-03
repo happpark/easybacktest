@@ -9,7 +9,7 @@ import type { Asset } from '@/app/page';
 
 interface Props {
   data: Asset[];
-  backtestPeriodStart: string; // "2010.01"
+  backtestPeriodStart: string;
   onClose: () => void;
 }
 
@@ -25,49 +25,54 @@ const PEAK_DATES: Record<ScenarioKey, string> = {
   '2022': '2022-01-03',
 };
 
-function groupByMonth(points: ScenarioPoint[]): { year: number; month: number; days: ScenarioPoint[] }[] {
-  const map = new Map<string, ScenarioPoint[]>();
+// Week column: Monday date + 5 slots (Mon–Fri)
+interface WeekCol { monday: string; days: (ScenarioPoint | null)[] }
+
+function toWeekColumns(points: ScenarioPoint[]): WeekCol[] {
+  const map = new Map<string, (ScenarioPoint | null)[]>();
   for (const p of points) {
-    const key = p.date.substring(0, 7);
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(p);
+    const d = new Date(p.date + 'T00:00:00Z');
+    const dow = d.getUTCDay(); // 0=Sun,1=Mon,...6=Sat
+    const monOffset = dow === 0 ? -6 : 1 - dow; // days to subtract to reach Monday
+    const mondayMs = d.getTime() + monOffset * 86400000;
+    const key = new Date(mondayMs).toISOString().split('T')[0];
+    if (!map.has(key)) map.set(key, [null, null, null, null, null]);
+    const slot = dow === 0 ? 6 : dow - 1; // Mon=0..Fri=4
+    if (slot < 5) map.get(key)![slot] = p;
   }
   return [...map.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, days]) => {
-      const [y, m] = key.split('-').map(Number);
-      return { year: y, month: m, days };
-    });
+    .map(([monday, days]) => ({ monday, days }));
 }
 
 function pctToBg(pct: number): string {
-  if (pct >= 15)  return 'rgba(74,222,128,0.70)';
-  if (pct >= 8)   return 'rgba(74,222,128,0.50)';
+  if (pct >= 15)  return 'rgba(74,222,128,0.75)';
+  if (pct >= 8)   return 'rgba(74,222,128,0.52)';
   if (pct >= 3)   return 'rgba(74,222,128,0.30)';
   if (pct >= 0)   return 'rgba(74,222,128,0.14)';
-  if (pct >= -5)  return 'rgba(248,113,113,0.20)';
-  if (pct >= -12) return 'rgba(239,68,68,0.38)';
-  if (pct >= -22) return 'rgba(220,38,38,0.58)';
-  return 'rgba(185,28,28,0.80)';
+  if (pct >= -5)  return 'rgba(248,113,113,0.22)';
+  if (pct >= -12) return 'rgba(239,68,68,0.42)';
+  if (pct >= -22) return 'rgba(220,38,38,0.62)';
+  return 'rgba(185,28,28,0.85)';
 }
 
 function pctToText(pct: number): string {
-  if (pct >= 0) return '#86efac';
-  if (pct >= -12) return '#fca5a5';
-  return '#fecaca';
+  return pct >= 0 ? '#86efac' : '#fca5a5';
 }
 
-const MONTH_NAMES_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-const MONTH_NAMES_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const DOW_KO = ['월','화','수','목','금'];
-const DOW_EN = ['Mon','Tue','Wed','Thu','Fri'];
+const MONTH_SHORT_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const MONTH_SHORT_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const CELL = 11;   // px
+const GAP  = 2;    // px
+const STEP = CELL + GAP;
 
 export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props) {
   const { t, lang } = useLang();
   const [selected, setSelected] = useState<ScenarioKey | null>(null);
-  const [result, setResult] = useState<ScenarioResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [hovered, setHovered] = useState<ScenarioPoint | null>(null);
+  const [result, setResult]     = useState<ScenarioResult | null>(null);
+  const [loading, setLoading]   = useState(false);
+  const [hovered, setHovered]   = useState<ScenarioPoint | null>(null);
   const loadingRef = useRef(false);
 
   const availableScenarios = useMemo((): ScenarioKey[] => {
@@ -81,10 +86,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const loadScenario = useCallback(async (key: ScenarioKey) => {
     if (loadingRef.current) return;
     loadingRef.current = true;
-    setSelected(key);
-    setResult(null);
-    setHovered(null);
-    setLoading(true);
+    setSelected(key); setResult(null); setHovered(null); setLoading(true);
     try {
       const res = await fetch('/api/scenario', {
         method: 'POST',
@@ -92,27 +94,31 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
         body: JSON.stringify({ assets: data, scenario: key, lang }),
       });
       setResult(await res.json());
-    } finally {
-      setLoading(false);
-      loadingRef.current = false;
-    }
+    } finally { setLoading(false); loadingRef.current = false; }
   }, [data, lang]);
 
-  const dateMap = useMemo(() => {
-    const m = new Map<string, ScenarioPoint>();
-    result?.points?.forEach(p => m.set(p.date, p));
-    return m;
-  }, [result]);
-
-  const months = useMemo(() =>
-    result?.available ? groupByMonth(result.points) : [],
-    [result]
-  );
-
-  const meta = selected ? SCENARIO_META[selected] : null;
+  const weeks = useMemo(() => result?.available ? toWeekColumns(result.points) : [], [result]);
   const peakDate = selected ? PEAK_DATES[selected] : null;
-  const monthNames = lang === 'ko' ? MONTH_NAMES_KO : MONTH_NAMES_EN;
-  const dowLabels = lang === 'ko' ? DOW_KO : DOW_EN;
+  const meta = selected ? SCENARIO_META[selected] : null;
+  const monthNames = lang === 'ko' ? MONTH_SHORT_KO : MONTH_SHORT_EN;
+
+  // Build month label positions: first week of each new month
+  const monthLabels = useMemo(() => {
+    const labels: { colIdx: number; label: string }[] = [];
+    let lastMonth = '';
+    weeks.forEach(({ monday }, i) => {
+      const mo = monday.substring(0, 7);
+      if (mo !== lastMonth) {
+        const d = new Date(monday + 'T00:00:00Z');
+        labels.push({ colIdx: i, label: monthNames[d.getUTCMonth()] + (d.getUTCMonth() === 0 ? ` ${d.getUTCFullYear()}` : '') });
+        lastMonth = mo;
+      }
+    });
+    return labels;
+  }, [weeks, monthNames]);
+
+  const totalWidth = weeks.length * STEP - GAP;
+  const gridHeight = 5 * STEP - GAP; // Mon–Fri
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
@@ -141,7 +147,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
 
         {/* Scenario picker */}
         {!selected && (
-          <div className="px-5 py-5 flex flex-col gap-3 overflow-y-auto">
+          <div className="px-5 py-5 flex flex-col gap-3">
             {(['2008', '2020', '2022'] as ScenarioKey[]).map(key => {
               const m = SCENARIO_META[key];
               const available = availableScenarios.includes(key);
@@ -151,9 +157,8 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                   disabled={!available}
                   className={cn(
                     'flex items-center justify-between px-4 py-4 rounded-2xl border text-left transition-all',
-                    available
-                      ? 'border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/15'
-                      : 'border-white/4 bg-white/[0.01] opacity-35 cursor-not-allowed'
+                    available ? 'border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/15'
+                              : 'border-white/4 bg-white/[0.01] opacity-35 cursor-not-allowed'
                   )}>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-bold">{m.emoji} {t(m.titleKey as Parameters<typeof t>[0])}</span>
@@ -179,30 +184,30 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
           </div>
         )}
 
-        {/* Heatmap calendar */}
+        {/* GitHub-style heatmap */}
         {selected && !loading && result?.available && (
-          <div className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex flex-col gap-4 px-5 py-4 overflow-hidden">
 
-            {/* Sticky tooltip bar */}
+            {/* Tooltip bar */}
             <div className={cn(
-              'mx-5 mt-3 mb-1 px-4 py-2.5 rounded-xl border flex items-center justify-between shrink-0 transition-all duration-150',
+              'px-4 py-2.5 rounded-xl border flex items-center justify-between transition-all duration-150 shrink-0',
               hovered
                 ? hovered.pctFromPeak >= 0
-                  ? 'bg-green-500/10 border-green-500/20 opacity-100'
-                  : 'bg-rose-500/10 border-rose-500/20 opacity-100'
-                : 'border-white/5 bg-white/[0.02] opacity-60'
+                  ? 'bg-green-500/10 border-green-500/20'
+                  : 'bg-rose-500/10 border-rose-500/20'
+                : 'border-white/5 bg-white/[0.02]'
             )}>
               {hovered ? (
                 <>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-mono text-muted-foreground">{hovered.date}</span>
                     {hovered.milestone && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/60">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/60 font-bold">
                         {hovered.milestone}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 shrink-0">
                     <span className="text-sm font-black tabular-nums" style={{ color: pctToText(hovered.pctFromPeak) }}>
                       {hovered.pctFromPeak >= 0 ? '+' : ''}{hovered.pctFromPeak.toFixed(2)}%
                     </span>
@@ -212,106 +217,94 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                   </div>
                 </>
               ) : (
-                <span className="text-xs text-muted-foreground/50 w-full text-center">
-                  {lang === 'ko' ? '날짜에 커서를 올리거나 탭하세요' : 'Hover or tap a date to see returns'}
+                <span className="text-xs text-muted-foreground/40 w-full text-center">
+                  {lang === 'ko' ? '날짜에 커서를 올리거나 탭하세요' : 'Hover or tap a date'}
                 </span>
               )}
             </div>
 
-            {/* Legend */}
-            <div className="px-5 py-2 shrink-0 flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                {[
-                  { bg: 'rgba(185,28,28,0.80)', label: lang === 'ko' ? '-20%↓' : '-20%↓' },
-                  { bg: 'rgba(220,38,38,0.58)', label: '' },
-                  { bg: 'rgba(239,68,68,0.38)', label: '' },
-                  { bg: 'rgba(248,113,113,0.20)', label: '' },
-                  { bg: 'rgba(74,222,128,0.14)', label: '' },
-                  { bg: 'rgba(74,222,128,0.30)', label: '' },
-                  { bg: 'rgba(74,222,128,0.70)', label: lang === 'ko' ? '+15%↑' : '+15%↑' },
-                ].map((s, i) => (
-                  <div key={i} className="flex items-center gap-0.5">
-                    <div className="w-4 h-4 rounded-[3px]" style={{ background: s.bg }} />
-                    {s.label && <span className="text-[9px] text-muted-foreground/50 ml-0.5">{s.label}</span>}
+            {/* Day-of-week labels + heatmap grid */}
+            <div className="flex gap-2 overflow-hidden">
+              {/* DOW labels */}
+              <div className="flex flex-col shrink-0" style={{ gap: GAP, paddingTop: 16 }}>
+                {(lang === 'ko' ? ['월','수','금'] : ['M','W','F']).map((label, i) => (
+                  <div key={label}
+                    className="text-[9px] text-muted-foreground/40 flex items-center justify-end"
+                    style={{ height: CELL, marginTop: i === 0 ? 0 : CELL + GAP }}>
+                    {label}
                   </div>
                 ))}
               </div>
-              <span className="text-[10px] text-muted-foreground/40">
-                {lang === 'ko' ? '📌 = 매수일' : '📌 = buy date'}
+
+              {/* Scrollable grid */}
+              <div className="overflow-x-auto flex-1">
+                <div style={{ width: totalWidth, userSelect: 'none' }}>
+                  {/* Month labels row */}
+                  <div className="relative" style={{ height: 16, marginBottom: 4 }}>
+                    {monthLabels.map(({ colIdx, label }) => (
+                      <span key={colIdx}
+                        className="absolute text-[9px] text-muted-foreground/50 font-medium"
+                        style={{ left: colIdx * STEP }}>
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Week columns */}
+                  <div style={{ display: 'flex', gap: GAP, height: gridHeight }}>
+                    {weeks.map(({ monday, days }) => (
+                      <div key={monday} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
+                        {days.map((point, dayIdx) => {
+                          const isPeak = point?.date === peakDate;
+                          const isHovered = hovered?.date === point?.date;
+                          return (
+                            <div
+                              key={dayIdx}
+                              onMouseEnter={() => point && setHovered(point)}
+                              onMouseLeave={() => setHovered(null)}
+                              onClick={() => point && setHovered(h => h?.date === point.date ? null : point)}
+                              style={{
+                                width: CELL,
+                                height: CELL,
+                                borderRadius: 2,
+                                background: isPeak
+                                  ? 'rgba(99,179,237,0.5)'
+                                  : point
+                                    ? pctToBg(point.pctFromPeak)
+                                    : 'rgba(255,255,255,0.04)',
+                                cursor: point ? 'pointer' : 'default',
+                                outline: isPeak ? '1.5px solid rgba(99,179,237,0.8)' : isHovered ? '1px solid rgba(255,255,255,0.5)' : 'none',
+                                outlineOffset: isPeak ? 1 : 0,
+                                transform: isHovered ? 'scale(1.5)' : 'scale(1)',
+                                transition: 'transform 0.1s, outline 0.1s',
+                                zIndex: isHovered ? 10 : 1,
+                                position: 'relative',
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-1">
+                <span className="text-[9px] text-muted-foreground/40 mr-1">{lang === 'ko' ? '낮음' : 'Less'}</span>
+                {['rgba(185,28,28,0.85)','rgba(220,38,38,0.62)','rgba(239,68,68,0.42)','rgba(248,113,113,0.22)',
+                  'rgba(74,222,128,0.14)','rgba(74,222,128,0.30)','rgba(74,222,128,0.52)','rgba(74,222,128,0.75)'].map((bg, i) => (
+                  <div key={i} style={{ width: CELL, height: CELL, borderRadius: 2, background: bg }} />
+                ))}
+                <span className="text-[9px] text-muted-foreground/40 ml-1">{lang === 'ko' ? '높음' : 'More'}</span>
+              </div>
+              <span className="text-[9px] text-muted-foreground/40">
+                {lang === 'ko' ? `총 ${result.points.length}거래일` : `${result.points.length} trading days`}
               </span>
             </div>
 
-            {/* Scrollable calendar */}
-            <div className="overflow-y-auto flex-1 px-5 pb-5 flex flex-col gap-5">
-              {months.map(({ year, month }) => {
-                const firstDow = new Date(year, month - 1, 1).getDay();
-                const firstMonBased = (firstDow + 6) % 7;
-                const daysInMonth = new Date(year, month, 0).getDate();
-
-                type Cell = { date: string; day: number; point: ScenarioPoint | null } | null;
-                const cells: Cell[] = [];
-                for (let i = 0; i < Math.min(firstMonBased, 5); i++) cells.push(null);
-                for (let d = 1; d <= daysInMonth; d++) {
-                  const dow = new Date(year, month - 1, d).getDay();
-                  if (dow === 0 || dow === 6) continue;
-                  const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                  cells.push({ date: dateStr, day: d, point: dateMap.get(dateStr) ?? null });
-                }
-                while (cells.length % 5 !== 0) cells.push(null);
-
-                return (
-                  <div key={`${year}-${month}`} className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold text-muted-foreground/70">
-                      {monthNames[month - 1]} {year}
-                    </span>
-                    <div className="grid grid-cols-5 gap-1">
-                      {dowLabels.map(d => (
-                        <div key={d} className="text-center text-[9px] text-muted-foreground/30 pb-0.5">{d}</div>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-5 gap-1">
-                      {cells.map((cell, i) => {
-                        if (!cell) return <div key={i} />;
-                        const isPeak = cell.date === peakDate;
-                        const p = cell.point;
-                        const isHovered = hovered?.date === cell.date;
-
-                        return (
-                          <button
-                            key={cell.date}
-                            onMouseEnter={() => p && setHovered(p)}
-                            onMouseLeave={() => setHovered(null)}
-                            onClick={() => p && setHovered(h => h?.date === cell.date ? null : p)}
-                            className={cn(
-                              'relative rounded-lg aspect-square flex flex-col items-center justify-center transition-all duration-100',
-                              p ? 'cursor-pointer' : 'cursor-default opacity-20',
-                              isHovered && 'ring-1 ring-white/50 scale-110 z-10',
-                              isPeak && 'ring-2 ring-primary/70',
-                            )}
-                            style={{
-                              background: isPeak
-                                ? 'rgba(99,179,237,0.25)'
-                                : p
-                                  ? pctToBg(p.pctFromPeak)
-                                  : 'rgba(255,255,255,0.03)',
-                            }}
-                          >
-                            {isPeak ? (
-                              <span className="text-[9px] text-primary font-bold leading-none">📌</span>
-                            ) : (
-                              <span className="text-[11px] text-white/70 font-mono leading-none">{cell.day}</span>
-                            )}
-                            {p?.milestone && (
-                              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-white/80" />
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
         )}
       </div>
