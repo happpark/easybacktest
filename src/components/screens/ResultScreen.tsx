@@ -26,12 +26,15 @@ import {
 import type { Asset } from '@/app/page';
 import { cn } from '@/lib/utils';
 import { ScenarioExperience } from '@/components/ScenarioExperience';
+import { AIImprovementPanel } from '@/components/AIImprovementPanel';
 
 interface ResultScreenProps {
   data: Asset[] | null;
   multiData?: PortfolioSlot[] | null;
   rebalancingMonths: number;
   onReset: () => void;
+  onCompare?: (name: string, suggestedAssets: Asset[]) => void;
+  onApply?: (suggestedAssets: Asset[]) => void;
 }
 
 function TooltipIcon({ text }: { text: string }) {
@@ -72,7 +75,7 @@ function MovingDots() {
   );
 }
 
-export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: ResultScreenProps) {
+export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCompare, onApply }: ResultScreenProps) {
   const { user, signInWithGoogle } = useAuth();
   const { t, lang } = useLang();
   const [backtestResult, setBacktestResult] = useState<BacktestOutput | null>(null);
@@ -1034,6 +1037,17 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset }: Re
           data={data}
           backtestPeriodStart={backtestResult?.period?.split(' ~ ')[0] ?? '1990.01'}
           onClose={() => setShowScenario(false)}
+        />
+      )}
+
+      {/* ── AI Improvement Panel ── */}
+      {data && backtestResult && onCompare && onApply && (
+        <AIImprovementPanel
+          assets={data}
+          currentMetrics={backtestResult.metrics}
+          currentHistory={backtestResult.history}
+          onCompare={onCompare}
+          onApply={onApply}
         />
       )}
 

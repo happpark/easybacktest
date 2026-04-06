@@ -84,7 +84,28 @@ export default function AlphaFlowApp() {
           />
         );
       case 'result':
-        return <ResultScreen data={portfolioData} multiData={multiPortfolioData} rebalancingMonths={rebalancingMonths} onReset={() => setActiveScreen('input')} />;
+        return (
+          <ResultScreen
+            data={portfolioData}
+            multiData={multiPortfolioData}
+            rebalancingMonths={rebalancingMonths}
+            onReset={() => setActiveScreen('input')}
+            onCompare={(name, suggestedAssets) => {
+              if (!portfolioData) return;
+              handleMultiBacktest(
+                [
+                  { name: lang === 'ko' ? '현재 포트폴리오' : 'Current Portfolio', assets: portfolioData },
+                  { name, assets: suggestedAssets },
+                ],
+                rebalancingMonths
+              );
+            }}
+            onApply={(suggestedAssets) => {
+              setPreloadedAssets(suggestedAssets);
+              setActiveScreen('input');
+            }}
+          />
+        );
       case 'community':
         return <CommunityScreen onLoadPortfolio={(assets) => handleLoadPortfolio(assets, 'community')} />;
       case 'mine':

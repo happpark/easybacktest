@@ -318,6 +318,22 @@ const translations = {
     community_shared_by: '공유자',
     community_user_section: '커뮤니티 공유',
     community_preset_section: '추천 포트폴리오',
+
+    // AI Improvement Panel
+    ai_panel_title: 'AI 포트폴리오 개선 제안',
+    ai_panel_desc: 'AI가 내 포트폴리오를 분석하고 3가지 개선 전략을 제안합니다',
+    ai_panel_cta: '3가지 개선안 분석하기',
+    ai_panel_loading: 'AI가 포트폴리오를 분석 중이에요',
+    ai_panel_loading_sub: '3가지 전략을 설계하고 각각 백테스트하고 있어요. 20~30초 걸릴 수 있어요.',
+    ai_panel_error: '분석 중 오류가 발생했어요. 다시 시도해주세요.',
+    ai_panel_retry: '다시 시도',
+    ai_panel_view_detail: '자세히 보기',
+    ai_panel_composition: '자산 구성',
+    ai_panel_growth_compare: '성장 비교',
+    ai_panel_vs_current: '현재 포트폴리오 대비',
+    ai_panel_new: '신규',
+    ai_panel_apply: '이 비중으로 적용',
+    ai_panel_compare: '기존 포트폴리오와 비교',
   },
   en: {
     // Nav
@@ -633,6 +649,22 @@ const translations = {
     community_shared_by: 'by',
     community_user_section: 'Community Shared',
     community_preset_section: 'Featured Portfolios',
+
+    // AI Improvement Panel
+    ai_panel_title: 'AI Portfolio Improvement',
+    ai_panel_desc: 'AI analyzes your portfolio and suggests 3 improvement strategies',
+    ai_panel_cta: 'Analyze 3 Improvement Strategies',
+    ai_panel_loading: 'AI is analyzing your portfolio',
+    ai_panel_loading_sub: 'Designing 3 strategies and backtesting each. This may take 20–30 seconds.',
+    ai_panel_error: 'Analysis failed. Please try again.',
+    ai_panel_retry: 'Try Again',
+    ai_panel_view_detail: 'View Details',
+    ai_panel_composition: 'Composition',
+    ai_panel_growth_compare: 'Growth Comparison',
+    ai_panel_vs_current: 'vs Current Portfolio',
+    ai_panel_new: 'New',
+    ai_panel_apply: 'Apply These Weights',
+    ai_panel_compare: 'Compare with Current',
   },
 } as const;
 
