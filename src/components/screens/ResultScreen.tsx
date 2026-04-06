@@ -478,7 +478,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                         return (
                           <td key={i} className="text-right py-2.5">
                             {isBest ? (
-                              <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
+                              <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-positive">
                                 <span className="text-[8px] opacity-70">▲</span>
                                 {v}{row.unit}
                               </span>
@@ -530,7 +530,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                   className={cn(
                     'mt-2 h-7 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border transition-colors',
                     isSaved
-                      ? 'bg-[#7AE9AB]/10 text-[#7AE9AB] border-[#7AE9AB]/20'
+                      ? 'bg-[#7AE9AB]/10 text-positive border-[#7AE9AB]/20'
                       : 'bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10'
                   )}
                 >
@@ -628,7 +628,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
           className="p-2 -mr-2 text-muted-foreground hover:text-primary transition-colors relative"
           title={t('result_copy_title')}
         >
-          {copied ? <CheckCircle2 size={24} className="text-[#7AE9AB]" /> : <Share2 size={24} />}
+          {copied ? <CheckCircle2 size={24} className="text-positive" /> : <Share2 size={24} />}
         </button>
       </header>
 
@@ -639,10 +639,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
         <div className="grid grid-cols-2 gap-3 md:flex md:flex-col md:h-full">
           <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground">
-              <TrendingUp size={16} className="text-[#7AE9AB]" />
+              <TrendingUp size={16} className="text-positive" />
               <span className="text-xs font-bold uppercase tracking-wider">{t('result_cagr_label')}</span>
             </div>
-            <span className="text-3xl md:text-4xl font-black text-[#7AE9AB]">{m.cagr}%</span>
+            <span className="text-3xl md:text-4xl font-black text-positive">{m.cagr}%</span>
             <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
               <span className="font-semibold">{t('result_best_year')}: {m.best_year.year}</span>
               <span>{t('result_return')} {m.best_year.value}%</span>
@@ -651,10 +651,10 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
 
           <div className="glass-morphism p-5 rounded-2xl flex flex-col gap-2 md:flex-1">
             <div className="flex items-center gap-1.5 text-muted-foreground">
-              <ShieldAlert size={16} className="text-[#F25B5B]" />
+              <ShieldAlert size={16} className="text-negative" />
               <span className="text-xs font-bold uppercase tracking-wider">{t('result_mdd_label')}</span>
             </div>
-            <span className="text-3xl md:text-4xl font-black text-[#F25B5B]">{m.mdd}%</span>
+            <span className="text-3xl md:text-4xl font-black text-negative">{m.mdd}%</span>
             <div className="flex flex-col text-xs text-muted-foreground border-t border-white/5 pt-2 mt-1 gap-0.5">
               <span className="font-semibold">{t('result_max_drop')}: {m.mdd_year}</span>
               <span className="opacity-0">—</span>
@@ -707,8 +707,8 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                 tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
               />
               <RechartsTooltip
-                contentStyle={{ background: '#0B0E14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }}
-                labelStyle={{ color: '#94a3b8' }}
+                contentStyle={{ background: 'hsl(var(--popover))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 11, color: 'hsl(var(--popover-foreground))' }}
+                labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
                 formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name]}
               />
               <Area
@@ -741,7 +741,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
         </div>
         <div className="flex justify-between items-center -mt-2">
           <span className="text-sm font-mono font-bold">$1,000</span>
-          <span className="text-sm font-mono font-bold text-[#7AE9AB]">
+          <span className="text-sm font-mono font-bold text-positive">
             ${historyData.length > 0 ? historyData[historyData.length - 1].value.toLocaleString() : '-'}
           </span>
         </div>
@@ -806,7 +806,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                       </td>
                       <td className="text-right py-2.5">
                         {portfolioWins ? (
-                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-positive">
                             <span className="text-[8px] opacity-70">▲</span>
                             {row.pv}{row.unit}
                           </span>
@@ -816,7 +816,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                       </td>
                       <td className="text-right py-2.5">
                         {benchmarkWins ? (
-                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-[#7AE9AB]">
+                          <span className="inline-flex items-center justify-end gap-1 font-bold text-[#16a34a] dark:text-positive">
                             <span className="text-[8px] opacity-70">▲</span>
                             {row.bv}{row.unit}
                           </span>
@@ -990,7 +990,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                       <span className="text-[10px] text-muted-foreground">{label}</span>
                       <span className={cn(
                         'text-sm font-bold',
-                        positive && 'text-[#7AE9AB]',
+                        positive && 'text-positive',
                         negative && 'text-rose-400',
                       )}>{value}</span>
                     </div>
@@ -1094,14 +1094,14 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
             onClick={handleShare}
             className="flex-1 glass-morphism h-14 rounded-2xl flex items-center justify-center gap-2 font-bold text-muted-foreground border-white/10 hover:bg-white/5 transition-colors text-sm"
           >
-            {copied ? <CheckCircle2 size={16} className="text-[#7AE9AB]" /> : <Share2 size={16} />}
+            {copied ? <CheckCircle2 size={16} className="text-positive" /> : <Share2 size={16} />}
             {copied ? t('result_copied') : t('result_share')}
           </button>
           <button
             onClick={saved ? undefined : handleSave}
             className={`flex-[2] h-14 rounded-2xl flex items-center justify-center gap-2 font-bold transition-colors text-sm border ${
               saved
-                ? 'bg-[#7AE9AB]/15 text-[#7AE9AB] border-[#7AE9AB]/30'
+                ? 'bg-[#7AE9AB]/15 text-positive border-[#7AE9AB]/30'
                 : 'bg-primary/15 text-primary border-primary/30 hover:bg-primary/25'
             }`}
           >
@@ -1112,7 +1112,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
         {/* Post-save compare nudge */}
         {saved && (
           <div className="flex items-center justify-center gap-1.5 py-1 animate-fade-in">
-            <span className="text-xs text-[#7AE9AB]/80 font-medium">{t('result_save_compare_nudge')}</span>
+            <span className="text-xs text-positive/80 font-medium">{t('result_save_compare_nudge')}</span>
           </div>
         )}
       </div>

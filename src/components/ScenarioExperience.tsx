@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -137,7 +138,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
   const totalPages = Math.ceil(Math.max(1, weeks.length - WEEKS_PER_PAGE) / PAGE_JUMP) + 1;
   const currentPage = Math.floor(weekOffset / PAGE_JUMP);
 
-  return (
+  const overlay = (
     <div
       className="animate-fade-in"
       style={{
@@ -149,12 +150,12 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
       }}
     >
       <div
-        className="w-full bg-[#0B0E14] border border-white/10 rounded-3xl flex flex-col"
+        className="modal-panel w-full bg-background border border-border rounded-3xl flex flex-col"
         style={{ maxWidth: 672, maxHeight: 'calc(100dvh - 32px)', overflowY: 'auto' }}
       >
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 border-b border-white/5">
+        <div className="modal-header flex items-center justify-between px-6 pt-6 pb-4 shrink-0 border-b border-border/50 sticky top-0 bg-background z-10">
           <div className="flex items-center gap-3">
             {selected && (
               <button onClick={() => { setSelected(null); setResult(null); setHovered(null); }}
@@ -167,7 +168,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
               {!selected && <span className="text-xs text-muted-foreground">{t('scenario_section_desc')}</span>}
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-white/5 text-muted-foreground transition-colors">
+          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-muted/30 text-muted-foreground transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -182,8 +183,8 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                 <button key={key} onClick={() => available && loadScenario(key)} disabled={!available}
                   className={cn(
                     'flex items-center justify-between px-5 py-4 rounded-2xl border text-left transition-all',
-                    available ? 'border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/15'
-                              : 'border-white/4 bg-white/[0.01] opacity-35 cursor-not-allowed'
+                    available ? 'border-border bg-muted/20 hover:bg-muted/40 hover:border-border'
+                              : 'border-border/30 bg-muted/10 opacity-35 cursor-not-allowed'
                   )}>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-bold">{m.emoji} {t(m.titleKey as Parameters<typeof t>[0])}</span>
@@ -218,7 +219,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
               'px-4 rounded-xl border flex items-center justify-between transition-colors duration-150',
               hovered
                 ? hovered.pctFromPeak >= 0 ? 'bg-green-500/10 border-green-500/20' : 'bg-rose-500/10 border-rose-500/20'
-                : 'border-white/5 bg-white/[0.02]'
+                : 'border-border/40 bg-muted/10'
             )} style={{ height: 48, minHeight: 48 }}>
               {hovered ? (
                 <>
@@ -230,7 +231,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                       </span>
                     )}
                     {hovered.milestone && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10 text-white/60 font-bold">{hovered.milestone}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground font-bold">{hovered.milestone}</span>
                     )}
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
@@ -250,12 +251,12 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
             {/* Nav row */}
             <div className="flex items-center justify-between">
               <button onClick={() => setWeekOffset(o => Math.max(0, o - PAGE_JUMP))} disabled={!canBack}
-                className="p-1.5 rounded-lg border border-white/10 text-muted-foreground hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+                className="p-1.5 rounded-lg border border-border text-muted-foreground hover:bg-muted/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
                 <ChevronLeft size={16} />
               </button>
               <span className="text-xs text-muted-foreground/60 font-medium">{rangeLabel}</span>
               <button onClick={() => setWeekOffset(o => Math.min(weeks.length - WEEKS_PER_PAGE, o + PAGE_JUMP))} disabled={!canNext}
-                className="p-1.5 rounded-lg border border-white/10 text-muted-foreground hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+                className="p-1.5 rounded-lg border border-border text-muted-foreground hover:bg-muted/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -358,4 +359,6 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
       </div>
     </div>
   );
+
+  return createPortal(overlay, document.body);
 }

@@ -5,6 +5,10 @@
 @layer base {
   :root {
     --background: 240 6% 8%;
+    /* Semantic color tokens */
+    --c-positive: 141 76% 73%;   /* #7AE9AB mint */
+    --c-negative: 3 79% 66%;     /* #F25B5B rose */
+    --c-ai: 263 70% 70%;         /* #a78bfa violet */
     --foreground: 0 0% 98%;
     --card: 240 6% 10%;
     --card-foreground: 0 0% 98%;
@@ -33,6 +37,9 @@
 
   html.light {
     --background: 220 20% 97%;
+    --c-positive: 142 60% 36%;   /* darker green on white */
+    --c-negative: 0 65% 49%;     /* standard red */
+    --c-ai: 263 55% 50%;         /* darker violet */
     --foreground: 224 25% 12%;
     --card: 0 0% 100%;
     --card-foreground: 224 25% 12%;
@@ -88,6 +95,37 @@
 html.light .glass-morphism {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ── Light-mode overrides for dark-hardcoded utilities ── */
+html.light .border-white\/10,
+html.light .border-white\/8,
+html.light .border-white\/5,
+html.light .border-white\/\[0\.08\] {
+  border-color: hsl(var(--border));
+}
+
+html.light .bg-white\/5,
+html.light .bg-white\/\[0\.025\],
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/\[0\.03\] {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+html.light .hover\:bg-white\/5:hover,
+html.light .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Modal panels — light mode background */
+html.light .modal-panel {
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+html.light .modal-header {
+  background: hsl(var(--background)) !important;
+  border-bottom-color: hsl(var(--border)) !important;
 }
 
 html.light body {

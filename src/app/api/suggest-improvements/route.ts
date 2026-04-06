@@ -6,23 +6,22 @@ import { logError } from '@/lib/logger';
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SUPPLEMENTAL_ASSETS = `
-Supplemental assets you may add (only from this list):
-- TLT: US Long-term Treasury 20yr+, deflation/recession hedge
-- IEF: US Mid-term Treasury 7-10yr, moderate bond
-- BND: Total US Bond Market, broad bonds
-- TIP: TIPS, inflation-protected bonds
-- GLD: Gold, crisis hedge
-- IAU: Gold (alternative to GLD)
-- SCHD: US Dividend ETF, income-focused
-- VYM: High Dividend Yield ETF
-- JEPI: Equity Premium Income (covered calls + dividends)
-- VEA: Developed Markets ex-US, international
-- EEM: Emerging Markets, growth potential
-- VNQ: US REITs, real estate
-- IWM: US Small-cap Russell 2000
-- VBR: Small-cap Value
-- XLP: Consumer Staples, defensive
-- PDBC: Diversified Commodities
+Supplemental assets you may add (only from this list — all have 10+ year history as of 2026):
+- TLT: US Long-term Treasury 20yr+ (since 2002), deflation/recession hedge
+- IEF: US Mid-term Treasury 7-10yr (since 2002), moderate bond
+- BND: Total US Bond Market (since 2007), broad bonds
+- TIP: TIPS, inflation-protected bonds (since 2003)
+- GLD: Gold (since 2004), crisis hedge
+- IAU: Gold alternative (since 2005)
+- SCHD: US Dividend ETF (since 2011), income-focused
+- VYM: High Dividend Yield ETF (since 2006)
+- VEA: Developed Markets ex-US (since 2007), international
+- EEM: Emerging Markets (since 2003), growth potential
+- VNQ: US REITs (since 2004), real estate
+- IWM: US Small-cap Russell 2000 (since 2000)
+- VBR: Small-cap Value (since 2004)
+- XLP: Consumer Staples (since 1998), defensive
+- PDBC: Diversified Commodities (since 2014)
 `.trim();
 
 export async function POST(req: NextRequest) {
@@ -57,7 +56,7 @@ Instructions:
 1. Identify this portfolio's key weaknesses and strengths from the metrics above
 2. Design 3 strategies with meaningfully DIFFERENT optimization goals (e.g. higher growth, lower drawdown, better efficiency, income, etc.)
 3. Choose goals that directly address this portfolio's specific weaknesses
-4. For each strategy: add tickers from the supplemental list if the portfolio genuinely needs them, otherwise just adjust existing weights
+4. For each strategy: add tickers from the supplemental list if the portfolio genuinely needs them, otherwise just adjust existing weights. Only use assets with 10+ year history — never suggest recently launched ETFs
 5. All weights in each strategy must sum to exactly 100
 6. Write name, tagline, and reasoning in ${isKo ? 'Korean' : 'English'}
 7. Names should be concise and catchy (max 4 words)

@@ -55,6 +55,9 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        positive: 'hsl(var(--c-positive))',
+        negative: 'hsl(var(--c-negative))',
+        'ai-purple': 'hsl(var(--c-ai))',
       },
       borderRadius: {
         lg: 'var(--radius)',

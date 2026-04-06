@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Sparkles, ArrowLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -87,24 +88,35 @@ function StrategyDetailModal({
   const { t, lang } = useLang();
   const isKo = lang === 'ko';
 
-  // Build merged chart — both normalized to 1000
+  // Build aligned chart — crop both to common date range, renormalize to 1000
   const chartData = useMemo(() => {
-    const origMap = new Map(currentHistory.map(h => [h.date, h.value]));
-    const sugMap = new Map(strategy.history.map(h => [h.date, h.value]));
+    if (!currentHistory.length || !strategy.history.length) return [];
+
+    // Find the LATER start date so both series begin at the same calendar point
+    const laterStart = currentHistory[0].date > strategy.history[0].date
+      ? currentHistory[0].date
+      : strategy.history[0].date;
+
+    const origFiltered = currentHistory.filter(h => h.date >= laterStart);
+    const sugFiltered  = strategy.history.filter(h => h.date >= laterStart);
+    if (!origFiltered.length || !sugFiltered.length) return [];
+
+    // Renormalize both to start at 1000 from the common date
+    const origBase = origFiltered[0].value;
+    const sugBase  = sugFiltered[0].value;
+
+    const origMap = new Map(origFiltered.map(h => [h.date, Math.round(h.value / origBase * 1000 * 100) / 100]));
+    const sugMap  = new Map(sugFiltered.map(h =>  [h.date, Math.round(h.value / sugBase  * 1000 * 100) / 100]));
+
     const allDates = [...new Set([
-      ...currentHistory.map(h => h.date),
-      ...strategy.history.map(h => h.date),
+      ...origFiltered.map(h => h.date),
+      ...sugFiltered.map(h => h.date),
     ])].sort();
 
-    // Sample to ~60 points for perf
     const step = Math.max(1, Math.floor(allDates.length / 60));
-    const sampled = allDates.filter((_, i) => i % step === 0 || i === allDates.length - 1);
-
-    return sampled.map(d => ({
-      date: d.slice(0, 7),
-      original: origMap.get(d),
-      suggested: sugMap.get(d),
-    }));
+    return allDates
+      .filter((_, i) => i % step === 0 || i === allDates.length - 1)
+      .map(d => ({ date: d.slice(0, 7), original: origMap.get(d), suggested: sugMap.get(d) }));
   }, [currentHistory, strategy.history]);
 
   const metricRows = [
@@ -115,18 +127,16 @@ function StrategyDetailModal({
     { label: isKo ? '배당' : 'Dividend', current: currentMetrics.dividend, next: strategy.metrics.dividend, delta: strategy.delta.dividend, unit: '%', higherBetter: true },
   ];
 
-  return (
+  const modal = (
     <div
       style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.75)', zIndex: 60 }}
       onClick={onBack}
     >
       <div
+        className="modal-panel bg-background border border-border rounded-3xl"
         style={{
           maxHeight: 'calc(100dvh - 32px)',
           overflowY: 'auto',
-          background: '#0B0E14',
-          borderRadius: 24,
-          border: '1px solid rgba(255,255,255,0.1)',
           width: '100%',
           maxWidth: 540,
           margin: '0 16px',
@@ -134,7 +144,7 @@ function StrategyDetailModal({
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-white/8 sticky top-0 bg-[#0B0E14] z-10">
+        <div className="modal-header flex items-center gap-3 px-5 py-4 border-b border-border/50 sticky top-0 bg-background z-10">
           <button onClick={onBack} className="p-1.5 -ml-1 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft size={18} />
           </button>
@@ -233,8 +243,8 @@ function StrategyDetailModal({
                     tickFormatter={(v: number) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
                   />
                   <RechartsTooltip
-                    contentStyle={{ background: '#0B0E14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#94a3b8' }}
+                    contentStyle={{ background: 'hsl(var(--popover))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 11, color: 'hsl(var(--popover-foreground))' }}
+                    labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
                     formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name]}
                   />
                   <Area
@@ -282,7 +292,7 @@ function StrategyDetailModal({
             </span>
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/8">
+                <tr className="border-b border-border/50">
                   <th className="text-left py-2 font-semibold text-muted-foreground">{isKo ? '지표' : 'Metric'}</th>
                   <th className="text-right py-2 font-semibold text-muted-foreground">{isKo ? '현재' : 'Current'}</th>
                   <th className="text-right py-2 font-bold text-violet-300">{strategy.name}</th>
@@ -293,7 +303,7 @@ function StrategyDetailModal({
                 {metricRows.map((row, i, arr) => {
                   const improved = row.higherBetter ? row.delta > 0 : row.delta < 0;
                   return (
-                    <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-white/5' : ''}>
+                    <tr key={row.label} className={i < arr.length - 1 ? 'border-b border-border/30' : ''}>
                       <td className="py-2 text-muted-foreground">{row.label}</td>
                       <td className="py-2 text-right text-muted-foreground">{row.current}{row.unit}</td>
                       <td className={cn(
@@ -317,7 +327,7 @@ function StrategyDetailModal({
           <div className="flex gap-3 pt-1">
             <button
               onClick={onApply}
-              className="flex-1 h-11 rounded-xl border border-white/10 text-sm font-bold text-muted-foreground hover:bg-white/5 transition-colors"
+              className="flex-1 h-11 rounded-xl border border-border text-sm font-bold text-muted-foreground hover:bg-muted/30 transition-colors"
             >
               {t('ai_panel_apply')}
             </button>
@@ -332,6 +342,8 @@ function StrategyDetailModal({
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
 
 // ── Main panel ─────────────────────────────────────────────────────────────────
@@ -371,7 +383,7 @@ export function AIImprovementPanel({
   // ── Idle ────────────────────────────────────────────────────────────────────
   if (status === 'idle') {
     return (
-      <div className="glass-morphism rounded-3xl border border-white/8 p-6 flex flex-col gap-3">
+      <div className="glass-morphism rounded-3xl border border-border/50 p-6 flex flex-col gap-3">
         <div className="flex flex-col gap-1">
           <span className="text-base font-bold">🤖 {t('ai_panel_title')}</span>
           <span className="text-xs text-muted-foreground">{t('ai_panel_desc')}</span>
@@ -406,7 +418,7 @@ export function AIImprovementPanel({
   // ── Error ───────────────────────────────────────────────────────────────────
   if (status === 'error') {
     return (
-      <div className="glass-morphism rounded-3xl border border-white/8 p-6 flex flex-col gap-3">
+      <div className="glass-morphism rounded-3xl border border-border/50 p-6 flex flex-col gap-3">
         <span className="text-sm font-bold">🤖 {t('ai_panel_title')}</span>
         <span className="text-sm text-rose-400">{t('ai_panel_error')}</span>
         <button
@@ -422,7 +434,7 @@ export function AIImprovementPanel({
   // ── Results: 3 cards ─────────────────────────────────────────────────────────
   return (
     <>
-      <div className="glass-morphism rounded-3xl border border-white/8 p-6 flex flex-col gap-4">
+      <div className="glass-morphism rounded-3xl border border-border/50 p-6 flex flex-col gap-4">
         <span className="text-base font-bold">🤖 {t('ai_panel_title')}</span>
 
         <div className="grid grid-cols-3 gap-2.5">
@@ -436,13 +448,13 @@ export function AIImprovementPanel({
               <button
                 key={i}
                 onClick={() => setSelected(i)}
-                className="flex flex-col gap-2 bg-white/[0.025] border border-white/8 rounded-2xl p-3 text-left hover:border-violet-500/40 hover:bg-violet-500/5 transition-all group"
+                className="flex flex-col gap-2 bg-muted/20 border border-border/50 rounded-2xl p-3 text-left hover:border-ai-purple/40 hover:bg-ai-purple/5 transition-all group"
               >
                 <div className="text-xl">{s.emoji}</div>
                 <div className="text-xs font-bold leading-tight text-foreground">{s.name}</div>
                 <div className="text-[9px] text-muted-foreground leading-relaxed line-clamp-2">{s.tagline}</div>
 
-                <div className="border-t border-white/8 pt-2 mt-auto flex flex-col gap-1 w-full">
+                <div className="border-t border-border/30 pt-2 mt-auto flex flex-col gap-1 w-full">
                   {deltaRows.map(({ label, value, higherBetter }) => {
                     const good = higherBetter ? value > 0 : value < 0;
                     return (
