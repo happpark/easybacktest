@@ -127,7 +127,7 @@ function SharedCard({
         </div>
         {/* Hero CAGR */}
         <div className="flex flex-col items-end shrink-0">
-          <div className={cn("text-2xl font-black font-mono tabular-nums", cagrPositive ? "text-[#7AE9AB]" : "text-[#F25B5B]")}>
+          <div className={cn("text-2xl font-black font-mono tabular-nums", cagrPositive ? "text-positive" : "text-negative")}>
             {cagrPositive ? '+' : ''}{m.cagr}%
           </div>
           <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('my_metric_cagr')}</div>
@@ -138,7 +138,7 @@ function SharedCard({
       <div className="px-5 pb-4 flex items-center gap-3">
         <div className="flex flex-col gap-0.5">
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_mdd')}</span>
-          <span className="text-sm font-bold font-mono text-[#F25B5B]">{m.mdd}%</span>
+          <span className="text-sm font-bold font-mono text-negative">{m.mdd}%</span>
         </div>
         <div className="w-px h-5 bg-white/10" />
         <div className="flex flex-col gap-0.5">
@@ -161,7 +161,7 @@ function SharedCard({
           className={cn(
             "flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all",
             isSaved
-              ? "text-[#7AE9AB] bg-[#7AE9AB]/10 border-[#7AE9AB]/30 cursor-default"
+              ? "text-positive bg-positive/10 border-positive/30 cursor-default"
               : "text-muted-foreground bg-white/5 border-white/10 hover:text-foreground hover:border-white/20"
           )}
         >

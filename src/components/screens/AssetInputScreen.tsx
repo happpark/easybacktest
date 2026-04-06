@@ -168,20 +168,20 @@ function CompactProgressBar({ total, inputType, totalAmount, tDone, tOver, tLeft
   const ok = total === 100;
   const over = total > 100;
   const pct = Math.min(total, 100);
-  const barColor = ok ? 'bg-[#7AE9AB]' : pct >= 80 ? 'bg-yellow-400' : 'bg-destructive';
+  const barColor = ok ? 'bg-positive' : pct >= 80 ? 'bg-yellow-400' : 'bg-destructive';
 
   return (
     <div className={cn(
       "rounded-xl border px-4 py-3 flex items-center gap-3 transition-all duration-300",
-      ok ? 'bg-[#7AE9AB]/10 border-[#7AE9AB]/30' : 'bg-white/5 border-white/10'
+      ok ? 'bg-positive/10 border-positive/30' : 'bg-white/5 border-white/10'
     )}>
       <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
         <div className={cn("h-full rounded-full transition-all duration-500", barColor)} style={{ width: `${pct}%` }} />
       </div>
-      <span className={cn("text-base font-black font-mono tabular-nums", ok ? 'text-[#7AE9AB]' : over ? 'text-destructive' : 'text-foreground')}>
+      <span className={cn("text-base font-black font-mono tabular-nums", ok ? 'text-positive' : over ? 'text-destructive' : 'text-foreground')}>
         {total}%
       </span>
-      <span className={cn("text-sm font-semibold w-16 text-right", ok ? 'text-[#7AE9AB]/80' : 'text-muted-foreground')}>
+      <span className={cn("text-sm font-semibold w-16 text-right", ok ? 'text-positive/80' : 'text-muted-foreground')}>
         {ok ? tDone : over ? `${total - 100}${tOver}` : `${100 - total}${tLeft}`}
       </span>
     </div>
@@ -1164,7 +1164,7 @@ export function AssetInputScreen({ onBacktest, preloadedAssets, onPreloadConsume
                         onChange={e => setPortfolioSlots(prev => prev.map((s, i) => i === si ? { ...s, name: e.target.value } : s))}
                         className="bg-transparent text-sm font-bold text-primary outline-none border-b border-primary/20 focus:border-primary/60 pb-0.5 w-36"
                       />
-                      <div className={cn("text-xs font-bold font-mono", total === 100 ? 'text-[#7AE9AB]' : total > 100 ? 'text-destructive' : 'text-muted-foreground')}>
+                      <div className={cn("text-xs font-bold font-mono", total === 100 ? 'text-positive' : total > 100 ? 'text-destructive' : 'text-muted-foreground')}>
                         {total}% {total === 100 ? '✓' : `(${100 - total}% ${t('expert_slot_left')})`}
                       </div>
                       <button onClick={() => distributeSlotEvenly(si)}

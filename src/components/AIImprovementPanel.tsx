@@ -24,6 +24,7 @@ interface StrategyResult {
     cagr: number; mdd: number; sharpe: number;
     volatility: number; dividend: number;
   };
+  goalAchieved: boolean;
   available: boolean;
 }
 
@@ -60,7 +61,7 @@ function DeltaBadge({ value, higherBetter = true }: { value: number; higherBette
   return (
     <span className={cn(
       'text-[11px] font-bold',
-      neutral ? 'text-muted-foreground' : good ? 'text-emerald-400' : 'text-rose-400'
+      neutral ? 'text-muted-foreground' : good ? 'text-positive' : 'text-negative'
     )}>
       {value > 0 ? '+' : ''}{value}
     </span>
@@ -121,7 +122,7 @@ function StrategyDetailModal({
 
   const metricRows = [
     { label: 'CAGR', current: currentMetrics.cagr, next: strategy.metrics.cagr, delta: strategy.delta.cagr, unit: '%', higherBetter: true },
-    { label: 'MDD', current: currentMetrics.mdd, next: strategy.metrics.mdd, delta: strategy.delta.mdd, unit: '%', higherBetter: false },
+    { label: 'MDD', current: currentMetrics.mdd, next: strategy.metrics.mdd, delta: strategy.delta.mdd, unit: '%', higherBetter: true },
     { label: isKo ? '샤프' : 'Sharpe', current: currentMetrics.sharpe, next: strategy.metrics.sharpe, delta: strategy.delta.sharpe, unit: '', higherBetter: true },
     { label: isKo ? '변동성' : 'Volatility', current: currentMetrics.volatility, next: strategy.metrics.volatility, delta: strategy.delta.volatility, unit: '%', higherBetter: false },
     { label: isKo ? '배당' : 'Dividend', current: currentMetrics.dividend, next: strategy.metrics.dividend, delta: strategy.delta.dividend, unit: '%', higherBetter: true },
@@ -173,7 +174,7 @@ function StrategyDetailModal({
                 <div key={w.ticker} className="flex items-center gap-2 text-sm">
                   <span className="font-mono font-bold w-14 shrink-0">{w.ticker}</span>
                   {isNew && (
-                    <span className="text-[9px] bg-violet-500/20 text-violet-300 px-1.5 py-0.5 rounded-md font-bold shrink-0">
+                    <span className="text-[9px] bg-ai-purple/15 text-ai-purple px-1.5 py-0.5 rounded-md font-bold shrink-0">
                       {t('ai_panel_new')}
                     </span>
                   )}
@@ -187,7 +188,7 @@ function StrategyDetailModal({
                   {diff !== 0 && (
                     <span className={cn(
                       'text-[11px] font-bold w-10 text-right shrink-0',
-                      diff > 0 ? 'text-emerald-400' : 'text-rose-400'
+                      diff > 0 ? 'text-positive' : 'text-negative'
                     )}>
                       {diff > 0 ? `+${diff}` : diff}%
                     </span>
@@ -203,7 +204,7 @@ function StrategyDetailModal({
                   <span className="font-mono font-bold w-14 shrink-0 line-through">{a.ticker}</span>
                   <div className="flex-1 h-1.5 rounded-full bg-white/10" />
                   <span className="font-bold w-9 text-right shrink-0">0%</span>
-                  <span className="text-[11px] font-bold w-10 text-right shrink-0 text-rose-400">
+                  <span className="text-[11px] font-bold w-10 text-right shrink-0 text-negative">
                     -{a.weight}%
                   </span>
                 </div>
@@ -295,7 +296,7 @@ function StrategyDetailModal({
                 <tr className="border-b border-border/50">
                   <th className="text-left py-2 font-semibold text-muted-foreground">{isKo ? '지표' : 'Metric'}</th>
                   <th className="text-right py-2 font-semibold text-muted-foreground">{isKo ? '현재' : 'Current'}</th>
-                  <th className="text-right py-2 font-bold text-violet-300">{strategy.name}</th>
+                  <th className="text-right py-2 font-bold text-ai-purple">{strategy.name}</th>
                   <th className="text-right py-2 font-semibold text-muted-foreground">{isKo ? '변화' : 'Change'}</th>
                 </tr>
               </thead>
@@ -308,7 +309,7 @@ function StrategyDetailModal({
                       <td className="py-2 text-right text-muted-foreground">{row.current}{row.unit}</td>
                       <td className={cn(
                         'py-2 text-right font-bold',
-                        improved ? 'text-emerald-400' : row.delta === 0 ? 'text-foreground' : 'text-rose-400'
+                        improved ? 'text-positive' : row.delta === 0 ? 'text-foreground' : 'text-negative'
                       )}>
                         {row.next}{row.unit}
                       </td>
@@ -333,7 +334,7 @@ function StrategyDetailModal({
             </button>
             <button
               onClick={onCompare}
-              className="flex-[2] h-11 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 text-sm font-bold hover:bg-violet-500/25 transition-colors"
+              className="flex-[2] h-11 rounded-xl bg-ai-purple/15 border border-ai-purple/30 text-ai-purple text-sm font-bold hover:bg-ai-purple/25 transition-colors"
             >
               {t('ai_panel_compare')}
             </button>
@@ -354,11 +355,11 @@ export function AIImprovementPanel({
   onCompare,
   onApply,
 }: AIImprovementPanelProps) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const isKo = lang === 'ko';
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [strategies, setStrategies] = useState<StrategyResult[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
-  const { lang } = useLang();
 
   const analyze = useCallback(async () => {
     setStatus('loading');
@@ -390,7 +391,7 @@ export function AIImprovementPanel({
         </div>
         <button
           onClick={analyze}
-          className="h-11 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 text-sm font-bold hover:bg-violet-500/25 transition-colors flex items-center justify-center gap-2"
+          className="h-11 rounded-xl bg-ai-purple/15 border border-ai-purple/40 text-ai-purple text-sm font-bold hover:bg-ai-purple/25 transition-colors flex items-center justify-center gap-2"
         >
           <Sparkles size={15} />
           {t('ai_panel_cta')}
@@ -441,7 +442,7 @@ export function AIImprovementPanel({
           {strategies.map((s, i) => {
             const deltaRows = [
               { label: 'CAGR', value: s.delta.cagr, higherBetter: true },
-              { label: 'MDD', value: s.delta.mdd, higherBetter: false },
+              { label: 'MDD', value: s.delta.mdd, higherBetter: true },
               { label: 'Sharpe', value: s.delta.sharpe, higherBetter: true },
             ];
             return (
@@ -450,7 +451,14 @@ export function AIImprovementPanel({
                 onClick={() => setSelected(i)}
                 className="flex flex-col gap-2 bg-muted/20 border border-border/50 rounded-2xl p-3 text-left hover:border-ai-purple/40 hover:bg-ai-purple/5 transition-all group"
               >
-                <div className="text-xl">{s.emoji}</div>
+                <div className="flex items-start justify-between gap-1">
+                  <span className="text-xl">{s.emoji}</span>
+                  {!s.goalAchieved && (
+                    <span className="text-[8px] bg-amber-500/15 text-amber-400 border border-amber-500/25 px-1 py-0.5 rounded font-bold shrink-0 leading-tight">
+                      {isKo ? '목표 미달' : 'Off-goal'}
+                    </span>
+                  )}
+                </div>
                 <div className="text-xs font-bold leading-tight text-foreground">{s.name}</div>
                 <div className="text-[9px] text-muted-foreground leading-relaxed line-clamp-2">{s.tagline}</div>
 
@@ -462,7 +470,7 @@ export function AIImprovementPanel({
                         <span className="text-[9px] text-muted-foreground">{label}</span>
                         <span className={cn(
                           'text-[10px] font-bold',
-                          value === 0 ? 'text-muted-foreground' : good ? 'text-emerald-400' : 'text-rose-400'
+                          value === 0 ? 'text-muted-foreground' : good ? 'text-positive' : 'text-negative'
                         )}>
                           {value > 0 ? '+' : ''}{value}
                         </span>
@@ -471,7 +479,7 @@ export function AIImprovementPanel({
                   })}
                 </div>
 
-                <div className="flex items-center gap-0.5 text-[9px] text-violet-400/70 font-semibold group-hover:text-violet-400 transition-colors">
+                <div className="flex items-center gap-0.5 text-[9px] text-ai-purple/70 font-semibold group-hover:text-ai-purple transition-colors">
                   {t('ai_panel_view_detail')} <ChevronRight size={9} />
                 </div>
               </button>

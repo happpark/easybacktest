@@ -116,6 +116,20 @@ Return ONLY valid JSON, no markdown fences:
 
         try {
           const result = await runBacktest({ assets: normalizedWeights });
+          const delta = {
+            cagr: Math.round((result.metrics.cagr - metrics.cagr) * 100) / 100,
+            mdd: Math.round((result.metrics.mdd - metrics.mdd) * 100) / 100,
+            sharpe: Math.round((result.metrics.sharpe - metrics.sharpe) * 100) / 100,
+            volatility: Math.round((result.metrics.volatility - metrics.volatility) * 100) / 100,
+            dividend: Math.round((result.metrics.dividend - metrics.dividend) * 100) / 100,
+          };
+          const g = s.goal.toLowerCase();
+          let goalAchieved = true;
+          if (/sharpe|efficiency|risk.adjust/.test(g)) goalAchieved = delta.sharpe > 0;
+          else if (/drawdown|mdd|stability|defense|defensive|protect/.test(g)) goalAchieved = delta.mdd > 0;
+          else if (/growth|cagr|return|aggressive/.test(g)) goalAchieved = delta.cagr > 0;
+          else if (/income|dividend|yield/.test(g)) goalAchieved = delta.dividend > 0;
+          else if (/volatil|stable|low.risk/.test(g)) goalAchieved = delta.volatility < 0;
           return {
             name: s.name,
             emoji: s.emoji,
@@ -124,13 +138,8 @@ Return ONLY valid JSON, no markdown fences:
             weights: normalizedWeights,
             metrics: result.metrics,
             history: result.history,
-            delta: {
-              cagr: Math.round((result.metrics.cagr - metrics.cagr) * 100) / 100,
-              mdd: Math.round((result.metrics.mdd - metrics.mdd) * 100) / 100,
-              sharpe: Math.round((result.metrics.sharpe - metrics.sharpe) * 100) / 100,
-              volatility: Math.round((result.metrics.volatility - metrics.volatility) * 100) / 100,
-              dividend: Math.round((result.metrics.dividend - metrics.dividend) * 100) / 100,
-            },
+            delta,
+            goalAchieved,
             available: true,
           };
         } catch {

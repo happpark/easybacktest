@@ -462,7 +462,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
               <tbody>
                 {[
                   { label: t('my_metric_cagr'), key: 'cagr' as const, unit: '%', higherBetter: true },
-                  { label: t('my_metric_mdd'), key: 'mdd' as const, unit: '%', higherBetter: false },
+                  { label: t('my_metric_mdd'), key: 'mdd' as const, unit: '%', higherBetter: true },
                   { label: t('multi_volatility'), key: 'volatility' as const, unit: '%', higherBetter: false },
                   { label: t('my_metric_sharpe'), key: 'sharpe' as const, unit: '', higherBetter: true },
                   { label: t('multi_dividend'), key: 'dividend' as const, unit: '%', higherBetter: true },
@@ -530,7 +530,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
                   className={cn(
                     'mt-2 h-7 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border transition-colors',
                     isSaved
-                      ? 'bg-[#7AE9AB]/10 text-positive border-[#7AE9AB]/20'
+                      ? 'bg-positive/10 text-positive border-positive/20'
                       : 'bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10'
                   )}
                 >
@@ -1101,7 +1101,7 @@ export function ResultScreen({ data, multiData, rebalancingMonths, onReset, onCo
             onClick={saved ? undefined : handleSave}
             className={`flex-[2] h-14 rounded-2xl flex items-center justify-center gap-2 font-bold transition-colors text-sm border ${
               saved
-                ? 'bg-[#7AE9AB]/15 text-positive border-[#7AE9AB]/30'
+                ? 'bg-positive/15 text-positive border-positive/30'
                 : 'bg-primary/15 text-primary border-primary/30 hover:bg-primary/25'
             }`}
           >

@@ -203,7 +203,7 @@ function PortfolioCard({
           <div className="flex flex-col items-end shrink-0 gap-1">
             <div className={cn(
               "text-3xl font-black font-mono tabular-nums leading-none",
-              cagrPositive ? "text-[#7AE9AB]" : "text-[#F25B5B]"
+              cagrPositive ? "text-positive" : "text-negative"
             )}>
               {cagrPositive ? '+' : ''}{m.cagr}%
             </div>
@@ -217,7 +217,7 @@ function PortfolioCard({
         {/* MDD */}
         <div className="flex flex-col gap-0.5">
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{t('my_metric_mdd')}</span>
-          <span className="text-sm font-bold font-mono text-[#F25B5B]">{m.mdd}%</span>
+          <span className="text-sm font-bold font-mono text-negative">{m.mdd}%</span>
         </div>
         <div className="w-px h-6 bg-white/10" />
         {/* Sharpe */}
@@ -273,7 +273,7 @@ function PortfolioCard({
               className={cn(
                 "flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all",
                 sharedId
-                  ? "text-[#7AE9AB] bg-[#7AE9AB]/10 border-[#7AE9AB]/30"
+                  ? "text-positive bg-positive/10 border-positive/30"
                   : "text-muted-foreground bg-white/5 border-white/10 hover:text-foreground hover:border-white/20"
               )}
             >
@@ -308,7 +308,7 @@ function PortfolioCard({
 // ── Compare view ───────────────────────────────────────────────────────────────
 function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; onClose: () => void }) {
   const { t } = useLang();
-  const COLORS = ['hsl(212, 73%, 55%)', '#7AE9AB', '#F5A623'];
+  const COLORS = ['hsl(212, 73%, 55%)', 'hsl(141, 76%, 73%)', '#F5A623'];
   const labels = ['A', 'B', 'C'];
 
   const [hidden, setHidden] = useState<Set<number>>(new Set());
@@ -394,9 +394,9 @@ function CompareView({ portfolios, onClose }: { portfolios: SavedPortfolio[]; on
                     <td key={i} className="text-right px-4 py-3.5">
                       <span className={cn(
                         "font-mono font-bold text-sm inline-flex items-center justify-end gap-1",
-                        v === best ? "text-[#7AE9AB]" : "text-muted-foreground/70"
+                        v === best ? "text-positive" : "text-muted-foreground/70"
                       )}>
-                        {v === best && <ChevronUp size={11} className="text-[#7AE9AB]" />}
+                        {v === best && <ChevronUp size={11} className="text-positive" />}
                         {v}{row.unit}
                       </span>
                     </td>

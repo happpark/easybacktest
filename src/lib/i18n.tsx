@@ -228,7 +228,7 @@ const translations = {
     result_cancel: '취소',
     result_save_confirm: '저장하기',
     result_default_portfolio_name: '포트폴리오',
-    result_share_text_title: '📊 AlphaFlow 포트폴리오 백테스트 결과',
+    result_share_text_title: '📊 EasyBacktest 포트폴리오 백테스트 결과',
     result_share_composition: '구성',
     result_share_period: '기간',
 
@@ -559,7 +559,7 @@ const translations = {
     result_cancel: 'Cancel',
     result_save_confirm: 'Save',
     result_default_portfolio_name: 'Portfolio',
-    result_share_text_title: '📊 AlphaFlow Portfolio Backtest Results',
+    result_share_text_title: '📊 EasyBacktest Portfolio Backtest Results',
     result_share_composition: 'Composition',
     result_share_period: 'Period',
 
