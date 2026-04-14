@@ -34,7 +34,7 @@ async function fetchAdjClose(ticker: string): Promise<Map<string, number>> {
 export const SCENARIO_DEFS = {
   '2008': {
     peakDate: '2007-10-09',
-    endDate: '2009-09-30',
+    endDate: '2013-06-30',
     milestones: [
       { date: '2008-03-14', ko: '베어스턴스 붕괴', en: 'Bear Stearns Collapse' },
       { date: '2008-09-15', ko: '리먼 파산', en: 'Lehman Bankrupt' },
@@ -52,7 +52,7 @@ export const SCENARIO_DEFS = {
   },
   '2022': {
     peakDate: '2022-01-03',
-    endDate: '2023-09-30',
+    endDate: '2024-06-30',
     milestones: [
       { date: '2022-03-16', ko: 'Fed 첫 금리인상', en: 'First Fed Hike' },
       { date: '2022-06-13', ko: '약세장 진입', en: 'Bear Market' },
