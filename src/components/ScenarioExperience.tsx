@@ -197,6 +197,11 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                 </button>
               );
             })}
+            <p className="text-[10px] text-muted-foreground/50 text-center leading-relaxed">
+              {lang === 'ko'
+                ? '표시된 낙폭은 S&amp;P 500 기준이에요. 내 포트폴리오의 실제 하락폭은 테스트 후 확인할 수 있어요.'
+                : 'Drawdowns shown are based on S&amp;P 500. Run the test to see how your portfolio actually performed.'}
+            </p>
           </div>
         )}
 
@@ -303,7 +308,7 @@ export function ScenarioExperience({ data, backtestPeriodStart, onClose }: Props
                                   ? 'rgba(99,179,237,0.45)'
                                   : isMDD
                                     ? 'rgba(185,28,28,0.90)'
-                                    : point ? pctToBg(point.pctFromPeak) : 'rgba(255,255,255,0.04)',
+                                    : point ? pctToBg(point.pctFromPeak) : 'transparent',
                                 cursor: point ? 'pointer' : 'default',
                                 outline: isPeak
                                   ? '2px solid rgba(99,179,237,0.7)'
